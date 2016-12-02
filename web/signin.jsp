@@ -16,7 +16,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body style="background-color: #eeeeee">
 <nav class="navbar navbar-inverse" style="margin-bottom: 0; border-radius: 0">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -26,8 +26,8 @@
             <li><a href="index.jsp">Home</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="signup.jsp"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
             <li class="active"><a href="#"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
+            <li><a href="signup.jsp"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
         </ul>
     </div>
 </nav>
