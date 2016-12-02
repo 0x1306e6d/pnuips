@@ -1,15 +1,15 @@
 <%--
   Created by IntelliJ IDEA.
   User: 0x130
-  Date: 2016-12-02
-  Time: 오후 1:30
+  Date: 2016-12-03
+  Time: 오전 12:18
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <title>Sign in</title>
+    <title>Sign up</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -26,8 +26,8 @@
             <li><a href="index.jsp">Home</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="signup.jsp"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
-            <li class="active"><a href="#"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
+            <li class="active"><a href="#"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
+            <li><a href="signin.jsp"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
         </ul>
     </div>
 </nav>
@@ -45,7 +45,15 @@
             <label for="password">Password</label>
             <input id="password" type="password" class="form-control"/>
         </div>
-        <button id="sign-in" type="button" class="btn btn-primary btn-block">Sign in</button>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" type="email" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="birthday">Birthday</label>
+            <input id="birthday" type="date" class="form-control"/>
+        </div>
+        <button id="sign-in" type="button" class="btn btn-primary btn-block">Sign up</button>
     </div>
 </div>
 </body>
