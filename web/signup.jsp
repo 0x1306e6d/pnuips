@@ -16,7 +16,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body style="background-color: #eeeeee">
+<body style="background-color: #eeeeee; padding-bottom: 15px">
 <nav class="navbar navbar-inverse" style="margin-bottom: 0; border-radius: 0">
     <div class="container-fluid">
         <div class="navbar-header">
