@@ -44,5 +44,77 @@
     <h1>PNUIPS</h1>
     <p>PNU Item Purchase System</p>
 </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">후드패딩</div>
+                <div class="panel-body">
+                    <img src="images/img2.gif" alt="img2" style="width: 100%;">
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-default btn-block" type="button">Buy</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">폴라니트</div>
+                <div class="panel-body">
+                    <img src="images/img0.gif" alt="img0" style="width: 100%;">
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-default btn-block" type="button">Buy</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">라쿤롱패딩</div>
+                <div class="panel-body">
+                    <img src="images/img1.gif" alt="img1" style="width: 100%;">
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-default btn-block" type="button">Buy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">기모후드</div>
+                <div class="panel-body">
+                    <img src="images/img3.gif" alt="img3" style="width: 100%;">
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-default btn-block" type="button">Buy</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">라쿤야상점퍼</div>
+                <div class="panel-body">
+                    <img src="images/img4.jpg" alt="img4" style="width: 100%;">
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-default btn-block" type="button">Buy</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">롱티</div>
+                <div class="panel-body">
+                    <img src="images/img5.gif" alt="img5" style="width: 100%;">
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-default btn-block" type="button">Buy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
