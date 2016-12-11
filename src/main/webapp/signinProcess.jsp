@@ -4,20 +4,18 @@
 <jsp:setProperty name="signinBean" property="email"/>
 <jsp:setProperty name="signinBean" property="password"/>
 <jsp:useBean id="signinProcessor" class="kr.ac.pusan.pnuips.processor.SigninProcessor"/>
+<%
+    if (session.getAttribute("signin") != null) {
+        response.sendRedirect("index.jsp");
+    }
+%>
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sign in</title>
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    <!-- Custom -->
-    <link rel="stylesheet" href="css/style.css">
+    <jsp:include page="header.jsp"/>
+
     <script type="text/javascript">
         function redirect() {
             setTimeout(function () {
@@ -65,6 +63,7 @@
 
         switch (result) {
             case SUCCESS:
+                session.setAttribute("signin", signinBean);
                 response.sendRedirect("index.jsp");
                 break;
             case INVALID_PASSWORD:

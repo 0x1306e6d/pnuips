@@ -1,7 +1,13 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    if (session.getAttribute("signin") == null) {
+        response.sendRedirect("index.jsp");
+    }
+%>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>PNUIPS</title>
+    <title>My Page</title>
 
     <jsp:include page="header.jsp"/>
 </head>
@@ -20,30 +26,15 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
+                <li><a href="index.jsp">Home</a></li>
                 <li><a href="bestseller.jsp">Best Seller</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <%
-                    if (session.getAttribute("signin") == null) {
-                %>
-                <li><a href="signin.jsp"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
-                <li><a href="signup.jsp"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
-                <%
-                } else {
-                %>
-                <li><a href="mypage.jsp"><span class="glyphicon glyphicon-user"></span> My Page</a></li>
+                <li class="active"><a href="#"><span class="glyphicon glyphicon-user"></span> My Page</a></li>
                 <li><a href="signout.jsp"><span class="glyphicon glyphicon-log-out"></span> Sign out</a></li>
-                <%
-                    }
-                %>
             </ul>
         </div>
     </div>
 </nav>
-<div class="jumbotron text-center" style="margin-top: 0;">
-    <h1>PNUIPS</h1>
-    <p>PNU Item Purchase System</p>
-</div>
 </body>
 </html>
