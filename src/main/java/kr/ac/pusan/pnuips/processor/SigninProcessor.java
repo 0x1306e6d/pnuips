@@ -11,7 +11,7 @@ public class SigninProcessor {
     public enum SigninResult {
         SUCCESS,
         INVALID_PASSWORD,
-        NO_EXISTS_ACCOUNT,
+        NOT_EXISTS_ACCOUNT,
         SYSTEM_ERROR
     }
 
@@ -39,7 +39,7 @@ public class SigninProcessor {
                     return SigninResult.INVALID_PASSWORD;
                 }
             } else {
-                return SigninResult.NO_EXISTS_ACCOUNT;
+                return SigninResult.NOT_EXISTS_ACCOUNT;
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();

@@ -78,7 +78,7 @@
     </script>
     <%
             break;
-        case NO_EXISTS_ACCOUNT:
+        case NOT_EXISTS_ACCOUNT:
     %>
     <div class="alert alert-danger">
         <h3 class="alert-heading">Not exists account</h3>

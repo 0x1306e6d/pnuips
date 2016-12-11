@@ -6,7 +6,7 @@ CREATE TABLE pnuips.account (
     lastname VARCHAR(8) NOT NULL,
     birthday DATE NOT NULL,
     grade INTEGER NOT NULL DEFAULT 0,
-    PRIMARY KEY (email)
+    PRIMARY KEY(email)
 );
 
 DROP TABLE IF EXISTS pnuips.seller;
@@ -35,7 +35,7 @@ DROP TABLE IF EXISTS pnuips.cart;
 CREATE TABLE pnuips.cart (
     email VARCHAR(32) NOT NULL,
     itemcode INTEGER NOT NULL,
-    count INTEGER NOT NULL DEFAULT 0
+    count INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY(email, itemcode),
     FOREIGN KEY(email) REFERENCES pnuips.account(email) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(itemcode) REFERENCES pnuips.item(itemcode) ON DELETE CASCADE ON UPDATE CASCADE
@@ -45,7 +45,7 @@ DROP TABLE IF EXISTS pnuips.order;
 CREATE TABLE pnuips.order (
     itemcode INTEGER NOT NULL,
     purchaser VARCHAR(32) NOT NULL,
-    count INTEGER NOT NULL DEFAULT 0
+    count INTEGER NOT NULL DEFAULT 0,
     discount INTEGER NOT NULL DEFAULT 0,
     time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(itemcode, purchaser),
@@ -68,5 +68,5 @@ CREATE TABLE pnuips.coupon (
     due DATE NOT NULL,
     PRIMARY KEY(type, owener),
     FOREIGN KEY(type) REFERENCES pnuips.couponType(type) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY(owener) REFERENCES pnuips.account(email) ON DELETE CASCADE ON UPDATE CASCASE
+    FOREIGN KEY(owener) REFERENCES pnuips.account(email) ON DELETE CASCADE ON UPDATE CASCADE
 );
