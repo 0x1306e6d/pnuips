@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PNUIPS.iml" filepath="$PROJECT_DIR$/PNUIPS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pnuips.iml" filepath="$PROJECT_DIR$/pnuips.iml" />
     </modules>
   </component>
 </project>
