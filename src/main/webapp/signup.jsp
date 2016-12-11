@@ -48,28 +48,29 @@
         <form method="post" action="signupProcess.jsp">
             <div class="form-group">
                 <label for="email">email</label>
-                <input id="email" class="form-control" type="email" name="email" placeholder="Enter email"/>
+                <input id="email" class="form-control" type="email" name="email" placeholder="Enter email" required/>
             </div>
             <div class="form-group">
                 <label for="password">password</label>
-                <input id="password" class="form-control" type="password" name="password" placeholder="Enter password"/>
+                <input id="password" class="form-control" type="password" name="password" placeholder="Enter password"
+                       required/>
             </div>
             <div class="form-group">
                 <label for="name">name</label>
                 <div id="name" class="row">
                     <div class="col-md-7">
                         <input id="firstname" class="form-control" type="text" name="firstname"
-                               placeholder="firstname"/>
+                               placeholder="firstname" required/>
                     </div>
                     <div class="col-md-5">
                         <input id="lastname" class="form-control" type="text" name="lastname"
-                               placeholder="lastname"/>
+                               placeholder="lastname" required/>
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <label for="birthday">birthday</label>
-                <input id="birthday" class="form-control" type="date" name="birthday"/>
+                <input id="birthday" class="form-control" type="date" name="birthday" required/>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Sign up</button>
         </form>

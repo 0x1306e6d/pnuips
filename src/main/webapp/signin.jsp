@@ -48,11 +48,11 @@
         <form method="post" action="signinProcess.jsp">
             <div class="form-group">
                 <label for="email">email</label>
-                <input id="email" class="form-control" type="email" name="email">
+                <input id="email" class="form-control" type="email" name="email" required>
             </div>
             <div class="form-group">
                 <label for="password">password</label>
-                <input id="password" class="form-control" type="password" name="password">
+                <input id="password" class="form-control" type="password" name="password" required>
             </div>
             <button class="btn btn-primary btn-block" type="submit">Sign in</button>
         </form>
