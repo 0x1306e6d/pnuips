@@ -2,7 +2,7 @@ package kr.ac.pusan.pnuips.processor;
 
 import com.google.common.collect.Lists;
 import kr.ac.pusan.pnuips.DatabaseConstants;
-import kr.ac.pusan.pnuips.order.Order;
+import kr.ac.pusan.pnuips.model.order.Order;
 
 import java.sql.*;
 import java.util.List;

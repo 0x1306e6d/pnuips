@@ -1,6 +1,6 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SigninBean" %>
-<%@ page import="kr.ac.pusan.pnuips.item.Item" %>
-<%@ page import="kr.ac.pusan.pnuips.order.Order" %>
+<%@ page import="kr.ac.pusan.pnuips.model.item.Item" %>
+<%@ page import="kr.ac.pusan.pnuips.model.order.Order" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%

@@ -1,6 +1,8 @@
-<%@ page import="kr.ac.pusan.pnuips.bean.InsertDataBean" %>
+<%@ page import="kr.ac.pusan.pnuips.csv.ItemData" %>
+<%@ page import="kr.ac.pusan.pnuips.csv.UserData" %>
 <%@ page import="kr.ac.pusan.pnuips.processor.InsertDataProcessor" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%--
   Created by IntelliJ IDEA.
   User: 0x130
   Date: 2016-12-14
@@ -57,9 +59,9 @@
 </nav>
 <div class="container">
     <%
-        List<InsertDataBean.AccountData> accountDataList = insertDataBean.csvToAccountData();
-        for (InsertDataBean.AccountData accountData : accountDataList) {
-            InsertDataProcessor.InsertDataResult insertAccountResult = insertDataProcessor.insertAccountData(accountData);
+        List<UserData> userDataList = insertDataBean.csvToAccountData();
+        for (UserData userData : userDataList) {
+            InsertDataProcessor.InsertDataResult insertAccountResult = insertDataProcessor.insertAccountData(userData);
 
             switch (insertAccountResult) {
                 case SUCCESS:
@@ -67,7 +69,7 @@
     <div class="alert alert-success">
         <strong>Success</strong>
         <p>Inserted account data.</p>
-        <p>account data : <%=accountData%>
+        <p>account data : <%=userData%>
         </p>
     </div>
     <%
@@ -77,7 +79,7 @@
     <div class="alert alert-danger">
         <strong>Fail</strong>
         <p>Failed to insert account data.</p>
-        <p>account data : <%=accountData%>
+        <p>account data : <%=userData%>
         </p>
     </div>
     <%
@@ -87,8 +89,8 @@
     %>
 
     <%
-        List<InsertDataBean.ItemData> itemDataList = insertDataBean.csvToItemData();
-        for (InsertDataBean.ItemData itemData : itemDataList) {
+        List<ItemData> itemDataList = insertDataBean.csvToItemData();
+        for (ItemData itemData : itemDataList) {
             InsertDataProcessor.InsertDataResult insertItemResult = insertDataProcessor.insertItemData(itemData);
 
             switch (insertItemResult) {

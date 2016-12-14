@@ -1,51 +1,45 @@
 package kr.ac.pusan.pnuips.processor;
 
-import kr.ac.pusan.pnuips.DatabaseConstants;
-import kr.ac.pusan.pnuips.bean.InsertDataBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import kr.ac.pusan.pnuips.DatabaseManager;
+import kr.ac.pusan.pnuips.csv.ItemData;
+import kr.ac.pusan.pnuips.csv.UserData;
+import kr.ac.pusan.pnuips.model.account.Account;
+import kr.ac.pusan.pnuips.model.cart.Cart;
+import kr.ac.pusan.pnuips.model.coupon.CouponType;
+import kr.ac.pusan.pnuips.model.item.Item;
+import kr.ac.pusan.pnuips.model.order.Order;
+import kr.ac.pusan.pnuips.model.sell.Seller;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class InsertDataProcessor {
-
-    private static final Logger logger = LoggerFactory.getLogger(InsertDataProcessor.class);
 
     public enum InsertDataResult {
         SUCCESS,
         SYSTEM_ERROR
     }
 
-    public InsertDataResult insertAccountData(InsertDataBean.AccountData accountData) {
+    public InsertDataResult insertAccountData(UserData userData) {
         Connection con = null;
-        PreparedStatement ps = null;
         try {
-            Class.forName(DatabaseConstants.DRIVER);
-            con = DriverManager.getConnection(
-                    DatabaseConstants.URL,
-                    DatabaseConstants.USER,
-                    DatabaseConstants.PASSWORD
-            );
+            con = DatabaseManager.getConnection();
 
-            ps = con.prepareStatement("INSERT INTO pnuips.account (email, password, firstname, lastname, birthday) VALUES (?, ?, ?, ?, ?)");
-            ps.setString(1, accountData.getEmail());
-            ps.setString(2, accountData.getPassword());
-            ps.setString(3, accountData.getFirstname());
-            ps.setString(4, accountData.getLastname());
-            ps.setDate(5, Date.valueOf(accountData.getBirth()));
-            ps.executeUpdate();
-
-            return InsertDataResult.SUCCESS;
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+            for (CouponType couponType : userData.getCouponTypeSet()) {
+                if (!hasCouponType(con, couponType)) {
+                    couponType.insert();
                 }
             }
+            if (!hasAccount(con, userData.getAccount())) {
+                userData.getAccount().insert();
+            }
+
+            return InsertDataResult.SUCCESS;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
             if (con != null) {
                 try {
                     con.close();
@@ -57,43 +51,30 @@ public class InsertDataProcessor {
         return InsertDataResult.SYSTEM_ERROR;
     }
 
-    public InsertDataResult insertItemData(InsertDataBean.ItemData itemData) {
+    public InsertDataResult insertItemData(ItemData itemData) {
         Connection con = null;
-        PreparedStatement ps = null;
         try {
-            Class.forName(DatabaseConstants.DRIVER);
-            con = DriverManager.getConnection(
-                    DatabaseConstants.URL,
-                    DatabaseConstants.USER,
-                    DatabaseConstants.PASSWORD
-            );
+            con = DatabaseManager.getConnection();
 
-            if (!hasSeller(con, itemData.getSellercode(), itemData.getSellername())) {
-                insertNewSeller(con, itemData.getSellercode(), itemData.getSellername());
+            if (!hasSeller(con, itemData.getSeller())) {
+                itemData.getSeller().insert();
             }
-            if (!hasItem(con, itemData.getItemcode())) {
-                insertNewItem(con, itemData);
+            if (!hasItem(con, itemData.getItem())) {
+                itemData.getItem().insert();
             }
+            itemData.getSell().insert();
 
-            ps = con.prepareStatement("INSERT INTO pnuips.sell (itemcode, sellercode, price, numberOfStock, numberOfSales) VALUES (?, ?, ?, ?, ?)");
-            ps.setInt(1, itemData.getItemcode());
-            ps.setInt(2, itemData.getSellercode());
-            ps.setInt(3, itemData.getPrice());
-            ps.setInt(4, itemData.getNumberOfstock());
-            ps.setInt(5, itemData.getNumberOfsales());
-            ps.executeUpdate();
+            for (Cart cart : itemData.getCartSet()) {
+                cart.insert();
+            }
+            for (Order order : itemData.getOrderSet()) {
+                order.insert();
+            }
 
             return InsertDataResult.SUCCESS;
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
             if (con != null) {
                 try {
                     con.close();
@@ -105,13 +86,65 @@ public class InsertDataProcessor {
         return InsertDataResult.SYSTEM_ERROR;
     }
 
-    private boolean hasSeller(Connection con, int sellercode, String sellername) throws SQLException {
+    private boolean hasAccount(Connection con, Account account) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = con.prepareStatement("SELECT email FROM pnuips.account WHERE email=?");
+            ps.setString(1, account.getEmail());
+            rs = ps.executeQuery();
+            return rs.next();
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private boolean hasCouponType(Connection con, CouponType couponType) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = con.prepareStatement("SELECT type FROM pnuips.couponType WHERE type=?");
+            ps.setInt(1, couponType.getType());
+            rs = ps.executeQuery();
+            return rs.next();
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private boolean hasSeller(Connection con, Seller seller) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = con.prepareStatement("SELECT sellercode, sellername FROM pnuips.seller WHERE sellercode=? AND sellername=?");
-            ps.setInt(1, sellercode);
-            ps.setString(2, sellername);
+            ps.setInt(1, seller.getSellercode());
+            ps.setString(2, seller.getSellername());
             rs = ps.executeQuery();
             return rs.next();
         } finally {
@@ -132,30 +165,12 @@ public class InsertDataProcessor {
         }
     }
 
-    private void insertNewSeller(Connection con, int sellercode, String sellername) throws SQLException {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("INSERT INTO pnuips.seller (sellercode, sellername) VALUES(?, ?)");
-            ps.setInt(1, sellercode);
-            ps.setString(2, sellername);
-            ps.executeUpdate();
-        } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private boolean hasItem(Connection con, int itemcode) throws SQLException {
+    private boolean hasItem(Connection con, Item item) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = con.prepareStatement("SELECT itemcode FROM pnuips.item WHERE itemcode=?");
-            ps.setInt(1, itemcode);
+            ps.setInt(1, item.getItemcode());
             rs = ps.executeQuery();
             return rs.next();
         } finally {
@@ -166,25 +181,6 @@ public class InsertDataProcessor {
                     e.printStackTrace();
                 }
             }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private void insertNewItem(Connection con, InsertDataBean.ItemData itemData) throws SQLException {
-        PreparedStatement ps = null;
-        try {
-            ps = con.prepareStatement("INSERT INTO pnuips.item (itemcode, itemname, brand) VALUES (?, ?, ?)");
-            ps.setInt(1, itemData.getItemcode());
-            ps.setString(2, itemData.getItemname());
-            ps.setString(3, itemData.getBrand());
-            ps.executeUpdate();
-        } finally {
             if (ps != null) {
                 try {
                     ps.close();

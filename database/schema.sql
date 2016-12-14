@@ -79,7 +79,6 @@ DROP TABLE IF EXISTS pnuips.coupon;
 CREATE TABLE pnuips.coupon (
     type INTEGER NOT NULL,
     owener VARCHAR(32) NOT NULL,
-    due DATE NOT NULL,
     PRIMARY KEY(type, owener),
     FOREIGN KEY(type) REFERENCES pnuips.couponType(type) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(owener) REFERENCES pnuips.account(email) ON DELETE CASCADE ON UPDATE CASCADE

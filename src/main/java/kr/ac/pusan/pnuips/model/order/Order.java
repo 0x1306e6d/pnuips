@@ -1,5 +1,10 @@
-package kr.ac.pusan.pnuips.order;
+package kr.ac.pusan.pnuips.model.order;
 
+import kr.ac.pusan.pnuips.DatabaseManager;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class Order {
@@ -48,6 +53,36 @@ public class Order {
 
     public void setTime(Timestamp time) {
         this.time = time;
+    }
+
+    public void insert() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("INSERT INTO pnuips.order (itemcode, purchaser, ordercount, discount, ordertime) VALUES (?, ?, ?, ?, ?)");
+            ps.setInt(1, itemcode);
+            ps.setString(2, purchaser);
+            ps.setInt(3, count);
+            ps.setInt(4, discount);
+            ps.setTimestamp(5, time);
+            ps.executeUpdate();
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override

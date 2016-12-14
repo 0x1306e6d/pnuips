@@ -1,7 +1,7 @@
 package kr.ac.pusan.pnuips.processor;
 
 import kr.ac.pusan.pnuips.DatabaseConstants;
-import kr.ac.pusan.pnuips.item.Item;
+import kr.ac.pusan.pnuips.model.item.Item;
 
 import java.sql.*;
 
