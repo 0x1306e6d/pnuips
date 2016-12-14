@@ -1,18 +1,20 @@
 <%@ page import="kr.ac.pusan.pnuips.model.sell.Sell" %>
+<%@ page import="kr.ac.pusan.pnuips.model.sell.Seller" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    if (request.getParameter("itemcode") == null || request.getParameter("sellercode") == null) {
+    if (request.getParameter("sellercode") == null) {
         response.sendRedirect("index.jsp");
         return;
     }
-    int itemcode = Integer.parseInt(request.getParameter("itemcode").toString());
     int sellercode = Integer.parseInt(request.getParameter("sellercode").toString());
 %>
-<jsp:useBean id="sellProcesspr" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
+<jsp:useBean id="sellerProcessor" class="kr.ac.pusan.pnuips.processor.SellerProcessor"/>
+<jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Sell detail</title>
+    <title>Seller detail</title>
 
     <jsp:include page="header.jsp"/>
 </head>
@@ -54,58 +56,63 @@
 </nav>
 <div class="container">
     <%
-        Sell sell = sellProcesspr.searchSell(sellercode, itemcode);
+        Seller seller = sellerProcessor.searchSeller(sellercode);
 
-        if (sell == null) {
+        if (seller == null) {
     %>
     <div class="alert alert-danger">
         <strong>Error</strong>
-        <p>Item is not exist</p>
+        <p>Seller is not exist</p>
     </div>
     <%
     } else {
     %>
-    <div class="row">
-        <div class="col-md-4">
-            <p>price : <%=sell.getPrice()%>
-            </p>
-            <p>numberOfStock : <%=sell.getNumberOfStock()%>
-            </p>
-            <p>numberOfSales : <%=sell.getNumberOfSales()%>
-            </p>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Item</div>
-                <div class="panel-body">
-                    <p>code : <%=sell.getItem().getItemcode()%>
-                    </p>
-                    <p>name : <%=sell.getItem().getItemname()%>
-                    </p>
-                    <p>brand : <%=sell.getItem().getBrand()%>
-                    </p>
-                </div>
-                <div class="panel-footer">
-                    <button class="btn btn-default btn-block">detail</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Seller</div>
-                <div class="panel-body">
-                    <p>code : <%=sell.getSeller().getSellercode()%>
-                    </p>
-                    <p>name : <%=sell.getSeller().getSellername()%>
-                    </p>
-                </div>
-                <div class="panel-footer">
-                    <button type="button" class="btn btn-default btn-block"
-                            onclick="location.href='seller.jsp?sellercode=<%=sell.getSeller().getSellercode()%>'">
-                        detail
-                    </button>
-                </div>
-            </div>
+    <p>code : <%=seller.getSellercode()%>
+    </p>
+    <p>name : <%=seller.getSellername()%>
+    </p>
+    <p>total sell count : <%=sellerProcessor.searchSellCount(sellercode)%>
+    </p>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Item List</div>
+        <div class="panel-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>seller</th>
+                    <th>name</th>
+                    <th>brand</th>
+                    <th>price</th>
+                    <th>numberOfStock</th>
+                    <th>numberOfSales</th>
+                </tr>
+                </thead>
+                <tbody style="cursor: hand;">
+                <%
+                    List<Sell> sellList = sellProcessor.searchSellListOfSeller(sellercode);
+
+                    for (Sell sell : sellList) {
+                %>
+                <tr onclick="location.href='sell.jsp?sellercode=<%=sell.getSeller().getSellercode()%>&itemcode=<%=sell.getItem().getItemcode()%>'">
+                    <td><%=sell.getSeller().getSellername()%>
+                    </td>
+                    <td><%=sell.getItem().getItemname()%>
+                    </td>
+                    <td><%=sell.getItem().getBrand()%>
+                    </td>
+                    <td><%=sell.getPrice()%>
+                    </td>
+                    <td><%=sell.getNumberOfStock()%>
+                    </td>
+                    <td><%=sell.getNumberOfSales()%>
+                    </td>
+                </tr>
+                <%
+                    }
+                %>
+                </tbody>
+            </table>
         </div>
     </div>
     <%

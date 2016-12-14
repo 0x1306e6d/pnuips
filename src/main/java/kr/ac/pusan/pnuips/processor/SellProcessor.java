@@ -73,6 +73,66 @@ public class SellProcessor {
         return null;
     }
 
+    public List<Sell> searchSellListOfSeller(int sellercode) {
+        List<Sell> sellList = Lists.newArrayList();
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.item) NATURAL JOIN pnuips.seller WHERE sellercode=?");
+            ps.setInt(1, sellercode);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Item item = new Item();
+                item.setItemcode(rs.getInt("itemcode"));
+                item.setItemname(rs.getString("itemname"));
+                item.setBrand(rs.getString("brand"));
+
+                Seller seller = new Seller();
+                seller.setSellercode(rs.getInt("sellercode"));
+                seller.setSellername(rs.getString("sellername"));
+
+                Sell sell = new Sell();
+                sell.setItem(item);
+                sell.setSeller(seller);
+                sell.setPrice(rs.getInt("price"));
+                sell.setNumberOfStock(rs.getInt("numberOfStock"));
+                sell.setNumberOfSales(rs.getInt("numberOfSales"));
+
+                sellList.add(sell);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return sellList;
+    }
+
     public List<Sell> searchSellList(int start) {
         List<Sell> sellList = Lists.newArrayList();
 

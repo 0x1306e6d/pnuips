@@ -66,7 +66,7 @@
 
                     for (Sell sell : sellList) {
                 %>
-                <tr onclick="location.href='sell.jsp'">
+                <tr onclick="location.href='sell.jsp?sellercode=<%=sell.getSeller().getSellercode()%>&itemcode=<%=sell.getItem().getItemcode()%>'">
                     <td><%=sell.getSeller().getSellername()%>
                     </td>
                     <td><%=sell.getItem().getItemname()%>
