@@ -1,4 +1,7 @@
+<%@ page import="kr.ac.pusan.pnuips.model.sell.Sell" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -7,7 +10,7 @@
     <jsp:include page="header.jsp"/>
 </head>
 <body>
-<nav class="navbar navbar-inverse" style="margin-bottom: 0; border-radius: 0">
+<nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
             <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar"
@@ -32,7 +35,47 @@
     </div>
 </nav>
 <div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">Bestseller</div>
+        <div class="panel-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>seller</th>
+                    <th>name</th>
+                    <th>brand</th>
+                    <th>price</th>
+                    <th>numberOfStock</th>
+                    <th>numberOfSaes</th>
+                </tr>
+                </thead>
+                <tbody style="cursor: hand;">
+                <%
+                    List<Sell> sellList = sellProcessor.searchBestseller();
 
+                    for (Sell sell : sellList) {
+                %>
+                <tr onclick="location.href='item.jsp?itemcode=<%=sell.getItem().getItemcode()%>&sellercode=<%=sell.getSeller().getSellercode()%>'">
+                    <td><%=sell.getSeller().getSellername()%>
+                    </td>
+                    <td><%=sell.getItem().getItemname()%>
+                    </td>
+                    <td><%=sell.getItem().getBrand()%>
+                    </td>
+                    <td><%=sell.getPrice()%>
+                    </td>
+                    <td><%=sell.getNumberOfStock()%>
+                    </td>
+                    <td><%=sell.getNumberOfSales()%>
+                    </td>
+                </tr>
+                <%
+                    }
+                %>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html>

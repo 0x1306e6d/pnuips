@@ -12,7 +12,7 @@
     <jsp:include page="header.jsp"/>
 </head>
 <body style="background-color: #eeeeee">
-<nav class="navbar navbar-inverse" style="margin-bottom: 0; border-radius: 0">
+<nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
             <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar"
@@ -36,10 +36,6 @@
         </div>
     </div>
 </nav>
-<div class="jumbotron text-center" style="margin-top: 0;">
-    <h1>PNUIPS</h1>
-    <p>PNU Item Purchase System</p>
-</div>
 <div class="container">
     <div class="col-md-offset-4 col-md-4">
         <form method="post" action="signupProcess.jsp">

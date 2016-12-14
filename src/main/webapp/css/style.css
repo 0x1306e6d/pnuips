@@ -2,7 +2,7 @@ body {
     padding-bottom: 15px;
 }
 
-.navbar {
-    margin-bottom: 0;
+nav {
+    margin-bottom: 25px;
     border-radius: 0;
 }
