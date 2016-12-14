@@ -41,8 +41,8 @@ public class ItemData {
             itemData.setSeller(seller);
 
             Sell sell = new Sell();
-            sell.setItemcode(item.getItemcode());
-            sell.setSellercode(seller.getSellercode());
+            sell.setItem(item);
+            sell.setSeller(seller);
             sell.setPrice(Integer.parseInt(data[5]));
             sell.setNumberOfStock(Integer.parseInt(data[6]));
             sell.setNumberOfSales(Integer.parseInt(data[7]));

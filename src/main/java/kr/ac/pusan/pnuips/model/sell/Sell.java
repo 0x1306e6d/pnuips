@@ -1,6 +1,7 @@
 package kr.ac.pusan.pnuips.model.sell;
 
 import kr.ac.pusan.pnuips.DatabaseManager;
+import kr.ac.pusan.pnuips.model.item.Item;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,27 +9,11 @@ import java.sql.SQLException;
 
 public class Sell {
 
-    private int itemcode;
-    private int sellercode;
     private int price;
     private int numberOfStock;
     private int numberOfSales;
-
-    public int getItemcode() {
-        return itemcode;
-    }
-
-    public void setItemcode(int itemcode) {
-        this.itemcode = itemcode;
-    }
-
-    public int getSellercode() {
-        return sellercode;
-    }
-
-    public void setSellercode(int sellercode) {
-        this.sellercode = sellercode;
-    }
+    private Item item;
+    private Seller seller;
 
     public int getPrice() {
         return price;
@@ -54,14 +39,30 @@ public class Sell {
         this.numberOfSales = numberOfSales;
     }
 
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
+    }
+
     public void insert() throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
         try {
             con = DatabaseManager.getConnection();
             ps = con.prepareStatement("INSERT INTO pnuips.sell (itemcode, sellercode, price, numberOfStock, numberOfSales) VALUES (?, ?, ?, ?, ?)");
-            ps.setInt(1, itemcode);
-            ps.setInt(2, sellercode);
+            ps.setInt(1, item.getItemcode());
+            ps.setInt(2, seller.getSellercode());
             ps.setInt(3, price);
             ps.setInt(4, numberOfStock);
             ps.setInt(5, numberOfSales);
@@ -87,8 +88,8 @@ public class Sell {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Sell{");
-        sb.append("itemcode=").append(itemcode);
-        sb.append(", sellercode=").append(sellercode);
+        sb.append("item=").append(item);
+        sb.append(", seller=").append(seller);
         sb.append(", price=").append(price);
         sb.append(", numberOfStock=").append(numberOfStock);
         sb.append(", numberOfSales=").append(numberOfSales);
