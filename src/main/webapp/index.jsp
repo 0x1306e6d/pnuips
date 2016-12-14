@@ -73,7 +73,7 @@
 
                     for (Sell sell : sellList) {
                 %>
-                <tr onclick="location.href='item.jsp?itemcode=<%=sell.getItem().getItemcode()%>&sellercode=<%=sell.getSeller().getSellercode()%>'">
+                <tr onclick="location.href='sell.jsp?sellercode=<%=sell.getSeller().getSellercode()%>&itemcode=<%=sell.getItem().getItemcode()%>'">
                     <td><%=sell.getSeller().getSellername()%>
                     </td>
                     <td><%=sell.getItem().getItemname()%>
@@ -95,8 +95,20 @@
         </div>
         <div class="panel-footer">
             <ul class="pager">
-                <li><a href="index.jsp?start=<%=Math.min(start - 10, 0)%>">Previous</a></li>
+                <%
+                    if (start > 0) {
+                %>
+                <li><a href="index.jsp?start=<%=Math.max(start - 10, 0)%>">Previous</a></li>
+                <%
+                    }
+                %>
+                <%
+                    if (sellList.size() == 10) {
+                %>
                 <li><a href="index.jsp?start=<%=start + 10%>">Next</a></li>
+                <%
+                    }
+                %>
             </ul>
         </div>
     </div>

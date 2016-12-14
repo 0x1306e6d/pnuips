@@ -2,6 +2,7 @@
 <%
     if (session.getAttribute("signin") != null) {
         response.sendRedirect("index.jsp");
+        return;
     }
 %>
 <html>
