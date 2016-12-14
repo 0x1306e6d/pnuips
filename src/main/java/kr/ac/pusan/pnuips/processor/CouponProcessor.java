@@ -2,7 +2,7 @@ package kr.ac.pusan.pnuips.processor;
 
 import com.google.common.collect.Lists;
 import kr.ac.pusan.pnuips.DatabaseManager;
-import kr.ac.pusan.pnuips.model.order.Order;
+import kr.ac.pusan.pnuips.model.coupon.CouponType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,29 +10,27 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class OrderProcessor {
+public class CouponProcessor {
 
-    public List<Order> searchOrderList(String purchaser) {
-        List<Order> orderList = Lists.newArrayList();
+    public List<CouponType> searchCouponList(String owener) {
+        List<CouponType> couponList = Lists.newArrayList();
 
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT itemcode, purchaser, ordercount, discount, ordertime FROM pnuips.order WHERE purchaser=?");
-            ps.setString(1, purchaser);
+            ps = con.prepareStatement("SELECT type, name, discount FROM pnuips.couponType WHERE type IN (SELECT type FROM pnuips.coupon WHERE owener=?);");
+            ps.setString(1, owener);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                Order order = new Order();
-                order.setItemcode(rs.getInt("itemcode"));
-                order.setPurchaser(rs.getString("purchaser"));
-                order.setCount(rs.getInt("ordercount"));
-                order.setDiscount(rs.getInt("discount"));
-                order.setTime(rs.getTimestamp("ordertime"));
+                CouponType couponType = new CouponType();
+                couponType.setType(rs.getInt("type"));
+                couponType.setName(rs.getString("name"));
+                couponType.setDiscount(rs.getInt("discount"));
 
-                orderList.add(order);
+                couponList.add(couponType);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -60,6 +58,6 @@ public class OrderProcessor {
             }
         }
 
-        return orderList;
+        return couponList;
     }
 }

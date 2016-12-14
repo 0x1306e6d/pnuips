@@ -1,4 +1,5 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SigninBean" %>
+<%@ page import="kr.ac.pusan.pnuips.model.coupon.CouponType" %>
 <%@ page import="kr.ac.pusan.pnuips.model.item.Item" %>
 <%@ page import="kr.ac.pusan.pnuips.model.order.Order" %>
 <%@ page import="java.util.List" %>
@@ -10,6 +11,7 @@
 %>
 <jsp:useBean id="orderProcessor" class="kr.ac.pusan.pnuips.processor.OrderProcessor"/>
 <jsp:useBean id="itemProcessor" class="kr.ac.pusan.pnuips.processor.ItemProcessor"/>
+<jsp:useBean id="couponProcessor" class="kr.ac.pusan.pnuips.processor.CouponProcessor"/>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -88,6 +90,38 @@
                     </td>
                     <td><%=order.getTime()%>
                     </td>
+                </tr>
+                <%
+                    }
+                %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Coupon List</div>
+        <div class="panel-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>type</th>
+                    <th>name</th>
+                    <th>discount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <%
+                    List<CouponType> couponList = couponProcessor.searchCouponList(signin.getEmail());
+
+                    for (CouponType coupon : couponList) {
+                %>
+                <tr>
+                    <td><%=coupon.getType()%>
+                    </td>
+                    <td><%=coupon.getName()%>
+                    </td>
+                    <td><%=coupon.getDiscount()%>%</td>
                 </tr>
                 <%
                     }
