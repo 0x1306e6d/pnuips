@@ -1,10 +1,15 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SigninBean" %>
+<%@ page import="kr.ac.pusan.pnuips.item.Item" %>
+<%@ page import="kr.ac.pusan.pnuips.order.Order" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     if (session.getAttribute("signin") == null) {
         response.sendRedirect("index.jsp");
     }
 %>
+<jsp:useBean id="orderProcessor" class="kr.ac.pusan.pnuips.processor.OrderProcessor"/>
+<jsp:useBean id="itemProcessor" class="kr.ac.pusan.pnuips.processor.ItemProcessor"/>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -41,8 +46,56 @@
     <%
         SigninBean signin = (SigninBean) session.getAttribute("signin");
     %>
-    <p>email: <%=signin.getEmail()%>
-    </p>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Purchase List</div>
+        <div class="panel-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>itemcode</th>
+                    <th>purchaser</th>
+                    <th>count</th>
+                    <th>discount</th>
+                    <th>time</th>
+                </tr>
+                </thead>
+                <tbody>
+                <%
+                    List<Order> orderList = orderProcessor.searchOrderList(signin.getEmail());
+
+                    for (Order order : orderList) {
+                        Item item = itemProcessor.searchItem(order.getItemcode());
+                %>
+                <tr>
+                    <%
+                        if (item == null) {
+                    %>
+                    <td>Unknown</td>
+                    <%
+                    } else {
+                    %>
+                    <td><%=item.getItemname()%>
+                    </td>
+                    <%
+                        }
+                    %>
+                    <td><%=order.getPurchaser()%>
+                    </td>
+                    <td><%=order.getCount()%>
+                    </td>
+                    <td><%=order.getDiscount()%>
+                    </td>
+                    <td><%=order.getTime()%>
+                    </td>
+                </tr>
+                <%
+                    }
+                %>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html>
