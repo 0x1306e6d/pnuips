@@ -58,11 +58,12 @@ CREATE TABLE pnuips.cart (
 DROP TABLE IF EXISTS pnuips.order;
 CREATE TABLE pnuips.order (
     itemcode INTEGER NOT NULL,
+    sellercode INTEGER NOT NULL,
     purchaser VARCHAR(32) NOT NULL,
     ordercount INTEGER NOT NULL DEFAULT 0,
     discount INTEGER NOT NULL DEFAULT 0,
     ordertime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(itemcode, purchaser),
+    PRIMARY KEY(itemcode, sellercode, purchaser),
     FOREIGN KEY(itemcode) REFERENCES pnuips.item(itemcode) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(purchaser) REFERENCES pnuips.account(email) ON DELETE CASCADE ON UPDATE CASCADE
 );
