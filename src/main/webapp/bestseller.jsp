@@ -1,4 +1,4 @@
-<%@ page import="kr.ac.pusan.pnuips.model.sell.Sell" %>
+<%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
@@ -62,22 +62,22 @@
                 </thead>
                 <tbody style="cursor: hand;">
                 <%
-                    List<Sell> sellList = sellProcessor.searchBestseller();
+                    List<SellBean> sellBeanList = sellProcessor.searchBestSellBeanList();
 
-                    for (Sell sell : sellList) {
+                    for (SellBean sellBean : sellBeanList) {
                 %>
-                <tr onclick="location.href='sell.jsp?sellercode=<%=sell.getSeller().getSellercode()%>&itemcode=<%=sell.getItem().getItemcode()%>'">
-                    <td><%=sell.getSeller().getSellername()%>
+                <tr onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'">
+                    <td><%=sellBean.getSeller().getSellername()%>
                     </td>
-                    <td><%=sell.getItem().getItemname()%>
+                    <td><%=sellBean.getItem().getItemname()%>
                     </td>
-                    <td><%=sell.getItem().getBrand()%>
+                    <td><%=sellBean.getItem().getBrand()%>
                     </td>
-                    <td><%=sell.getPrice()%>
+                    <td><%=sellBean.getSell().getPrice()%>
                     </td>
-                    <td><%=sell.getNumberOfStock()%>
+                    <td><%=sellBean.getSell().getNumberOfStock()%>
                     </td>
-                    <td><%=sell.getNumberOfSales()%>
+                    <td><%=sellBean.getSell().getNumberOfSales()%>
                     </td>
                 </tr>
                 <%

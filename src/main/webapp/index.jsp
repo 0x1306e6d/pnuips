@@ -1,4 +1,4 @@
-<%@ page import="kr.ac.pusan.pnuips.model.sell.Sell" %>
+<%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
 <%@ page import="java.util.List" %>
 <jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
 <html>
@@ -69,22 +69,22 @@
                     if (request.getParameter("start") != null) {
                         start = Integer.parseInt(request.getParameter("start").toString());
                     }
-                    List<Sell> sellList = sellProcessor.searchSellList(start);
+                    List<SellBean> sellBeanList = sellProcessor.searchSellBeanList(start);
 
-                    for (Sell sell : sellList) {
+                    for (SellBean sellBean : sellBeanList) {
                 %>
-                <tr onclick="location.href='sell.jsp?sellercode=<%=sell.getSeller().getSellercode()%>&itemcode=<%=sell.getItem().getItemcode()%>'">
-                    <td><%=sell.getSeller().getSellername()%>
+                <tr onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'">
+                    <td><%=sellBean.getSeller().getSellername()%>
                     </td>
-                    <td><%=sell.getItem().getItemname()%>
+                    <td><%=sellBean.getItem().getItemname()%>
                     </td>
-                    <td><%=sell.getItem().getBrand()%>
+                    <td><%=sellBean.getItem().getBrand()%>
                     </td>
-                    <td><%=sell.getPrice()%>
+                    <td><%=sellBean.getSell().getPrice()%>
                     </td>
-                    <td><%=sell.getNumberOfStock()%>
+                    <td><%=sellBean.getSell().getNumberOfStock()%>
                     </td>
-                    <td><%=sell.getNumberOfSales()%>
+                    <td><%=sellBean.getSell().getNumberOfSales()%>
                     </td>
                 </tr>
                 <%
@@ -103,7 +103,7 @@
                     }
                 %>
                 <%
-                    if (sellList.size() == 10) {
+                    if (sellBeanList.size() == 10) {
                 %>
                 <li><a href="index.jsp?start=<%=start + 10%>">Next</a></li>
                 <%

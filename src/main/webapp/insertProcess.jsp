@@ -1,19 +1,12 @@
 <%@ page import="kr.ac.pusan.pnuips.csv.ItemData" %>
 <%@ page import="kr.ac.pusan.pnuips.csv.UserData" %>
-<%@ page import="kr.ac.pusan.pnuips.processor.InsertDataProcessor" %>
+<%@ page import="kr.ac.pusan.pnuips.processor.InsertProcessor" %>
 <%@ page import="java.util.List" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: 0x130
-  Date: 2016-12-14
-  Time: 오후 3:10
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<jsp:useBean id="insertDataBean" class="kr.ac.pusan.pnuips.bean.InsertDataBean"/>
+<jsp:useBean id="insertDataBean" class="kr.ac.pusan.pnuips.bean.InsertBean"/>
 <jsp:setProperty name="insertDataBean" property="userData"/>
 <jsp:setProperty name="insertDataBean" property="itemData"/>
-<jsp:useBean id="insertDataProcessor" class="kr.ac.pusan.pnuips.processor.InsertDataProcessor"/>
+<jsp:useBean id="insertDataProcessor" class="kr.ac.pusan.pnuips.processor.InsertProcessor"/>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -61,7 +54,7 @@
     <%
         List<UserData> userDataList = insertDataBean.csvToAccountData();
         for (UserData userData : userDataList) {
-            InsertDataProcessor.InsertDataResult insertAccountResult = insertDataProcessor.insertAccountData(userData);
+            InsertProcessor.InsertProcessorResult insertAccountResult = insertDataProcessor.insertAccountData(userData);
 
             switch (insertAccountResult) {
                 case SUCCESS:
@@ -91,7 +84,7 @@
     <%
         List<ItemData> itemDataList = insertDataBean.csvToItemData();
         for (ItemData itemData : itemDataList) {
-            InsertDataProcessor.InsertDataResult insertItemResult = insertDataProcessor.insertItemData(itemData);
+            InsertProcessor.InsertProcessorResult insertItemResult = insertDataProcessor.insertItemData(itemData);
 
             switch (insertItemResult) {
                 case SUCCESS:

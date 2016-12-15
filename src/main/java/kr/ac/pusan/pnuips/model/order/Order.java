@@ -1,18 +1,18 @@
 package kr.ac.pusan.pnuips.model.order;
 
 import kr.ac.pusan.pnuips.DatabaseManager;
+import kr.ac.pusan.pnuips.model.Model;
+import org.apache.commons.dbutils.DbUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 
-public class Order {
+public class Order implements Model {
 
     private int itemcode;
+    private int sellercode;
+    private String purchaser;
     private int count;
     private int discount;
-    private String purchaser;
     private Timestamp time;
 
     public int getItemcode() {
@@ -21,6 +21,22 @@ public class Order {
 
     public void setItemcode(int itemcode) {
         this.itemcode = itemcode;
+    }
+
+    public int getSellercode() {
+        return sellercode;
+    }
+
+    public void setSellercode(int sellercode) {
+        this.sellercode = sellercode;
+    }
+
+    public String getPurchaser() {
+        return purchaser;
+    }
+
+    public void setPurchaser(String purchaser) {
+        this.purchaser = purchaser;
     }
 
     public int getCount() {
@@ -39,14 +55,6 @@ public class Order {
         this.discount = discount;
     }
 
-    public String getPurchaser() {
-        return purchaser;
-    }
-
-    public void setPurchaser(String purchaser) {
-        this.purchaser = purchaser;
-    }
-
     public Timestamp getTime() {
         return time;
     }
@@ -55,33 +63,104 @@ public class Order {
         this.time = time;
     }
 
+    @Override
     public void insert() throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("INSERT INTO pnuips.order (itemcode, purchaser, ordercount, discount, ordertime) VALUES (?, ?, ?, ?, ?)");
+            ps = con.prepareStatement("INSERT INTO pnuips.order (itemcode, sellercode, purchaser, count, discount, time) VALUES (?, ?, ?, ?, ?, ?)");
             ps.setInt(1, itemcode);
-            ps.setString(2, purchaser);
-            ps.setInt(3, count);
-            ps.setInt(4, discount);
-            ps.setTimestamp(5, time);
+            ps.setInt(2, sellercode);
+            ps.setString(3, purchaser);
+            ps.setInt(4, count);
+            ps.setInt(5, discount);
+            ps.setTimestamp(6, time);
             ps.executeUpdate();
         } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public void load() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT count, discount, time FROM pnuips.order WHERE itemcode=? AND sellercode=? AND purchaser=?");
+            ps.setInt(1, itemcode);
+            ps.setInt(2, sellercode);
+            ps.setString(3, purchaser);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                count = rs.getInt("count");
+                discount = rs.getInt("discount");
+                time = rs.getTimestamp("time");
+            } else {
+                throw new NullPointerException("Order is not exist. itemcode=" + itemcode + ", sellercode=" + sellercode + ", purchaser=" + purchaser);
             }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+    }
+
+    @Override
+    public void update() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("UPDATE pnuips.order SET count=?, discount=?, time=? WHERE itemcode=? AND sellercode=? AND purchaser=?");
+            ps.setInt(1, count);
+            ps.setInt(2, discount);
+            ps.setTimestamp(3, time);
+            ps.setInt(4, itemcode);
+            ps.setInt(5, sellercode);
+            ps.setString(6, purchaser);
+            ps.executeUpdate();
+        } finally {
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public void delete() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("DELETE FROM pnuips.order WHERE itemcode=? AND sellercode=? AND purchaser=?");
+            ps.setInt(1, itemcode);
+            ps.setInt(2, sellercode);
+            ps.setString(3, purchaser);
+            ps.executeUpdate();
+        } finally {
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public boolean isExist() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT itemcode, sellercode, purchaser FROM pnuips.order WHERE itemcode=? AND sellercode=? AND purchaser=?");
+            ps.setInt(1, itemcode);
+            ps.setInt(2, sellercode);
+            ps.setString(3, purchaser);
+            rs = ps.executeQuery();
+
+            return rs.next();
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
         }
     }
 
@@ -89,9 +168,10 @@ public class Order {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Order{");
         sb.append("itemcode=").append(itemcode);
+        sb.append(", sellercode=").append(sellercode);
+        sb.append(", purchaser='").append(purchaser).append('\'');
         sb.append(", count=").append(count);
         sb.append(", discount=").append(discount);
-        sb.append(", purchaser='").append(purchaser).append('\'');
         sb.append(", time=").append(time);
         sb.append('}');
         return sb.toString();

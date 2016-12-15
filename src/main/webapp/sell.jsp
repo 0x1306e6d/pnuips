@@ -1,4 +1,4 @@
-<%@ page import="kr.ac.pusan.pnuips.model.sell.Sell" %>
+<%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     if (request.getParameter("itemcode") == null || request.getParameter("sellercode") == null) {
@@ -54,9 +54,9 @@
 </nav>
 <div class="container">
     <%
-        Sell sell = sellProcesspr.searchSell(sellercode, itemcode);
+        SellBean sellBean = sellProcesspr.searchSellBean(itemcode, sellercode);
 
-        if (sell == null) {
+        if (sellBean == null) {
     %>
     <div class="alert alert-danger">
         <strong>Error</strong>
@@ -67,22 +67,22 @@
     %>
     <div class="row">
         <div class="col-md-4">
-            <p>price : <%=sell.getPrice()%>
+            <p>price : <%=sellBean.getSell().getPrice()%>
             </p>
-            <p>numberOfStock : <%=sell.getNumberOfStock()%>
+            <p>numberOfStock : <%=sellBean.getSell().getNumberOfStock()%>
             </p>
-            <p>numberOfSales : <%=sell.getNumberOfSales()%>
+            <p>numberOfSales : <%=sellBean.getSell().getNumberOfSales()%>
             </p>
         </div>
         <div class="col-md-4">
             <div class="panel panel-default">
                 <div class="panel-heading">Item</div>
                 <div class="panel-body">
-                    <p>code : <%=sell.getItem().getItemcode()%>
+                    <p>code : <%=sellBean.getItem().getItemcode()%>
                     </p>
-                    <p>name : <%=sell.getItem().getItemname()%>
+                    <p>name : <%=sellBean.getItem().getItemname()%>
                     </p>
-                    <p>brand : <%=sell.getItem().getBrand()%>
+                    <p>brand : <%=sellBean.getItem().getBrand()%>
                     </p>
                 </div>
                 <div class="panel-footer">
@@ -94,14 +94,14 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Seller</div>
                 <div class="panel-body">
-                    <p>code : <%=sell.getSeller().getSellercode()%>
+                    <p>code : <%=sellBean.getSeller().getSellercode()%>
                     </p>
-                    <p>name : <%=sell.getSeller().getSellername()%>
+                    <p>name : <%=sellBean.getSeller().getSellername()%>
                     </p>
                 </div>
                 <div class="panel-footer">
                     <button type="button" class="btn btn-default btn-block"
-                            onclick="location.href='seller.jsp?sellercode=<%=sell.getSeller().getSellercode()%>'">
+                            onclick="location.href='seller.jsp?sellercode=<%=sellBean.getSeller().getSellercode()%>'">
                         detail
                     </button>
                 </div>
