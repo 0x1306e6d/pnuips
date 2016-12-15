@@ -60,6 +60,7 @@ public class ItemData {
                 Set<Order> orderSet = getOrderSet(data[9]);
                 for (Order order : orderSet) {
                     order.setItemcode(item.getItemcode());
+                    order.setSellercode(seller.getSellercode());
                     itemData.addOrder(order);
                 }
             }

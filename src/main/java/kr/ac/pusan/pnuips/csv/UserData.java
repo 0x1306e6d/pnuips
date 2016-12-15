@@ -32,7 +32,7 @@ public class UserData {
             account.setPassword(data[1]);
             account.setFirstname(data[2]);
             account.setLastname(data[3]);
-            account.setBirth(Date.valueOf(data[4]));
+            account.setBirthday(Date.valueOf(data[4]));
 
             if (data.length > 5) {
                 Set<CouponType> couponTypeSet = getCouponTypeSet(data[5]);

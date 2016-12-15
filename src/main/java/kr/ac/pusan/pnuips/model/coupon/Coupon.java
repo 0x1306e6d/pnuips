@@ -1,12 +1,14 @@
 package kr.ac.pusan.pnuips.model.coupon;
 
 import kr.ac.pusan.pnuips.DatabaseManager;
+import kr.ac.pusan.pnuips.model.Model;
+import org.apache.commons.dbutils.DbUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class Coupon {
+public class Coupon implements Model {
 
     private int type;
     private String owener;
@@ -27,6 +29,7 @@ public class Coupon {
         this.owener = owener;
     }
 
+    @Override
     public void insert() throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
@@ -37,20 +40,34 @@ public class Coupon {
             ps.setString(2, owener);
             ps.executeUpdate();
         } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public void load() throws SQLException {
+        // Do nothing because all attributes are primary key
+    }
+
+    @Override
+    public void update() throws SQLException {
+        // Do nothing because all attributes are primary key
+    }
+
+    @Override
+    public void delete() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("DELETE FROM pnuips.coupon WHERE type=? AND owener=?");
+            ps.setInt(1, type);
+            ps.setString(2, owener);
+            ps.executeUpdate();
+        } finally {
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
         }
     }
 

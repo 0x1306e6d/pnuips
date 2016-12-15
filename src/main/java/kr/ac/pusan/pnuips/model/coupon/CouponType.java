@@ -1,12 +1,15 @@
 package kr.ac.pusan.pnuips.model.coupon;
 
 import kr.ac.pusan.pnuips.DatabaseManager;
+import kr.ac.pusan.pnuips.model.Model;
+import org.apache.commons.dbutils.DbUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CouponType {
+public class CouponType implements Model {
 
     private int type;
     private String name;
@@ -36,6 +39,7 @@ public class CouponType {
         this.discount = discount;
     }
 
+    @Override
     public void insert() throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
@@ -47,20 +51,62 @@ public class CouponType {
             ps.setInt(3, discount);
             ps.executeUpdate();
         } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public void load() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT name, discount FROM pnuips.couponType WHERE type=?");
+            ps.setInt(1, type);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                name = rs.getString("name");
+                discount = rs.getInt("discount");
+            } else {
+                throw new NullPointerException("CouponType is not exist. type=" + type);
             }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+    }
+
+    @Override
+    public void update() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("UPDATE pnuips.couponType SET name=?, discount=? WHERE type=?");
+            ps.setString(1, name);
+            ps.setInt(2, discount);
+            ps.setInt(3, type);
+            ps.executeUpdate();
+        } finally {
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public void delete() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("DELETE FROM pnuips.couponType WHERE type=?");
+            ps.setInt(1, type);
+            ps.executeUpdate();
+        } finally {
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
         }
     }
 

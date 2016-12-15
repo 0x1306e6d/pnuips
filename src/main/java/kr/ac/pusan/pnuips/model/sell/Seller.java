@@ -1,12 +1,15 @@
 package kr.ac.pusan.pnuips.model.sell;
 
 import kr.ac.pusan.pnuips.DatabaseManager;
+import kr.ac.pusan.pnuips.model.Model;
+import org.apache.commons.dbutils.DbUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Seller {
+public class Seller implements Model {
 
     private int sellercode;
     private String sellername;
@@ -27,6 +30,7 @@ public class Seller {
         this.sellername = sellername;
     }
 
+    @Override
     public void insert() throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
@@ -37,20 +41,60 @@ public class Seller {
             ps.setString(2, sellername);
             ps.executeUpdate();
         } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public void load() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT sellername FROM pnuips.seller WHERE sellercode=?");
+            ps.setInt(1, sellercode);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                sellername = rs.getString("sellername");
+            } else {
+                throw new NullPointerException("Seller is not exist. sellercode=" + sellercode);
             }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+    }
+
+    @Override
+    public void update() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("UPDATE pnuips.seller SET sellername=? WHERE sellercode=?");
+            ps.setString(1, sellername);
+            ps.setInt(2, sellercode);
+            ps.executeUpdate();
+        } finally {
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public void delete() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("DELETE FROM pnuips.seller WHERE sellercode=?");
+            ps.setInt(1, sellercode);
+            ps.executeUpdate();
+        } finally {
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
         }
     }
 
