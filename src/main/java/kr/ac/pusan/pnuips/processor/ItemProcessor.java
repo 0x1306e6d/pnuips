@@ -1,59 +1,24 @@
 package kr.ac.pusan.pnuips.processor;
 
-import kr.ac.pusan.pnuips.DatabaseManager;
 import kr.ac.pusan.pnuips.model.item.Item;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ItemProcessor {
 
+    private static final Logger logger = LoggerFactory.getLogger(ItemProcessor.class);
+
     public Item searchItem(int itemcode) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         try {
-            con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT itemcode, itemname, brand FROM pnuips.item WHERE itemcode=?");
-            ps.setInt(1, itemcode);
-            rs = ps.executeQuery();
+            Item item = new Item(itemcode);
+            item.load();
 
-            if (rs.next()) {
-                Item item = new Item();
-                item.setItemcode(rs.getInt("itemcode"));
-                item.setItemname(rs.getString("itemname"));
-                item.setBrand(rs.getString("brand"));
-
-                return item;
-            }
+            return item;
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            logger.error("Failed to search Item. itemcode=" + itemcode, e);
         }
-
         return null;
     }
 }

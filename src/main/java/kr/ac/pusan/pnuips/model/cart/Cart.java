@@ -45,7 +45,7 @@ public class Cart implements Model {
         PreparedStatement ps = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("INSERT INTO pnuips.cart (email, itemcode, count) VALUES (?, ?, ?)");
+            ps = con.prepareStatement("INSERT INTO pnuips.cart (owener, itemcode, count) VALUES (?, ?, ?)");
             ps.setString(1, owener);
             ps.setInt(2, itemcode);
             ps.setInt(3, count);
@@ -108,6 +108,24 @@ public class Cart implements Model {
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public boolean isExist() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT owener, itemcode FROM pnuips.cart WHERE owener=? AND itemcode=?");
+            ps.setString(1, owener);
+            ps.setInt(2, itemcode);
+            rs = ps.executeQuery();
+
+            return rs.next();
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
         }
     }
 

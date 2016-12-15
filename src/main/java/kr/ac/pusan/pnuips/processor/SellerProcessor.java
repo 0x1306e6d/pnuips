@@ -2,6 +2,9 @@ package kr.ac.pusan.pnuips.processor;
 
 import kr.ac.pusan.pnuips.DatabaseManager;
 import kr.ac.pusan.pnuips.model.sell.Seller;
+import org.apache.commons.dbutils.DbUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +12,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SellerProcessor {
+
+    private static final Logger logger = LoggerFactory.getLogger(SellerProcessor.class);
+
+    public Seller searchSeller(int sellercode) {
+        try {
+            Seller seller = new Seller(sellercode);
+            seller.load();
+
+            return seller;
+        } catch (SQLException e) {
+            logger.error("Failed to search seller. sellercode=" + sellercode, e);
+        }
+
+        return null;
+    }
 
     public int searchSellCount(int sellercode) {
         int count = 0;
@@ -26,76 +44,11 @@ public class SellerProcessor {
                 count = rs.getInt(1);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to search sell count of seller. sellercode=" + sellercode, e);
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            DbUtils.closeQuietly(con, ps, rs);
         }
+
         return count;
-    }
-
-    public Seller searchSeller(int sellercode) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT * FROM pnuips.seller WHERE sellercode=?");
-            ps.setInt(1, sellercode);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                Seller seller = new Seller();
-                seller.setSellercode(rs.getInt("sellercode"));
-                seller.setSellername(rs.getString("sellername"));
-
-                return seller;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return null;
     }
 }

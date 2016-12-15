@@ -17,6 +17,15 @@ public class Sell implements Model {
     private int numberOfStock;
     private int numberOfSales;
 
+    public Sell() {
+
+    }
+
+    public Sell(int itemcode, int sellercode) {
+        this.itemcode = itemcode;
+        this.sellercode = sellercode;
+    }
+
     public int getItemcode() {
         return itemcode;
     }
@@ -132,6 +141,24 @@ public class Sell implements Model {
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public boolean isExist() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT itemcode, sellercode FROM pnuips.sell WHERE itemcode=? AND sellercode=?");
+            ps.setInt(1, itemcode);
+            ps.setInt(2, sellercode);
+            rs = ps.executeQuery();
+
+            return rs.next();
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
         }
     }
 

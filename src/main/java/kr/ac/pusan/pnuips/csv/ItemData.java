@@ -23,13 +23,12 @@ public class ItemData {
         }
 
         String[] rows = csv.split("\r\n");
-        for (int i = 1; i < rows.length; ++i) { // first line is name
+        for (int i = 1; i < rows.length; ++i) { // first row is set of attribute name
             String row = rows[i];
             String[] data = row.split(",");
-
             ItemData itemData = new ItemData();
-            Item item = new Item();
 
+            Item item = new Item();
             item.setItemcode(Integer.parseInt(data[0]));
             item.setItemname(data[1]);
             item.setBrand(data[2]);
@@ -41,8 +40,8 @@ public class ItemData {
             itemData.setSeller(seller);
 
             Sell sell = new Sell();
-            sell.setItem(item);
-            sell.setSeller(seller);
+            sell.setItemcode(item.getItemcode());
+            sell.setSellercode(seller.getSellercode());
             sell.setPrice(Integer.parseInt(data[5]));
             sell.setNumberOfStock(Integer.parseInt(data[6]));
             sell.setNumberOfSales(Integer.parseInt(data[7]));
@@ -112,8 +111,8 @@ public class ItemData {
     }
 
     private Item item;
-    private Sell sell;
     private Seller seller;
+    private Sell sell;
     private final Set<Cart> cartSet;
     private final Set<Order> orderSet;
 
@@ -130,20 +129,20 @@ public class ItemData {
         this.item = item;
     }
 
-    public Sell getSell() {
-        return sell;
-    }
-
-    public void setSell(Sell sell) {
-        this.sell = sell;
-    }
-
     public Seller getSeller() {
         return seller;
     }
 
     public void setSeller(Seller seller) {
         this.seller = seller;
+    }
+
+    public Sell getSell() {
+        return sell;
+    }
+
+    public void setSell(Sell sell) {
+        this.sell = sell;
     }
 
     public void addCart(Cart cart) {
@@ -166,8 +165,10 @@ public class ItemData {
     public String toString() {
         final StringBuilder sb = new StringBuilder("ItemData{");
         sb.append("item=").append(item);
-        sb.append(", sell=").append(sell);
         sb.append(", seller=").append(seller);
+        sb.append(", sell=").append(sell);
+        sb.append(", cartSet=").append(cartSet);
+        sb.append(", orderSet=").append(orderSet);
         sb.append('}');
         return sb.toString();
     }

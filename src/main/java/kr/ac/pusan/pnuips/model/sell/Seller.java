@@ -14,6 +14,14 @@ public class Seller implements Model {
     private int sellercode;
     private String sellername;
 
+    public Seller() {
+
+    }
+
+    public Seller(int sellercode) {
+        this.sellercode = sellercode;
+    }
+
     public int getSellercode() {
         return sellercode;
     }
@@ -95,6 +103,23 @@ public class Seller implements Model {
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public boolean isExist() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT sellercode FROM pnuips.seller WHERE sellercode=?");
+            ps.setInt(1, sellercode);
+            rs = ps.executeQuery();
+
+            return rs.next();
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
         }
     }
 

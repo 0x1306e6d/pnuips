@@ -15,6 +15,14 @@ public class Item implements Model {
     private String itemname;
     private String brand;
 
+    public Item() {
+
+    }
+
+    public Item(int itemcode) {
+        this.itemcode = itemcode;
+    }
+
     public int getItemcode() {
         return itemcode;
     }
@@ -107,6 +115,23 @@ public class Item implements Model {
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public boolean isExist() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT itemcode FROM pnuips.item WHERE itemcode=?");
+            ps.setInt(1, itemcode);
+            rs = ps.executeQuery();
+
+            return rs.next();
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
         }
     }
 

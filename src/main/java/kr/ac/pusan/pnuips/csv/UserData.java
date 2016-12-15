@@ -3,6 +3,7 @@ package kr.ac.pusan.pnuips.csv;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import kr.ac.pusan.pnuips.model.account.Account;
+import kr.ac.pusan.pnuips.model.account.Grade;
 import kr.ac.pusan.pnuips.model.coupon.Coupon;
 import kr.ac.pusan.pnuips.model.coupon.CouponType;
 import org.apache.commons.lang3.StringUtils;
@@ -21,10 +22,9 @@ public class UserData {
         }
 
         String[] rows = csv.split("\r\n");
-        for (int i = 1; i < rows.length; ++i) { // first line is name
+        for (int i = 1; i < rows.length; ++i) { // first row is set of attribute name
             String row = rows[i];
             String[] data = row.split(",");
-
             UserData userData = new UserData();
 
             Account account = new Account();
@@ -33,9 +33,11 @@ public class UserData {
             account.setFirstname(data[2]);
             account.setLastname(data[3]);
             account.setBirthday(Date.valueOf(data[4]));
+            account.setGrade(Grade.NORMAL);
 
-            if (data.length > 5) {
+            if (data.length > 5) { // if coupon exists
                 Set<CouponType> couponTypeSet = getCouponTypeSet(data[5]);
+
                 for (CouponType couponType : couponTypeSet) {
                     userData.addCouponType(couponType);
 
@@ -46,9 +48,7 @@ public class UserData {
                     account.addCoupon(coupon);
                 }
             }
-
             userData.setAccount(account);
-
             userDataList.add(userData);
         }
 

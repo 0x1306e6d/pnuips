@@ -111,6 +111,23 @@ public class CouponType implements Model {
     }
 
     @Override
+    public boolean isExist() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT type FROM pnuips.couponType WHERE type=?");
+            ps.setInt(1, type);
+            rs = ps.executeQuery();
+
+            return rs.next();
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+    }
+
+    @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("CouponType{");
         sb.append("type=").append(type);

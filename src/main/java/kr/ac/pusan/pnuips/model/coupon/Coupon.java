@@ -6,6 +6,7 @@ import org.apache.commons.dbutils.DbUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Coupon implements Model {
@@ -68,6 +69,24 @@ public class Coupon implements Model {
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public boolean isExist() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT type, owener FROM pnuips.coupon WHERE type=? AND owener=?");
+            ps.setInt(1, type);
+            ps.setString(2, owener);
+            rs = ps.executeQuery();
+
+            return rs.next();
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
         }
     }
 

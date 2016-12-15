@@ -2,9 +2,13 @@ package kr.ac.pusan.pnuips.processor;
 
 import com.google.common.collect.Lists;
 import kr.ac.pusan.pnuips.DatabaseManager;
+import kr.ac.pusan.pnuips.bean.SellBean;
 import kr.ac.pusan.pnuips.model.item.Item;
 import kr.ac.pusan.pnuips.model.sell.Sell;
 import kr.ac.pusan.pnuips.model.sell.Seller;
+import org.apache.commons.dbutils.DbUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,240 +18,126 @@ import java.util.List;
 
 public class SellProcessor {
 
-    public Sell searchSell(int sellercode, int itemcode) {
+    private static final Logger logger = LoggerFactory.getLogger(SellProcessor.class);
+
+    public SellBean searchSellBean(int itemcode, int sellercode) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.item) NATURAL JOIN pnuips.seller WHERE sellercode=? AND itemcode=?");
-            ps.setInt(1, sellercode);
-            ps.setInt(2, itemcode);
+            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item WHERE itemcode=? AND sellercode=?");
+            ps.setInt(1, itemcode);
+            ps.setInt(2, sellercode);
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                Item item = new Item();
-                item.setItemcode(rs.getInt("itemcode"));
-                item.setItemname(rs.getString("itemname"));
-                item.setBrand(rs.getString("brand"));
-
-                Seller seller = new Seller();
-                seller.setSellercode(rs.getInt("sellercode"));
-                seller.setSellername(rs.getString("sellername"));
-
-                Sell sell = new Sell();
-                sell.setItem(item);
-                sell.setSeller(seller);
-                sell.setPrice(rs.getInt("price"));
-                sell.setNumberOfStock(rs.getInt("numberOfStock"));
-                sell.setNumberOfSales(rs.getInt("numberOfSales"));
-
-                return sell;
+                return getSellBeanFromResultSet(rs);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to search sell bean. itemcode=" + itemcode + ", sellercode=" + sellercode, e);
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            DbUtils.closeQuietly(con, ps, rs);
         }
 
         return null;
     }
 
-    public List<Sell> searchSellListOfSeller(int sellercode) {
-        List<Sell> sellList = Lists.newArrayList();
+    public List<SellBean> searchSellBeanListOfSeller(int sellercode) {
+        List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.item) NATURAL JOIN pnuips.seller WHERE sellercode=?");
+            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item WHERE sellercode=?");
             ps.setInt(1, sellercode);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                Item item = new Item();
-                item.setItemcode(rs.getInt("itemcode"));
-                item.setItemname(rs.getString("itemname"));
-                item.setBrand(rs.getString("brand"));
-
-                Seller seller = new Seller();
-                seller.setSellercode(rs.getInt("sellercode"));
-                seller.setSellername(rs.getString("sellername"));
-
-                Sell sell = new Sell();
-                sell.setItem(item);
-                sell.setSeller(seller);
-                sell.setPrice(rs.getInt("price"));
-                sell.setNumberOfStock(rs.getInt("numberOfStock"));
-                sell.setNumberOfSales(rs.getInt("numberOfSales"));
-
-                sellList.add(sell);
+                SellBean sellBean = getSellBeanFromResultSet(rs);
+                sellBeanList.add(sellBean);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to search sell bean list of seller. sellercode=" + sellercode, e);
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            DbUtils.closeQuietly(con, ps, rs);
         }
 
-        return sellList;
+        return sellBeanList;
     }
 
-    public List<Sell> searchSellList(int start) {
-        List<Sell> sellList = Lists.newArrayList();
+    public List<SellBean> searchSellBeanList(int start) {
+        List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.item) NATURAL JOIN pnuips.seller LIMIT 10  OFFSET " + start);
+            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item LIMIT 10 OFFSET " + start);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                Item item = new Item();
-                item.setItemcode(rs.getInt("itemcode"));
-                item.setItemname(rs.getString("itemname"));
-                item.setBrand(rs.getString("brand"));
-
-                Seller seller = new Seller();
-                seller.setSellercode(rs.getInt("sellercode"));
-                seller.setSellername(rs.getString("sellername"));
-
-                Sell sell = new Sell();
-                sell.setItem(item);
-                sell.setSeller(seller);
-                sell.setPrice(rs.getInt("price"));
-                sell.setNumberOfStock(rs.getInt("numberOfStock"));
-                sell.setNumberOfSales(rs.getInt("numberOfSales"));
-
-                sellList.add(sell);
+                SellBean sellBean = getSellBeanFromResultSet(rs);
+                sellBeanList.add(sellBean);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to search sell bean list. start=" + start, e);
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            DbUtils.closeQuietly(con, ps, rs);
         }
 
-        return sellList;
+        return sellBeanList;
     }
 
-    public List<Sell> searchBestseller() {
-        List<Sell> sellList = Lists.newArrayList();
+    public List<SellBean> searchBestSellBeanList() {
+        List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.item) NATURAL JOIN pnuips.seller ORDER BY numberOfSales DESC LIMIT 10");
+            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item ORDER BY numberOfSales DESC LIMIT 10");
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                Item item = new Item();
-                item.setItemcode(rs.getInt("itemcode"));
-                item.setItemname(rs.getString("itemname"));
-                item.setBrand(rs.getString("brand"));
-
-                Seller seller = new Seller();
-                seller.setSellercode(rs.getInt("sellercode"));
-                seller.setSellername(rs.getString("sellername"));
-
-                Sell sell = new Sell();
-                sell.setItem(item);
-                sell.setSeller(seller);
-                sell.setPrice(rs.getInt("price"));
-                sell.setNumberOfStock(rs.getInt("numberOfStock"));
-                sell.setNumberOfSales(rs.getInt("numberOfSales"));
-
-                sellList.add(sell);
+                SellBean sellBean = getSellBeanFromResultSet(rs);
+                sellBeanList.add(sellBean);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to search best sell bean list.", e);
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            DbUtils.closeQuietly(con, ps, rs);
         }
 
-        return sellList;
+        return sellBeanList;
+    }
+
+    private SellBean getSellBeanFromResultSet(ResultSet rs) throws SQLException {
+        SellBean sellBean = new SellBean();
+
+        Item item = new Item();
+        item.setItemcode(rs.getInt("itemcode"));
+        item.setItemname(rs.getString("itemname"));
+        item.setBrand(rs.getString("brand"));
+        sellBean.setItem(item);
+
+        Seller seller = new Seller();
+        seller.setSellercode(rs.getInt("sellercode"));
+        seller.setSellername(rs.getString("sellername"));
+        sellBean.setSeller(seller);
+
+        Sell sell = new Sell();
+        sell.setItemcode(rs.getInt("itemcode"));
+        sell.setSellercode(rs.getInt("sellercode"));
+        sell.setPrice(rs.getInt("price"));
+        sell.setNumberOfStock(rs.getInt("numberOfStock"));
+        sell.setNumberOfSales(rs.getInt("numberOfSales"));
+        sellBean.setSell(sell);
+
+        return sellBean;
     }
 }

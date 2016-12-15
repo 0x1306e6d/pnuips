@@ -69,7 +69,7 @@ public class Order implements Model {
         PreparedStatement ps = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("INSERT INTO pnuips.order (itemcode, sellercode, purchaser, count, discount, time) VALUES (?. ?, ?, ?, ?, ?)");
+            ps = con.prepareStatement("INSERT INTO pnuips.order (itemcode, sellercode, purchaser, count, discount, time) VALUES (?, ?, ?, ?, ?, ?)");
             ps.setInt(1, itemcode);
             ps.setInt(2, sellercode);
             ps.setString(3, purchaser);
@@ -90,7 +90,7 @@ public class Order implements Model {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT 'count', 'discount', 'time' FROM pnuips.order WHERE itemcode=? AND sellercode=? AND purchaser=?");
+            ps = con.prepareStatement("SELECT count, discount, time FROM pnuips.order WHERE itemcode=? AND sellercode=? AND purchaser=?");
             ps.setInt(1, itemcode);
             ps.setInt(2, sellercode);
             ps.setString(3, purchaser);
@@ -142,6 +142,25 @@ public class Order implements Model {
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
+        }
+    }
+
+    @Override
+    public boolean isExist() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT itemcode, sellercode, purchaser FROM pnuips.order WHERE itemcode=? AND sellercode=? AND purchaser=?");
+            ps.setInt(1, itemcode);
+            ps.setInt(2, sellercode);
+            ps.setString(3, purchaser);
+            rs = ps.executeQuery();
+
+            return rs.next();
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
         }
     }
 

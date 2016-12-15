@@ -160,6 +160,23 @@ public class Account implements Model {
     }
 
     @Override
+    public boolean isExist() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT email FROM pnuips.account WHERE email=?");
+            ps.setString(1, email);
+            rs = ps.executeQuery();
+
+            return rs.next();
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+    }
+
+    @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Account{");
         sb.append("email='").append(email).append('\'');

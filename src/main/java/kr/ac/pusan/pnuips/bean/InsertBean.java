@@ -5,7 +5,7 @@ import kr.ac.pusan.pnuips.csv.UserData;
 
 import java.util.List;
 
-public class InsertDataBean {
+public class InsertBean {
 
     private String userData;
     private String itemData;
@@ -36,7 +36,7 @@ public class InsertDataBean {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("InsertDataBean{");
+        final StringBuilder sb = new StringBuilder("InsertBean{");
         sb.append("userData='").append(userData).append('\'');
         sb.append(", itemData='").append(itemData).append('\'');
         sb.append('}');

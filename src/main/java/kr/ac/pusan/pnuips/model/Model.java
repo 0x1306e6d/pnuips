@@ -30,4 +30,12 @@ public interface Model {
      * @throws SQLException
      */
     void delete() throws SQLException;
+
+    /**
+     * 데이터베이스에 해당 Model이 존재하는지 검색한다.
+     *
+     * @return Model 존재 여부
+     * @throws SQLException
+     */
+    boolean isExist() throws SQLException;
 }
