@@ -3,6 +3,9 @@ package kr.ac.pusan.pnuips.processor;
 import com.google.common.collect.Lists;
 import kr.ac.pusan.pnuips.DatabaseManager;
 import kr.ac.pusan.pnuips.model.order.Order;
+import org.apache.commons.dbutils.DbUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +15,8 @@ import java.util.List;
 
 public class OrderProcessor {
 
+    private static final Logger logger = LoggerFactory.getLogger(OrderProcessor.class);
+
     public List<Order> searchOrderList(String purchaser) {
         List<Order> orderList = Lists.newArrayList();
 
@@ -20,7 +25,7 @@ public class OrderProcessor {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT itemcode, purchaser, ordercount, discount, ordertime FROM pnuips.order WHERE purchaser=?");
+            ps = con.prepareStatement("SELECT itemcode, purchaser, count, discount, time FROM pnuips.order WHERE purchaser=?");
             ps.setString(1, purchaser);
             rs = ps.executeQuery();
 
@@ -28,36 +33,17 @@ public class OrderProcessor {
                 Order order = new Order();
                 order.setItemcode(rs.getInt("itemcode"));
                 order.setPurchaser(rs.getString("purchaser"));
-                order.setCount(rs.getInt("ordercount"));
+                order.setCount(rs.getInt("count"));
                 order.setDiscount(rs.getInt("discount"));
-                order.setTime(rs.getTimestamp("ordertime"));
+                order.setTime(rs.getTimestamp("time"));
 
                 orderList.add(order);
+                logger.debug("Add order : {}", order);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to search ordr list. purchaser=" + purchaser, e);
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            DbUtils.closeQuietly(con, ps, rs);
         }
 
         return orderList;

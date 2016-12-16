@@ -39,13 +39,12 @@ public class UserData {
                 Set<CouponType> couponTypeSet = getCouponTypeSet(data[5]);
 
                 for (CouponType couponType : couponTypeSet) {
-                    userData.addCouponType(couponType);
-
                     Coupon coupon = new Coupon();
                     coupon.setType(couponType.getType());
                     coupon.setOwener(account.getEmail());
 
-                    account.addCoupon(coupon);
+                    userData.addCoupon(coupon);
+                    userData.addCouponType(couponType);
                 }
             }
             userData.setAccount(account);
@@ -76,9 +75,11 @@ public class UserData {
     }
 
     private Account account;
+    private final Set<Coupon> couponSet;
     private final Set<CouponType> couponTypeSet;
 
     public UserData() {
+        this.couponSet = Sets.newHashSet();
         this.couponTypeSet = Sets.newHashSet();
     }
 
@@ -88,6 +89,16 @@ public class UserData {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public void addCoupon(Coupon coupon) {
+        if (!couponSet.contains(coupon)) {
+            couponSet.add(coupon);
+        }
+    }
+
+    public Set<Coupon> getCouponSet() {
+        return couponSet;
     }
 
     public void addCouponType(CouponType couponType) {

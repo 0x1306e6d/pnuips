@@ -15,6 +15,14 @@ public class CouponType implements Model {
     private String name;
     private int discount;
 
+    public CouponType() {
+
+    }
+
+    public CouponType(int type) {
+        this.type = type;
+    }
+
     public int getType() {
         return type;
     }

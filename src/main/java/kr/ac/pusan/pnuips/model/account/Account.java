@@ -1,13 +1,10 @@
 package kr.ac.pusan.pnuips.model.account;
 
-import com.google.common.collect.Sets;
 import kr.ac.pusan.pnuips.DatabaseManager;
 import kr.ac.pusan.pnuips.model.Model;
-import kr.ac.pusan.pnuips.model.coupon.Coupon;
 import org.apache.commons.dbutils.DbUtils;
 
 import java.sql.*;
-import java.util.Set;
 
 public class Account implements Model {
 
@@ -17,10 +14,13 @@ public class Account implements Model {
     private String lastname;
     private Date birthday;
     private Grade grade;
-    private final Set<Coupon> couponSet;
 
     public Account() {
-        this.couponSet = Sets.newHashSet();
+
+    }
+
+    public Account(String email) {
+        this.email = email;
     }
 
     public String getEmail() {
@@ -71,14 +71,6 @@ public class Account implements Model {
         this.grade = grade;
     }
 
-    public void addCoupon(Coupon coupon) {
-        couponSet.add(coupon);
-    }
-
-    public Set<Coupon> getCouponSet() {
-        return couponSet;
-    }
-
     @Override
     public void insert() throws SQLException {
         Connection con = null;
@@ -93,7 +85,6 @@ public class Account implements Model {
             ps.setDate(5, birthday);
             ps.setInt(6, grade.getValue());
             ps.executeUpdate();
-            // TODO : INSERT Coupon
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -185,7 +176,6 @@ public class Account implements Model {
         sb.append(", lastname='").append(lastname).append('\'');
         sb.append(", birthday=").append(birthday);
         sb.append(", grade=").append(grade);
-        sb.append(", couponSet=").append(couponSet);
         sb.append('}');
         return sb.toString();
     }

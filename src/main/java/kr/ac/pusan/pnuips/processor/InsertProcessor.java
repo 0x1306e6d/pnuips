@@ -5,6 +5,7 @@ import kr.ac.pusan.pnuips.csv.ItemData;
 import kr.ac.pusan.pnuips.csv.UserData;
 import kr.ac.pusan.pnuips.model.account.Account;
 import kr.ac.pusan.pnuips.model.cart.Cart;
+import kr.ac.pusan.pnuips.model.coupon.Coupon;
 import kr.ac.pusan.pnuips.model.coupon.CouponType;
 import kr.ac.pusan.pnuips.model.item.Item;
 import kr.ac.pusan.pnuips.model.order.Order;
@@ -47,10 +48,22 @@ public class InsertProcessor {
     }
 
     public InsertProcessorResult insertAccountData(UserData userData) {
+        Account account = userData.getAccount();
+        try {
+            if (!account.isExist()) {
+                account.insert();
+                logger.debug("Insert account. account={}", account);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to insert Account. account=" + account, e);
+            return InsertProcessorResult.SYSTEM_ERROR;
+        }
+
         for (CouponType couponType : userData.getCouponTypeSet()) {
             try {
                 if (!couponType.isExist()) {
                     couponType.insert();
+                    logger.debug("Insert coupon type. couponType={}", couponType);
                 }
             } catch (SQLException e) {
                 logger.error("Failed to insert CouponType. couponType=" + couponType, e);
@@ -58,14 +71,15 @@ public class InsertProcessor {
             }
         }
 
-        Account account = userData.getAccount();
-        try {
-            if (!account.isExist()) {
-                account.insert();
+        for (Coupon coupon : userData.getCouponSet()) {
+            try {
+                if (!coupon.isExist()) {
+                    coupon.insert();
+                    logger.debug("Insert coupon. coupon={}", coupon);
+                }
+            } catch (SQLException e) {
+                logger.error("Failed to insert Coupon. coupon=" + coupon, e);
             }
-        } catch (SQLException e) {
-            logger.error("Failed to insert Account. account=" + account, e);
-            return InsertProcessorResult.SYSTEM_ERROR;
         }
         logger.info("Insert user data. userData={}", userData);
 
@@ -77,6 +91,7 @@ public class InsertProcessor {
         try {
             if (!item.isExist()) {
                 item.insert();
+                logger.debug("Insert item. item={}", item);
             }
         } catch (SQLException e) {
             logger.error("Failed to insert Item. item=" + item, e);
@@ -87,6 +102,7 @@ public class InsertProcessor {
         try {
             if (!seller.isExist()) {
                 seller.insert();
+                logger.debug("Insert seller. seller={}", seller);
             }
         } catch (SQLException e) {
             logger.error("Failed to insert Seller. seller=" + seller, e);
@@ -97,6 +113,7 @@ public class InsertProcessor {
         try {
             if (!sell.isExist()) {
                 sell.insert();
+                logger.debug("Insert sell. sell={}", sell);
             }
         } catch (SQLException e) {
             logger.error("Failed to insert Sell. sell=" + sell, e);
@@ -107,6 +124,7 @@ public class InsertProcessor {
             try {
                 if (!cart.isExist()) {
                     cart.insert();
+                    logger.debug("Insert cart. cart={}", cart);
                 }
             } catch (SQLException e) {
                 logger.error("Failed to insert Cart. cart=" + cart, e);
@@ -118,6 +136,7 @@ public class InsertProcessor {
             try {
                 if (!order.isExist()) {
                     order.insert();
+                    logger.debug("Insert order. order={}", order);
                 }
             } catch (SQLException e) {
                 logger.error("Failed to insert Order. order=" + order, e);
