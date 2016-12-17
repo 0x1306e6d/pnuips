@@ -1,4 +1,6 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
+<%@ page import="kr.ac.pusan.pnuips.model.item.Item" %>
+<%@ page import="kr.ac.pusan.pnuips.model.order.Order" %>
 <%@ page import="kr.ac.pusan.pnuips.model.sell.Seller" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -11,6 +13,8 @@
 %>
 <jsp:useBean id="sellerProcessor" class="kr.ac.pusan.pnuips.processor.SellerProcessor"/>
 <jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
+<jsp:useBean id="orderProcessor" class="kr.ac.pusan.pnuips.processor.OrderProcessor"/>
+<jsp:useBean id="itemProcessor" class="kr.ac.pusan.pnuips.processor.ItemProcessor"/>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -147,6 +151,99 @@
     </ul>
     <%
             }
+        }
+    %>
+    <br>
+    <%
+        List<Order> orderList = orderProcessor.searchOrderListBySellercode(seller.getSellercode());
+
+        if (orderList.size() == 0) {
+    %>
+    <div class="alert alert-info">
+        Seller have not sell anything.
+    </div>
+    <%
+    } else {
+    %>
+    <h1 class="text-center">Order List</h1>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 class="text-center">
+                        Itemname
+                    </h4>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        Purchaser
+                    </h4>
+                </div>
+                <div class="col-md-1">
+                    <h4 class="text-center">
+                        Count
+                    </h4>
+                </div>
+                <div class="col-md-1">
+                    <h4 class="text-center">
+                        Discount
+                    </h4>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        Time
+                    </h4>
+                </div>
+            </div>
+        </li>
+        <%
+            for (Order order : orderList) {
+                Item item = itemProcessor.searchItem(order.getItemcode());
+        %>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 class="text-center">
+                        <%
+                            if (item == null) {
+                        %>
+                        Unknown
+                        <%
+                        } else {
+                        %>
+                        <%=item.getItemname()%>
+                        <%
+                            }
+                        %>
+                    </h4>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        <%=order.getPurchaser()%>
+                    </h4>
+                </div>
+                <div class="col-md-1">
+                    <h4 class="text-center">
+                        <%=order.getCount()%>
+                    </h4>
+                </div>
+                <div class="col-md-1">
+                    <h4 class="text-center">
+                        <%=order.getDiscount()%>%
+                    </h4>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        <%=order.getTime()%>
+                    </h4>
+                </div>
+            </div>
+        </li>
+        <%
+            }
+        %>
+    </ul>
+    <%
         }
     %>
 </div>

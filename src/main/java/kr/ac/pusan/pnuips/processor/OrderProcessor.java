@@ -30,23 +30,51 @@ public class OrderProcessor {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                Order order = new Order();
-                order.setItemcode(rs.getInt("itemcode"));
-                order.setSellercode(rs.getInt("sellercode"));
-                order.setPurchaser(rs.getString("purchaser"));
-                order.setCount(rs.getInt("count"));
-                order.setDiscount(rs.getInt("discount"));
-                order.setTime(rs.getTimestamp("time"));
-
+                Order order = getOrderFromResultSet(rs);
                 orderList.add(order);
-                logger.debug("Add order : {}", order);
             }
         } catch (SQLException e) {
-            logger.error("Failed to search ordr list. purchaser=" + purchaser, e);
+            logger.error("Failed to search order list by purchaser. purchaser=" + purchaser, e);
         } finally {
             DbUtils.closeQuietly(con, ps, rs);
         }
 
         return orderList;
+    }
+
+    public List<Order> searchOrderListBySellercode(int selloercode) {
+        List<Order> orderList = Lists.newArrayList();
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT itemcode, sellercode, purchaser, count, discount, time FROM pnuips.order WHERE sellercode=?");
+            ps.setInt(1, selloercode);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Order order = getOrderFromResultSet(rs);
+                orderList.add(order);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to search order list by sellercode. sellercode=" + selloercode, e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return orderList;
+    }
+
+    private Order getOrderFromResultSet(ResultSet rs) throws SQLException {
+        Order order = new Order();
+        order.setItemcode(rs.getInt("itemcode"));
+        order.setSellercode(rs.getInt("sellercode"));
+        order.setPurchaser(rs.getString("purchaser"));
+        order.setCount(rs.getInt("count"));
+        order.setDiscount(rs.getInt("discount"));
+        order.setTime(rs.getTimestamp("time"));
+        return order;
     }
 }
