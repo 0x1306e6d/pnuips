@@ -51,6 +51,7 @@ public class ItemData {
                 Set<Cart> cartSet = getCartSet(data[8]);
                 for (Cart cart : cartSet) {
                     cart.setItemcode(item.getItemcode());
+                    cart.setSellercode(seller.getSellercode());
                     itemData.addCart(cart);
                 }
             }

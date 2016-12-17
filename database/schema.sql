@@ -48,12 +48,14 @@ CREATE TABLE pnuips.sell (
 
 DROP TABLE IF EXISTS pnuips.cart;
 CREATE TABLE pnuips.cart (
-    owener VARCHAR(32) NOT NULL,
     itemcode INTEGER NOT NULL,
+    sellercode INTEGER NOT NULL,
+    owener VARCHAR(32) NOT NULL,
     count INTEGER NOT NULL DEFAULT 0,
-    PRIMARY KEY(owener, itemcode),
-    FOREIGN KEY(owener) REFERENCES pnuips.account(email) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY(itemcode) REFERENCES pnuips.item(itemcode) ON DELETE CASCADE ON UPDATE CASCADE
+    PRIMARY KEY(itemcode, sellercode, owener),
+    FOREIGN KEY(itemcode) REFERENCES pnuips.item(itemcode) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(sellercode) REFERENCES pnuips.seller(sellercode) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(owener) REFERENCES pnuips.account(email) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS pnuips.order;
