@@ -121,7 +121,9 @@
                         <%=sellBean.getSell().getPrice()%>
                     </h4>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item"
+                    onclick="location.href='seller.jsp?sellercode=<%=sellBean.getSeller().getSellercode()%>'"
+                    style="cursor: hand;">
                     <label for="sellerName">sellerName</label>
                     <h4 id="sellerName" class="text-center">
                         <%=sellBean.getSeller().getSellername()%>
