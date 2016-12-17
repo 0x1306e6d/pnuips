@@ -1,4 +1,5 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
+<%@ page import="kr.ac.pusan.pnuips.bean.SigninBean" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     if (request.getParameter("itemcode") == null || request.getParameter("sellercode") == null) {
@@ -9,6 +10,7 @@
     int sellercode = Integer.parseInt(request.getParameter("sellercode").toString());
 %>
 <jsp:useBean id="sellProcesspr" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
+<jsp:useBean id="couponProcessor" class="kr.ac.pusan.pnuips.processor.CouponProcessor"/>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -89,7 +91,10 @@
             <div class="text-center">
                 <div class="btn-group btn-group-lg">
                     <button type="button" class="btn btn-default">Add cart</button>
-                    <button type="button" class="btn btn-default">Purchase</button>
+                    <button type="button" class="btn btn-default"
+                            onclick="location.href='purchase.jsp?itemcode=<%=itemcode%>&sellercode=<%=sellercode%>'">
+                        Purchase
+                    </button>
                 </div>
             </div>
             <%
@@ -139,8 +144,9 @@
     </div>
     <%
         if (session.getAttribute("signin") != null) {
+            SigninBean signinBean = (SigninBean) session.getAttribute("signin");
     %>
-    <div id="go-cart" class="modal fade" role="dialog">
+    <div id="add-cart-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
