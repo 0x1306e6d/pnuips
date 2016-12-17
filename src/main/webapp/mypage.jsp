@@ -1,4 +1,5 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SigninBean" %>
+<%@ page import="kr.ac.pusan.pnuips.model.cart.Cart" %>
 <%@ page import="kr.ac.pusan.pnuips.model.coupon.CouponType" %>
 <%@ page import="kr.ac.pusan.pnuips.model.item.Item" %>
 <%@ page import="kr.ac.pusan.pnuips.model.order.Order" %>
@@ -15,6 +16,7 @@
 <jsp:useBean id="orderProcessor" class="kr.ac.pusan.pnuips.processor.OrderProcessor"/>
 <jsp:useBean id="itemProcessor" class="kr.ac.pusan.pnuips.processor.ItemProcessor"/>
 <jsp:useBean id="sellerProcessor" class="kr.ac.pusan.pnuips.processor.SellerProcessor"/>
+<jsp:useBean id="cartProcessor" class="kr.ac.pusan.pnuips.processor.CartProcessor"/>
 <jsp:useBean id="couponProcessor" class="kr.ac.pusan.pnuips.processor.CouponProcessor"/>
 <html>
 <head>
@@ -164,7 +166,94 @@
     </ul>
     <%
         }
+    %>
+    <br>
+    <%
+        List<Cart> cartList = cartProcessor.searchCartListByOwener(signinBean.getEmail());
 
+        if (cartList.size() == 0) {
+    %>
+    <div class="alert alert-info">
+        There is no cart.
+    </div>
+    <%
+    } else {
+    %>
+    <h1 class="text-center">Cart List</h1>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="text-center">
+                        Itemname
+                    </h4>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="text-center">
+                        Sellername
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        Count
+                    </h4>
+                </div>
+            </div>
+        </li>
+        <%
+            for (Cart cart : cartList) {
+                Item item = itemProcessor.searchItem(cart.getItemcode());
+                Seller seller = sellerProcessor.searchSeller(cart.getSellercode());
+
+        %>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="text-center">
+                        <%
+                            if (item == null) {
+                        %>
+                        Unknown
+                        <%
+                        } else {
+                        %>
+                        <%=item.getItemname()%>
+                        <%
+                            }
+                        %>
+                    </h4>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="text-center">
+                        <%
+                            if (seller == null) {
+                        %>
+                        Unknown
+                        <%
+                        } else {
+                        %>
+                        <%=seller.getSellername()%>
+                        <%
+                            }
+                        %>
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        <%=cart.getCount()%>
+                    </h4>
+                </div>
+            </div>
+        </li>
+        <%
+            }
+        %>
+    </ul>
+    <%
+        }
+    %>
+    <br>
+    <%
         List<CouponType> couponTypeList = couponProcessor.searchCouponList(signinBean.getEmail());
 
         if (couponTypeList.size() == 0) {
