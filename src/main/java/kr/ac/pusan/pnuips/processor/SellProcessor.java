@@ -143,7 +143,7 @@ public class SellProcessor {
         return sellBeanList;
     }
 
-    public List<SellBean> searchBestSellBeanList() {
+    public List<SellBean> searchBestSellBeanList(int limit) {
         List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
@@ -151,7 +151,7 @@ public class SellProcessor {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item ORDER BY numberOfSales DESC LIMIT 10");
+            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item ORDER BY numberOfSales DESC LIMIT " + limit);
             rs = ps.executeQuery();
 
             while (rs.next()) {

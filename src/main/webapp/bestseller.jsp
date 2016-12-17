@@ -1,6 +1,12 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    int limit = 10;
+    if (request.getParameter("limit") != null) {
+        limit = Integer.parseInt(request.getParameter("limit").toString());
+    }
+%>
 <jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
 <html>
 <head>
@@ -56,47 +62,71 @@
     </div>
 </nav>
 <div class="container">
-    <div class="panel panel-default">
-        <div class="panel-heading">Bestseller</div>
-        <div class="panel-body">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>seller</th>
-                    <th>name</th>
-                    <th>brand</th>
-                    <th>price</th>
-                    <th>numberOfStock</th>
-                    <th>numberOfSaes</th>
-                </tr>
-                </thead>
-                <tbody style="cursor: hand;">
-                <%
-                    List<SellBean> sellBeanList = sellProcessor.searchBestSellBeanList();
 
-                    for (SellBean sellBean : sellBeanList) {
-                %>
-                <tr onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'">
-                    <td><%=sellBean.getSeller().getSellername()%>
-                    </td>
-                    <td><%=sellBean.getItem().getItemname()%>
-                    </td>
-                    <td><%=sellBean.getItem().getBrand()%>
-                    </td>
-                    <td><%=sellBean.getSell().getPrice()%>
-                    </td>
-                    <td><%=sellBean.getSell().getNumberOfStock()%>
-                    </td>
-                    <td><%=sellBean.getSell().getNumberOfSales()%>
-                    </td>
-                </tr>
-                <%
-                    }
-                %>
-                </tbody>
-            </table>
+    <form action="bestseller.jsp" method="get">
+        <div class="form-group">
+            <label for="limit">limit</label>
+            <select id="limit" class="form-control" name="limit">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+            </select>
         </div>
+        <button class="btn btn-default btn-block" type="submit">search</button>
+    </form>
+    <%
+        List<SellBean> sellBeanList = sellProcessor.searchBestSellBeanList(limit);
+
+        if (sellBeanList.size() == 0) {
+    %>
+    <div class="alert alert-info">
+        There is no item.
     </div>
+    <%
+    } else {
+    %>
+    <ul class="list-group">
+        <%
+            for (SellBean sellBean : sellBeanList) {
+        %>
+        <li class="list-group-item"
+            onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'"
+            style="cursor: hand;">
+            <div class="row">
+                <div class="col-md-5">
+                    <h3 class="text-center">
+                        <%=sellBean.getItem().getItemname()%>
+                    </h3>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        <%=sellBean.getSeller().getSellername()%>
+                    </h4>
+                </div>
+                <div class="col-md-4 row">
+                    <div class="col-md-5">
+                        <h4 class="text-center">
+                            <%=sellBean.getItem().getBrand()%>
+                        </h4>
+                    </div>
+                    <div class="col-md-5">
+                        <h4 class="text-center">
+                            <%=sellBean.getSell().getPrice()%>
+                        </h4>
+                    </div>
+                    <div class="col-md-1">
+                        <span class="badge text-center"><%=sellBean.getSell().getNumberOfSales()%></span>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <%
+            }
+        %>
+    </ul>
+    <%
+        }
+    %>
 </div>
 </body>
 </html>
