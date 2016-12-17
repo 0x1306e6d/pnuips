@@ -68,6 +68,57 @@ public class SellProcessor {
         return sellBeanList;
     }
 
+    public List<SellBean> searchSellBeanListByName(String itemname) {
+        List<SellBean> sellBeanList = Lists.newArrayList();
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item WHERE itemname=?");
+            ps.setString(1, itemname);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                SellBean sellBean = getSellBeanFromResultSet(rs);
+                sellBeanList.add(sellBean);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to search sell list by itemname. itemname=" + itemname, e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return sellBeanList;
+    }
+
+    public List<SellBean> searchSellBeanListBySimilarName(String itemname) {
+        List<SellBean> sellBeanList = Lists.newArrayList();
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item WHERE itemname <> ? AND itemname LIKE ?");
+            ps.setString(1, itemname);
+            ps.setString(2, "%" + itemname + "%");
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                SellBean sellBean = getSellBeanFromResultSet(rs);
+                sellBeanList.add(sellBean);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to search sell list by similar itemname. itemname=" + itemname, e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return sellBeanList;
+    }
+
     public List<SellBean> searchSellBeanList(int start) {
         List<SellBean> sellBeanList = Lists.newArrayList();
 
@@ -76,7 +127,7 @@ public class SellProcessor {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item LIMIT 10 OFFSET " + start);
+            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item LIMIT 20 OFFSET " + start);
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -92,7 +143,7 @@ public class SellProcessor {
         return sellBeanList;
     }
 
-    public List<SellBean> searchBestSellBeanList() {
+    public List<SellBean> searchBestSellBeanList(int limit) {
         List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
@@ -100,7 +151,7 @@ public class SellProcessor {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item ORDER BY numberOfSales DESC LIMIT 10");
+            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item ORDER BY numberOfSales DESC LIMIT " + limit);
             rs = ps.executeQuery();
 
             while (rs.next()) {

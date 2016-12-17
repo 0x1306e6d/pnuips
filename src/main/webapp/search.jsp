@@ -1,20 +1,23 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
-<%@ page import="kr.ac.pusan.pnuips.model.sell.Seller" %>
+<%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
 <%
-    if (request.getParameter("sellercode") == null) {
+    if (request.getParameter("itemname") == null) {
         response.sendRedirect("index.jsp");
         return;
     }
-    int sellercode = Integer.parseInt(request.getParameter("sellercode").toString());
+    String itemname = (String) request.getParameter("itemname");
+    if (StringUtils.isEmpty(itemname)) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
 %>
-<jsp:useBean id="sellerProcessor" class="kr.ac.pusan.pnuips.processor.SellerProcessor"/>
-<jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Seller detail</title>
+    <title>Search</title>
 
     <jsp:include page="header.jsp"/>
 </head>
@@ -33,14 +36,14 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="index.jsp">Home</a></li>
+                <li class="active"><a href="#">Home</a></li>
                 <li><a href="bestseller.jsp">Best Seller</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <form class="navbar-form" action="search.jsp" method="get">
                         <div class="form-group">
-                            <input class="form-control" type="text" name="itemname" placeholder="search..">
+                            <input class="form-control" type="text" name="itemname" value="<%=itemname%>">
                         </div>
                         <button class="btn btn-default" type="submit">
                             <i class="glyphicon glyphicon-search"></i>
@@ -66,51 +69,13 @@
 </nav>
 <div class="container">
     <%
-        Seller seller = sellerProcessor.searchSeller(sellercode);
+        List<SellBean> sellBeanList = sellProcessor.searchSellBeanListByName(itemname);
+        List<SellBean> similarSellBeanList = sellProcessor.searchSellBeanListBySimilarName(itemname);
 
-        if (seller == null) {
-    %>
-    <div class="alert alert-danger">
-        <strong>Error</strong>
-        <p>Seller is not exist</p>
-    </div>
-    <%
-    } else {
-    %>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="jumbotron">
-                <h1 class="text-center">
-                    <%=seller.getSellername()%>
-                </h1>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <label for="sellercode">sellercode</label>
-                    <h4 id="sellercode" class="text-center">
-                        <%=seller.getSellercode()%>
-                    </h4>
-                </li>
-                <li class="list-group-item">
-                    <label for="total-count">total count</label>
-                    <h4 id="total-count" class="text-center">
-                        <%=sellerProcessor.searchSellCount(sellercode)%>
-                    </h4>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <br>
-    <%
-        List<SellBean> sellBeanList = sellProcessor.searchSellBeanListOfSeller(sellercode);
-
-        if (sellBeanList.size() == 0) {
+        if (sellBeanList.size() == 0 && similarSellBeanList.size() == 0) {
     %>
     <div class="alert alert-info">
-        Seller does not sell anything.
+        Item <%=itemname%> is not exist.
     </div>
     <%
     } else {
@@ -123,10 +88,45 @@
             onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'"
             style="cursor: hand;">
             <div class="row">
-                <div class="col-md-7">
+                <div class="col-md-5">
                     <h3 class="text-center">
                         <%=sellBean.getItem().getItemname()%>
                     </h3>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        <%=sellBean.getSeller().getSellername()%>
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        <%=sellBean.getItem().getBrand()%>
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        <%=sellBean.getSell().getPrice()%>
+                    </h4>
+                </div>
+            </div>
+        </li>
+        <%
+            }
+            for (SellBean sellBean : similarSellBeanList) {
+        %>
+        <li class="list-group-item"
+            onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'"
+            style="cursor: hand;">
+            <div class="row">
+                <div class="col-md-5">
+                    <h3 class="text-center">
+                        <%=sellBean.getItem().getItemname()%>
+                    </h3>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        <%=sellBean.getSeller().getSellername()%>
+                    </h4>
                 </div>
                 <div class="col-md-2">
                     <h4 class="text-center">
@@ -145,7 +145,6 @@
         %>
     </ul>
     <%
-            }
         }
     %>
 </div>

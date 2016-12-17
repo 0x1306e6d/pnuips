@@ -43,6 +43,16 @@
                 <li><a href="bestseller.jsp">Best Seller</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <form class="navbar-form" action="search.jsp" method="get">
+                        <div class="form-group">
+                            <input class="form-control" type="text" name="itemname" placeholder="search..">
+                        </div>
+                        <button class="btn btn-default" type="submit">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </form>
+                </li>
                 <li class="active"><a href="signin.jsp">
                     <span class="glyphicon glyphicon-log-in"></span> Sign in</a>
                 </li>
