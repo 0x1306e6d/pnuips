@@ -1,9 +1,13 @@
+<%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
 <%@ page import="kr.ac.pusan.pnuips.bean.SigninBean" %>
+<%@ page import="kr.ac.pusan.pnuips.model.account.Account" %>
 <%@ page import="kr.ac.pusan.pnuips.model.cart.Cart" %>
 <%@ page import="kr.ac.pusan.pnuips.model.coupon.CouponType" %>
 <%@ page import="kr.ac.pusan.pnuips.model.item.Item" %>
 <%@ page import="kr.ac.pusan.pnuips.model.order.Order" %>
 <%@ page import="kr.ac.pusan.pnuips.model.sell.Seller" %>
+<%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="java.sql.SQLException" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
@@ -15,6 +19,7 @@
 %>
 <jsp:useBean id="orderProcessor" class="kr.ac.pusan.pnuips.processor.OrderProcessor"/>
 <jsp:useBean id="itemProcessor" class="kr.ac.pusan.pnuips.processor.ItemProcessor"/>
+<jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
 <jsp:useBean id="sellerProcessor" class="kr.ac.pusan.pnuips.processor.SellerProcessor"/>
 <jsp:useBean id="cartProcessor" class="kr.ac.pusan.pnuips.processor.CartProcessor"/>
 <jsp:useBean id="couponProcessor" class="kr.ac.pusan.pnuips.processor.CouponProcessor"/>
@@ -62,6 +67,55 @@
 </nav>
 <div class="container">
     <%
+        try {
+            Account account = new Account(signinBean.getEmail());
+            account.load();
+    %>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="jumbotron">
+                <h1 class="text-center">
+                    <%=account.getEmail()%>
+                </h1>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <label for="name">name</label>
+                    <h4 id="name" class="text-center">
+                        <%=account.getFirstname()%> <%=account.getLastname()%>
+                    </h4>
+                </li>
+                <li class="list-group-item">
+                    <label for="birthday">birthday</label>
+                    <h4 id="birthday" class="text-center">
+                        <%=account.getBirthday()%>
+                    </h4>
+                </li>
+                <li class="list-group-item">
+                    <label for="grade">grade</label>
+                    <h4 id="grade" class="text-center">
+                        <%=account.getGrade()%>
+                    </h4>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <%
+    } catch (SQLException e) {
+        LoggerFactory.getLogger(page.getClass()).error("Failed to load Account.", e);
+    %>
+    <div class="alert alert-error">
+        <strong>Error</strong>
+        <p>Failed to find account data</p>
+    </div>
+    <%
+        }
+    %>
+    <br>
+    <%
         List<Order> orderList = orderProcessor.searchOrderList(signinBean.getEmail());
 
         if (orderList.size() == 0) {
@@ -76,7 +130,7 @@
     <ul class="list-group">
         <li class="list-group-item">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <h4 class="text-center">
                         Itemname
                     </h4>
@@ -84,6 +138,11 @@
                 <div class="col-md-3">
                     <h4 class="text-center">
                         Sellername
+                    </h4>
+                </div>
+                <div class="col-md-1">
+                    <h4 class="text-center">
+                        Price
                     </h4>
                 </div>
                 <div class="col-md-1">
@@ -105,24 +164,23 @@
         </li>
         <%
             for (Order order : orderList) {
-                Item item = itemProcessor.searchItem(order.getItemcode());
-                Seller seller = sellerProcessor.searchSeller(order.getSellercode());
+                SellBean sellBean = sellProcessor.searchSellBean(order.getItemcode(), order.getSellercode());
 
         %>
         <li class="list-group-item"
             onclick="location.href='sell.jsp?itemcode=<%=order.getItemcode()%>&sellercode=<%=order.getSellercode()%>'"
             style="cursor: hand;">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <h4 class="text-center">
                         <%
-                            if (item == null) {
+                            if (sellBean == null) {
                         %>
                         Unknown
                         <%
                         } else {
                         %>
-                        <%=item.getItemname()%>
+                        <%=sellBean.getItem().getItemname()%>
                         <%
                             }
                         %>
@@ -131,16 +189,21 @@
                 <div class="col-md-3">
                     <h4 class="text-center">
                         <%
-                            if (seller == null) {
+                            if (sellBean == null) {
                         %>
                         Unknown
                         <%
                         } else {
                         %>
-                        <%=seller.getSellername()%>
+                        <%=sellBean.getSeller().getSellername()%>
                         <%
                             }
                         %>
+                    </h4>
+                </div>
+                <div class="col-md-1">
+                    <h4 class="text-center">
+                        <%=sellBean.getSell().getPrice()%>
                     </h4>
                 </div>
                 <div class="col-md-1">
@@ -206,7 +269,9 @@
                 Seller seller = sellerProcessor.searchSeller(cart.getSellercode());
 
         %>
-        <li class="list-group-item">
+        <li class="list-group-item"
+            onclick="location.href='sell.jsp?itemcode=<%=cart.getItemcode()%>&sellercode=<%=cart.getSellercode()%>'"
+            style="cursor: hand;">
             <div class="row">
                 <div class="col-md-6">
                     <h4 class="text-center">
