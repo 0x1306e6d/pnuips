@@ -124,19 +124,19 @@
             style="cursor: hand;">
             <div class="row">
                 <div class="col-md-7">
-                    <h1 class="text-center">
+                    <h3 class="text-center">
                         <%=sellBean.getItem().getItemname()%>
-                    </h1>
+                    </h3>
                 </div>
                 <div class="col-md-2">
-                    <h3 class="text-center">
+                    <h4 class="text-center">
                         <%=sellBean.getItem().getBrand()%>
-                    </h3>
+                    </h4>
                 </div>
                 <div class="col-md-2">
-                    <h3 class="text-center">
+                    <h4 class="text-center">
                         <%=sellBean.getSell().getPrice()%>
-                    </h3>
+                    </h4>
                 </div>
             </div>
         </li>

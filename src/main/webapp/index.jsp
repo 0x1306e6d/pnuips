@@ -1,6 +1,12 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
 <%@ page import="java.util.List" %>
 <jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
+<%
+    int start = 0;
+    if (request.getParameter("start") != null) {
+        start = Integer.parseInt(request.getParameter("start").toString());
+    }
+%>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -59,69 +65,68 @@
     <p>PNU Item Purchase System</p>
 </div>
 <div class="container">
-    <div class="panel panel-default">
-        <div class="panel-heading">Item List</div>
-        <div class="panel-body">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>seller</th>
-                    <th>name</th>
-                    <th>brand</th>
-                    <th>price</th>
-                    <th>numberOfStock</th>
-                    <th>numberOfSaes</th>
-                </tr>
-                </thead>
-                <tbody style="cursor: hand;">
-                <%
-                    int start = 0;
-                    if (request.getParameter("start") != null) {
-                        start = Integer.parseInt(request.getParameter("start").toString());
-                    }
-                    List<SellBean> sellBeanList = sellProcessor.searchSellBeanList(start);
+    <%
+        List<SellBean> sellBeanList = sellProcessor.searchSellBeanList(start);
 
-                    for (SellBean sellBean : sellBeanList) {
-                %>
-                <tr onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'">
-                    <td><%=sellBean.getSeller().getSellername()%>
-                    </td>
-                    <td><%=sellBean.getItem().getItemname()%>
-                    </td>
-                    <td><%=sellBean.getItem().getBrand()%>
-                    </td>
-                    <td><%=sellBean.getSell().getPrice()%>
-                    </td>
-                    <td><%=sellBean.getSell().getNumberOfStock()%>
-                    </td>
-                    <td><%=sellBean.getSell().getNumberOfSales()%>
-                    </td>
-                </tr>
-                <%
-                    }
-                %>
-                </tbody>
-            </table>
-        </div>
-        <div class="panel-footer">
-            <ul class="pager">
-                <%
-                    if (start > 0) {
-                %>
-                <li><a href="index.jsp?start=<%=Math.max(start - 10, 0)%>">Previous</a></li>
-                <%
-                    }
-                %>
-                <%
-                    if (sellBeanList.size() == 10) {
-                %>
-                <li><a href="index.jsp?start=<%=start + 10%>">Next</a></li>
-                <%
-                    }
-                %>
-            </ul>
-        </div>
+        if (sellBeanList.size() == 0) {
+    %>
+    <div class="alert alert-info">
+        There is no item.
     </div>
+    <%
+    } else {
+    %>
+    <ul class="list-group">
+        <%
+            for (SellBean sellBean : sellBeanList) {
+        %>
+        <li class="list-group-item"
+            onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'"
+            style="cursor: hand;">
+            <div class="row">
+                <div class="col-md-5">
+                    <h3 class="text-center">
+                        <%=sellBean.getItem().getItemname()%>
+                    </h3>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        <%=sellBean.getSeller().getSellername()%>
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        <%=sellBean.getItem().getBrand()%>
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        <%=sellBean.getSell().getPrice()%>
+                    </h4>
+                </div>
+            </div>
+        </li>
+        <%
+            }
+        %>
+    </ul>
+    <ul class="pager">
+        <%
+            if (start > 0) {
+        %>
+        <li><a href="index.jsp?start=<%=Math.max(start - 20, 0)%>">Previous</a></li>
+        <%
+            }
+            if (sellBeanList.size() == 20) {
+        %>
+        <li><a href="index.jsp?start=<%=start + 20%>">Next</a></li>
+        <%
+            }
+        %>
+    </ul>
+    <%
+        }
+    %>
 </div>
 </body>
 </html>
