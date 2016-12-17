@@ -76,54 +76,90 @@
     } else {
     %>
     <div class="row">
-        <div class="col-md-4">
-            <p>price : <%=sellBean.getSell().getPrice()%>
-            </p>
-            <p>numberOfStock : <%=sellBean.getSell().getNumberOfStock()%>
-            </p>
-            <p>numberOfSales : <%=sellBean.getSell().getNumberOfSales()%>
-            </p>
-            <button type="button" class="btn btn-default btn-block">
-                purchase
-            </button>
-            <button type="button" class="btn btn-default btn-block">
-                go cart
-            </button>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Item</div>
-                <div class="panel-body">
-                    <p>code : <%=sellBean.getItem().getItemcode()%>
-                    </p>
-                    <p>name : <%=sellBean.getItem().getItemname()%>
-                    </p>
-                    <p>brand : <%=sellBean.getItem().getBrand()%>
-                    </p>
-                </div>
-                <div class="panel-footer">
-                    <button class="btn btn-default btn-block">detail</button>
+        <div class="col-md-6">
+            <div class="jumbotron">
+                <h1 class="text-center">
+                    <%=sellBean.getItem().getItemname()%>
+                </h1>
+            </div>
+
+            <%
+                if (session.getAttribute("signin") != null) {
+            %>
+            <div class="text-center">
+                <div class="btn-group btn-group-lg">
+                    <button type="button" class="btn btn-default">Add cart</button>
+                    <button type="button" class="btn btn-default">Purchase</button>
                 </div>
             </div>
+            <%
+            } else {
+            %>
+            <div class="alert alert-info">
+                You have to sign in to purchase or add cart this item.
+            </div>
+            <%
+                }
+            %>
         </div>
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Seller</div>
-                <div class="panel-body">
-                    <p>code : <%=sellBean.getSeller().getSellercode()%>
-                    </p>
-                    <p>name : <%=sellBean.getSeller().getSellername()%>
-                    </p>
+        <div class="col-md-6">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <label for="brand">brand</label>
+                    <h4 id="brand" class="text-center">
+                        <%=sellBean.getItem().getBrand()%>
+                    </h4>
+                </li>
+                <li class="list-group-item">
+                    <label for="price">price</label>
+                    <h4 id="price" class="text-center">
+                        <%=sellBean.getSell().getPrice()%>
+                    </h4>
+                </li>
+                <li class="list-group-item">
+                    <label for="sellerName">sellerName</label>
+                    <h4 id="sellerName" class="text-center">
+                        <%=sellBean.getSeller().getSellername()%>
+                    </h4>
+                </li>
+                <li class="list-group-item">
+                    <label for="numberOfStock">numberOfStock</label>
+                    <h4 id="numberOfStock" class="text-center">
+                        <%=sellBean.getSell().getNumberOfStock()%>
+                    </h4>
+                </li>
+                <li class="list-group-item">
+                    <label for="numberOfSales">numberOfSales</label>
+                    <h4 id="numberOfSales" class="text-center">
+                        <%=sellBean.getSell().getNumberOfSales()%>
+                    </h4>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <%
+        if (session.getAttribute("signin") != null) {
+    %>
+    <div id="go-cart" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add cart</h4>
                 </div>
-                <div class="panel-footer">
-                    <button type="button" class="btn btn-default btn-block"
-                            onclick="location.href='seller.jsp?sellercode=<%=sellBean.getSeller().getSellercode()%>'">
-                        detail
-                    </button>
+                <div class="modal-body">
+                    <p>Do you really want to add cart?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">add</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
                 </div>
             </div>
         </div>
     </div>
+    <%
+        }
+    %>
     <%
         }
     %>
