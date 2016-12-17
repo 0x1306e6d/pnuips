@@ -73,6 +73,12 @@
             </p>
             <p>numberOfSales : <%=sellBean.getSell().getNumberOfSales()%>
             </p>
+            <button type="button" class="btn btn-default btn-block">
+                purchase
+            </button>
+            <button type="button" class="btn btn-default btn-block">
+                go cart
+            </button>
         </div>
         <div class="col-md-4">
             <div class="panel panel-default">
