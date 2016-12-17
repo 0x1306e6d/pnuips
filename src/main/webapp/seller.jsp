@@ -104,48 +104,48 @@
         </div>
     </div>
     <br>
-    <div class="panel panel-default">
-        <div class="panel-heading">Item List</div>
-        <div class="panel-body">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>seller</th>
-                    <th>name</th>
-                    <th>brand</th>
-                    <th>price</th>
-                    <th>numberOfStock</th>
-                    <th>numberOfSales</th>
-                </tr>
-                </thead>
-                <tbody style="cursor: hand;">
-                <%
-                    List<SellBean> sellBeanList = sellProcessor.searchSellBeanListOfSeller(sellercode);
+    <%
+        List<SellBean> sellBeanList = sellProcessor.searchSellBeanListOfSeller(sellercode);
 
-                    for (SellBean sellBean : sellBeanList) {
-                %>
-                <tr onclick="location.href='sell.jsp?sellercode=<%=sellBean.getSeller().getSellercode()%>&itemcode=<%=sellBean.getItem().getItemcode()%>'">
-                    <td><%=sellBean.getSeller().getSellername()%>
-                    </td>
-                    <td><%=sellBean.getItem().getItemname()%>
-                    </td>
-                    <td><%=sellBean.getItem().getBrand()%>
-                    </td>
-                    <td><%=sellBean.getSell().getPrice()%>
-                    </td>
-                    <td><%=sellBean.getSell().getNumberOfStock()%>
-                    </td>
-                    <td><%=sellBean.getSell().getNumberOfSales()%>
-                    </td>
-                </tr>
-                <%
-                    }
-                %>
-                </tbody>
-            </table>
-        </div>
+        if (sellBeanList.size() == 0) {
+    %>
+    <div class="alert alert-info">
+        Seller does not sell anything.
     </div>
     <%
+    } else {
+    %>
+    <ul class="list-group">
+        <%
+            for (SellBean sellBean : sellBeanList) {
+        %>
+        <li class="list-group-item"
+            onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'"
+            style="cursor: hand;">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-center">
+                        <%=sellBean.getItem().getItemname()%>
+                    </h1>
+                </div>
+                <div class="col-md-2">
+                    <h3 class="text-center">
+                        <%=sellBean.getItem().getBrand()%>
+                    </h3>
+                </div>
+                <div class="col-md-2">
+                    <h3 class="text-center">
+                        <%=sellBean.getSell().getPrice()%>
+                    </h3>
+                </div>
+            </div>
+        </li>
+        <%
+            }
+        %>
+    </ul>
+    <%
+            }
         }
     %>
 </div>
