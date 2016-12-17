@@ -2,15 +2,19 @@
 <%@ page import="kr.ac.pusan.pnuips.model.coupon.CouponType" %>
 <%@ page import="kr.ac.pusan.pnuips.model.item.Item" %>
 <%@ page import="kr.ac.pusan.pnuips.model.order.Order" %>
+<%@ page import="kr.ac.pusan.pnuips.model.sell.Seller" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     if (session.getAttribute("signin") == null) {
         response.sendRedirect("index.jsp");
+        return;
     }
+    SigninBean signinBean = (SigninBean) session.getAttribute("signin");
 %>
 <jsp:useBean id="orderProcessor" class="kr.ac.pusan.pnuips.processor.OrderProcessor"/>
 <jsp:useBean id="itemProcessor" class="kr.ac.pusan.pnuips.processor.ItemProcessor"/>
+<jsp:useBean id="sellerProcessor" class="kr.ac.pusan.pnuips.processor.SellerProcessor"/>
 <jsp:useBean id="couponProcessor" class="kr.ac.pusan.pnuips.processor.CouponProcessor"/>
 <html>
 <head>
@@ -56,90 +60,161 @@
 </nav>
 <div class="container">
     <%
-        SigninBean signin = (SigninBean) session.getAttribute("signin");
+        List<Order> orderList = orderProcessor.searchOrderList(signinBean.getEmail());
+
+        if (orderList.size() == 0) {
     %>
-
-    <div class="panel panel-default">
-        <div class="panel-heading">Purchase List</div>
-        <div class="panel-body">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>itemcode</th>
-                    <th>purchaser</th>
-                    <th>count</th>
-                    <th>discount</th>
-                    <th>time</th>
-                </tr>
-                </thead>
-                <tbody>
-                <%
-                    List<Order> orderList = orderProcessor.searchOrderList(signin.getEmail());
-
-                    for (Order order : orderList) {
-                        Item item = itemProcessor.searchItem(order.getItemcode());
-                %>
-                <tr>
-                    <%
-                        if (item == null) {
-                    %>
-                    <td>Unknown</td>
-                    <%
-                    } else {
-                    %>
-                    <td><%=item.getItemname()%>
-                    </td>
-                    <%
-                        }
-                    %>
-                    <td><%=order.getPurchaser()%>
-                    </td>
-                    <td><%=order.getCount()%>
-                    </td>
-                    <td><%=order.getDiscount()%>
-                    </td>
-                    <td><%=order.getTime()%>
-                    </td>
-                </tr>
-                <%
-                    }
-                %>
-                </tbody>
-            </table>
-        </div>
+    <div class="alert alert-info">
+        There is no order.
     </div>
+    <%
+    } else {
+    %>
+    <h1 class="text-center">Purchase List</h1>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 class="text-center">
+                        Itemname
+                    </h4>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        Sellername
+                    </h4>
+                </div>
+                <div class="col-md-1">
+                    <h4 class="text-center">
+                        Count
+                    </h4>
+                </div>
+                <div class="col-md-1">
+                    <h4 class="text-center">
+                        Discount
+                    </h4>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        Time
+                    </h4>
+                </div>
+            </div>
+        </li>
+        <%
+            for (Order order : orderList) {
+                Item item = itemProcessor.searchItem(order.getItemcode());
+                Seller seller = sellerProcessor.searchSeller(order.getSellercode());
 
-    <div class="panel panel-default">
-        <div class="panel-heading">Coupon List</div>
-        <div class="panel-body">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>type</th>
-                    <th>name</th>
-                    <th>discount</th>
-                </tr>
-                </thead>
-                <tbody>
-                <%
-                    List<CouponType> couponList = couponProcessor.searchCouponList(signin.getEmail());
+        %>
+        <li class="list-group-item"
+            onclick="location.href='sell.jsp?itemcode=<%=order.getItemcode()%>&sellercode=<%=order.getSellercode()%>'"
+            style="cursor: hand;">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 class="text-center">
+                        <%
+                            if (item == null) {
+                        %>
+                        Unknown
+                        <%
+                        } else {
+                        %>
+                        <%=item.getItemname()%>
+                        <%
+                            }
+                        %>
+                    </h4>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        <%
+                            if (seller == null) {
+                        %>
+                        Unknown
+                        <%
+                        } else {
+                        %>
+                        <%=seller.getSellername()%>
+                        <%
+                            }
+                        %>
+                    </h4>
+                </div>
+                <div class="col-md-1">
+                    <h4 class="text-center">
+                        <%=order.getCount()%>
+                    </h4>
+                </div>
+                <div class="col-md-1">
+                    <h4 class="text-center">
+                        <%=order.getDiscount()%>%
+                    </h4>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        <%=order.getTime()%>
+                    </h4>
+                </div>
+            </div>
+        </li>
+        <%
+            }
+        %>
+    </ul>
+    <%
+        }
 
-                    for (CouponType coupon : couponList) {
-                %>
-                <tr>
-                    <td><%=coupon.getType()%>
-                    </td>
-                    <td><%=coupon.getName()%>
-                    </td>
-                    <td><%=coupon.getDiscount()%>%</td>
-                </tr>
-                <%
-                    }
-                %>
-                </tbody>
-            </table>
-        </div>
+        List<CouponType> couponTypeList = couponProcessor.searchCouponList(signinBean.getEmail());
+
+        if (couponTypeList.size() == 0) {
+    %>
+    <div class="alert alert-info">
+        There is no coupon.
     </div>
+    <%
+    } else {
+    %>
+    <h1 class="text-center">Coupon List</h1>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4 class="text-center">
+                        Name
+                    </h4>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="text-center">
+                        Discount
+                    </h4>
+                </div>
+            </div>
+        </li>
+        <%
+            for (CouponType couponType : couponTypeList) {
+        %>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4 class="text-center">
+                        <%=couponType.getName()%>
+                    </h4>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="text-center">
+                        <%=couponType.getDiscount()%>%
+                    </h4>
+                </div>
+            </div>
+        </li>
+        <%
+            }
+        %>
+    </ul>
+    <%
+        }
+    %>
 </div>
 </body>
 </html>

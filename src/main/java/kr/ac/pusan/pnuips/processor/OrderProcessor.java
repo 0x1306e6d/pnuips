@@ -25,13 +25,14 @@ public class OrderProcessor {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT itemcode, purchaser, count, discount, time FROM pnuips.order WHERE purchaser=?");
+            ps = con.prepareStatement("SELECT itemcode, sellercode, purchaser, count, discount, time FROM pnuips.order WHERE purchaser=?");
             ps.setString(1, purchaser);
             rs = ps.executeQuery();
 
             while (rs.next()) {
                 Order order = new Order();
                 order.setItemcode(rs.getInt("itemcode"));
+                order.setSellercode(rs.getInt("sellercode"));
                 order.setPurchaser(rs.getString("purchaser"));
                 order.setCount(rs.getInt("count"));
                 order.setDiscount(rs.getInt("discount"));
