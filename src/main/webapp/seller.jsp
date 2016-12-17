@@ -77,13 +77,33 @@
     <%
     } else {
     %>
-    <p>code : <%=seller.getSellercode()%>
-    </p>
-    <p>name : <%=seller.getSellername()%>
-    </p>
-    <p>total sell count : <%=sellerProcessor.searchSellCount(sellercode)%>
-    </p>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="jumbotron">
+                <h1 class="text-center">
+                    <%=seller.getSellername()%>
+                </h1>
+            </div>
+        </div>
 
+        <div class="col-md-6">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <label for="sellercode">sellercode</label>
+                    <h4 id="sellercode" class="text-center">
+                        <%=seller.getSellercode()%>
+                    </h4>
+                </li>
+                <li class="list-group-item">
+                    <label for="total-count">total count</label>
+                    <h4 id="total-count" class="text-center">
+                        <%=sellerProcessor.searchSellCount(sellercode)%>
+                    </h4>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br>
     <div class="panel panel-default">
         <div class="panel-heading">Item List</div>
         <div class="panel-body">
