@@ -57,7 +57,8 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="active"><a href="manageAccount.jsp">Account</a></li>
+                        <li class="active"><a href="#">Account</a></li>
+                        <li><a href="manageSeller.jsp">Seller</a></li>
                     </ul>
                 </li>
             </ul>

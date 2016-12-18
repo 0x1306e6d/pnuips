@@ -28,6 +28,32 @@ public class SellerProcessor {
         return null;
     }
 
+    public Seller searchSeller(String sellername) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT sellercode, sellername FROM pnuips.seller WHERE sellername=?");
+            ps.setString(1, sellername);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Seller seller = new Seller();
+                seller.setSellercode(rs.getInt("sellercode"));
+                seller.setSellername(rs.getString("sellername"));
+
+                return seller;
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to search sell seller. sellername=" + sellername, e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return null;
+    }
+
     public int searchSellCount(int sellercode) {
         int count = 0;
 

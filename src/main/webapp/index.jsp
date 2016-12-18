@@ -43,6 +43,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="manageAccount.jsp">Account</a></li>
+                        <li><a href="manageSeller.jsp">Seller</a></li>
                     </ul>
                 </li>
             </ul>
