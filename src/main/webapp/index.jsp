@@ -38,6 +38,13 @@
                         <li><a href="bestsellerTime.jsp">Between time</a></li>
                     </ul>
                 </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="manageAccount.jsp">Account</a></li>
+                    </ul>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
