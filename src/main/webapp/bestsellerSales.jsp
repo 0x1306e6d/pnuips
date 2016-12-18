@@ -69,17 +69,21 @@
     </div>
 </nav>
 <div class="container">
-    <form action="bestsellerSales.jsp" method="get">
-        <div class="form-group">
-            <label for="limit">limit</label>
-            <select id="limit" class="form-control" name="limit">
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-            </select>
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <form action="bestsellerSales.jsp" method="get">
+                <div class="form-group">
+                    <label for="limit">limit</label>
+                    <select id="limit" class="form-control" name="limit">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                    </select>
+                </div>
+                <button class="btn btn-default btn-block" type="submit">search</button>
+            </form>
         </div>
-        <button class="btn btn-default btn-block" type="submit">search</button>
-    </form>
+    </div>
     <%
         List<SellBean> sellBeanList = sellProcessor.searchBestSellBeanList(limit);
 
