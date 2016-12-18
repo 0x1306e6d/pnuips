@@ -46,7 +46,14 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="index.jsp">Home</a></li>
-                <li><a href="bestseller.jsp">Best Seller</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Best Seller<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="bestsellerSales.jsp">By numbef of sales</a></li>
+                        <li><a href="bestsellerTime.jsp">Between time</a></li>
+                    </ul>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>

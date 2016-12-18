@@ -31,7 +31,14 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="index.jsp">Home</a></li>
-                <li class="active"><a href="#">Best Seller</a></li>
+                <li class="dropdown active">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Best Seller<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="active"><a href="bestsellerSales.jsp">By numbef of sales</a></li>
+                        <li><a href="bestsellerTime.jsp">Between time</a></li>
+                    </ul>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
@@ -62,8 +69,7 @@
     </div>
 </nav>
 <div class="container">
-
-    <form action="bestseller.jsp" method="get">
+    <form action="bestsellerSales.jsp" method="get">
         <div class="form-group">
             <label for="limit">limit</label>
             <select id="limit" class="form-control" name="limit">
