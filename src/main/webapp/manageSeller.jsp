@@ -131,6 +131,12 @@
                         <%=sellerProcessor.searchSellCount(seller.getSellercode())%>
                     </h4>
                 </li>
+                <li class="list-group-item">
+                    <label for="total-price">total price</label>
+                    <h4 id="total-price" class="text-center">
+                        <%=sellerProcessor.searchTotalPrice(seller.getSellercode())%>
+                    </h4>
+                </li>
             </ul>
         </div>
     </div>
@@ -148,6 +154,25 @@
     %>
     <h1 class="text-center">Item List</h1>
     <ul class="list-group">
+        <li class="list-group-item list-header">
+            <div class="row">
+                <div class="col-md-7">
+                    <h4 class="text-center">
+                        Item name
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        Brand
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        Price
+                    </h4>
+                </div>
+            </div>
+        </li>
         <%
             for (SellBean sellBean : sellBeanList) {
         %>
@@ -193,7 +218,7 @@
     %>
     <h1 class="text-center">Order List</h1>
     <ul class="list-group">
-        <li class="list-group-item">
+        <li class="list-group-item list-header">
             <div class="row">
                 <div class="col-md-4">
                     <h4 class="text-center">
@@ -270,6 +295,87 @@
         %>
     </ul>
     <%
+        }
+    %>
+    <br>
+    <%
+        List<SellBean> otherSellBeanList = sellProcessor.searchSellBeanListWithoutSeller(seller.getSellercode());
+
+        if (otherSellBeanList.size() == 0) {
+    %>
+    <div class="alert alert-info">
+        There is no item other seller sells.
+    </div>
+    <%
+    } else {
+    %>
+    <h1 class="text-center">Other Item List</h1>
+    <ul class="list-group">
+        <li class="list-group-item list-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 class="text-center">
+                        Item name
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        Seller name
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        Brand
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        Price
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        Total price
+                    </h4>
+                </div>
+            </div>
+        </li>
+            <%
+                    for (SellBean sellBean : otherSellBeanList) {
+%>
+        <li class="list-group-item"
+            onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'"
+            style="cursor: hand;">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 class="text-center">
+                        <%=sellBean.getItem().getItemname()%>
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        <%=sellBean.getSeller().getSellername()%>
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        <%=sellBean.getItem().getBrand()%>
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        <%=sellBean.getSell().getPrice()%>
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        <%=sellerProcessor.searchTotalPrice(sellBean.getItem().getItemcode(), sellBean.getSeller().getSellercode())%>
+                    </h4>
+                </div>
+            </div>
+        </li>
+            <%
+                    }
                 }
             }
         }

@@ -41,6 +41,40 @@ public class SellProcessor {
         return null;
     }
 
+    /**
+     * 주어진 판매자가 판매하지 않는 상품 중 BEST 10 을 검색한다.
+     *
+     * @param target 제외하고자 하는 판매자 sellercode
+     * @return BEST 10 리스트
+     */
+    public List<SellBean> searchSellBeanListWithoutSeller(int target) {
+        List<SellBean> sellBeanList = Lists.newArrayList();
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT itemcode, sellercode FROM pnuips.order NATURAL JOIN pnuips.sell WHERE sellercode<>? GROUP BY itemcode, sellercode ORDER BY SUM(price * count * (100-discount)/100) DESC LIMIT 10");
+            ps.setInt(1, target);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int itemcode = rs.getInt("itemcode");
+                int sellercode = rs.getInt("sellercode");
+
+                SellBean sellBean = searchSellBean(itemcode, sellercode);
+                sellBeanList.add(sellBean);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to search sell bean list without seller. sellercode=" + target, e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return sellBeanList;
+    }
+
     public List<SellBean> searchSellBeanListOfSeller(int sellercode) {
         List<SellBean> sellBeanList = Lists.newArrayList();
 

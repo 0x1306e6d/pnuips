@@ -77,4 +77,53 @@ public class SellerProcessor {
 
         return count;
     }
+
+    public int searchTotalPrice(int sellercode) {
+        int price = 0;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT SUM(price * count * (100 - discount) / 100) FROM pnuips.order NATURAL JOIN pnuips.sell WHERE sellercode=?");
+            ps.setInt(1, sellercode);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                price += rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to search total price of seller. sellercode=" + sellercode, e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return price;
+    }
+
+    public int searchTotalPrice(int itemcode, int sellercode) {
+        int price = 0;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT SUM(price * count * (100 - discount) / 100) FROM pnuips.order NATURAL JOIN pnuips.sell WHERE itemcode=? AND sellercode=?");
+            ps.setInt(1, itemcode);
+            ps.setInt(2, sellercode);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                price += rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to search total price of seller. sellercode=" + sellercode, e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return price;
+    }
 }
