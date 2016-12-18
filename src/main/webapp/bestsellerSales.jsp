@@ -31,7 +31,14 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="index.jsp">Home</a></li>
-                <li class="active"><a href="#">Best Seller</a></li>
+                <li class="dropdown active">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Best Seller<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="active"><a href="bestsellerSales.jsp">By numbef of sales</a></li>
+                        <li><a href="bestsellerTime.jsp">Between time</a></li>
+                    </ul>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
@@ -62,18 +69,21 @@
     </div>
 </nav>
 <div class="container">
-
-    <form action="bestseller.jsp" method="get">
-        <div class="form-group">
-            <label for="limit">limit</label>
-            <select id="limit" class="form-control" name="limit">
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-            </select>
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <form action="bestsellerSales.jsp" method="get">
+                <div class="form-group">
+                    <label for="limit">limit</label>
+                    <select id="limit" class="form-control" name="limit">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                    </select>
+                </div>
+                <button class="btn btn-default btn-block" type="submit">search</button>
+            </form>
         </div>
-        <button class="btn btn-default btn-block" type="submit">search</button>
-    </form>
+    </div>
     <%
         List<SellBean> sellBeanList = sellProcessor.searchBestSellBeanList(limit);
 
