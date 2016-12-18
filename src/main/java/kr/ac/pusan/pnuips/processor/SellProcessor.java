@@ -179,13 +179,16 @@ public class SellProcessor {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item WHERE time > ? AND time < ? ORDER BY numberOfSales DESC LIMIT 3");
+            ps = con.prepareStatement("SELECT itemcode, sellercode, SUM(count) FROM pnuips.order NATURAL JOIN pnuips.item WHERE time > ? AND time < ? GROUP BY itemcode, sellercode ORDER BY sum DESC LIMIT 3");
             ps.setTimestamp(1, Timestamp.valueOf(start));
             ps.setTimestamp(2, Timestamp.valueOf(end));
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                SellBean sellBean = getSellBeanFromResultSet(rs);
+                int itemcode = rs.getInt("itemcode");
+                int sellercode = rs.getInt("sellercode");
+
+                SellBean sellBean = searchSellBean(itemcode, sellercode);
                 sellBeanList.add(sellBean);
             }
         } catch (SQLException e) {

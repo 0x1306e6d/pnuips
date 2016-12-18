@@ -1,15 +1,26 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
-<%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    String start = StringUtils.EMPTY;
-    String end = StringUtils.EMPTY;
-    if (request.getParameter("start") != null) {
-        start = (String) request.getParameter("start");
+    StringBuilder start = new StringBuilder();
+    if (request.getParameter("startDate") != null
+            && request.getParameter("startHour") != null
+            && request.getParameter("startMinute") != null
+            && request.getParameter("startSecond") != null) {
+        start.append(request.getParameter("startDate")).append(' ');
+        start.append(request.getParameter("startHour")).append(':');
+        start.append(request.getParameter("startMinute")).append(':');
+        start.append(request.getParameter("startSecond"));
     }
-    if (request.getParameter("end") != null) {
-        end = (String) request.getParameter("end");
+    StringBuilder end = new StringBuilder();
+    if (request.getParameter("endDate") != null
+            && request.getParameter("endHour") != null
+            && request.getParameter("endMinute") != null
+            && request.getParameter("endSecond") != null) {
+        end.append(request.getParameter("endDate")).append(' ');
+        end.append(request.getParameter("endHour")).append(':');
+        end.append(request.getParameter("endMinute")).append(':');
+        end.append(request.getParameter("endSecond"));
     }
 %>
 <jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
@@ -75,18 +86,56 @@
 </nav>
 <div class="container">
     <div class="row">
-        <div class="col-md-offset-3 col-md-6">
+        <div class="col-md-offset-2 col-md-8">
             <form class="form-horizontal" action="bestsellerTime.jsp" method="get">
                 <div class="form-group">
-                    <label class="control-label col-md-2" for="start">start</label>
-                    <div class="col-md-10">
-                        <input id="start" class="form-control" type="datetime-local" name="start">
+                    <div class="col-md-offset-1 col-md-10">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="startDate">startDate</label>
+                                <input id="startDate" class="form-control" type="date" name="startDate" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="startHour">startHour</label>
+                                <input id="startHour" class="form-control" type="number" name="startHour" min="0"
+                                       max="23" value="0" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="startMinute">startMinute</label>
+                                <input id="startMinute" class="form-control" type="number" name="startMinute" min="0"
+                                       max="59" value="0" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="startSecond">startSecond</label>
+                                <input id="startSecond" class="form-control" type="number" name="startSecond" min="0"
+                                       max="59" value="0" required>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-2" for="end">end</label>
-                    <div class="col-md-10">
-                        <input id="end" class="form-control" type="datetime-local" name="end">
+                    <div class="col-md-offset-1 col-md-10">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="endDate">endDate</label>
+                                <input id="endDate" class="form-control" type="date" name="endDate" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="endHour">endHour</label>
+                                <input id="endHour" class="form-control" type="number" name="endHour" min="0" max="23"
+                                       value="0" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="endMinute">endMinute</label>
+                                <input id="endMinute" class="form-control" type="number" name="endMinute" min="0"
+                                       max="59" value="0" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="endSecond">endSecond</label>
+                                <input id="endSecond" class="form-control" type="number" name="endSecond" min="0"
+                                       max="59" value="0" required>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <button class="btn btn-default btn-block" type="submit">search</button>
@@ -95,7 +144,7 @@
     </div>
 
     <%
-        List<SellBean> sellBeanList = sellProcessor.searchBestSellBeanListBetweenTime(start, end);
+        List<SellBean> sellBeanList = sellProcessor.searchBestSellBeanListBetweenTime(start.toString(), end.toString());
 
         if (sellBeanList.size() == 0) {
     %>
