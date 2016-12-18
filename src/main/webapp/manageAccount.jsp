@@ -59,6 +59,7 @@
                     <ul class="dropdown-menu">
                         <li class="active"><a href="#">Account</a></li>
                         <li><a href="manageSeller.jsp">Seller</a></li>
+                        <li><a href="manageStock.jsp">Stock</a></li>
                     </ul>
                 </li>
             </ul>

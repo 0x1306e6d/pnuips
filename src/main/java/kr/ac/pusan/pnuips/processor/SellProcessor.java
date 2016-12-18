@@ -234,6 +234,35 @@ public class SellProcessor {
         return sellBeanList;
     }
 
+    /**
+     * 장바구니의 총 합보다 재고가 작은 상품의 목록을 찾는다.
+     *
+     * @return 상품 목록
+     */
+    public List<SellBean> searchSellBeanWithSoldOutRisk() {
+        List<SellBean> sellBeanList = Lists.newArrayList();
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT * FROM ((pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item) sellbean WHERE numberOfStock < (SELECT SUM(count) FROM pnuips.cart WHERE itemcode=sellbean.itemcode AND sellercode=sellbean.sellercode)");
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                SellBean sellBean = getSellBeanFromResultSet(rs);
+                sellBeanList.add(sellBean);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to search sold out risk sells.", e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return sellBeanList;
+    }
+
     private SellBean getSellBeanFromResultSet(ResultSet rs) throws SQLException {
         SellBean sellBean = new SellBean();
 

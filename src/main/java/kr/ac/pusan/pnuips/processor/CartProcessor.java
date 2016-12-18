@@ -17,6 +17,12 @@ public class CartProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(CartProcessor.class);
 
+    /**
+     * 사용자의 장바구니 목록을 구한다.
+     *
+     * @param owener 사용자의 email
+     * @return 장바구니 목록
+     */
     public List<Cart> searchCartListByOwener(String owener) {
         List<Cart> cartList = Lists.newArrayList();
 
@@ -45,5 +51,37 @@ public class CartProcessor {
         }
 
         return cartList;
+    }
+
+    /**
+     * 사용자가 장바구니에 담은 상품의 총 개수를 구한다.
+     *
+     * @param itemcode   상품의 itemcode
+     * @param sellercode 상품 판매자의 sellercode
+     * @return 총 개수
+     */
+    public int getTotalCartCount(int itemcode, int sellercode) {
+        int count = 0;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT SUM(count) FROM pnuips.cart WHERE itemcode=? AND sellercode=?");
+            ps.setInt(1, itemcode);
+            ps.setInt(2, sellercode);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                count += rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to get total cart count. itemcode=" + itemcode + ", sellercode=" + sellercode, e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return count;
     }
 }
