@@ -1,21 +1,20 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
-<%@ page import="kr.ac.pusan.pnuips.bean.SigninBean" %>
 <%@ page import="kr.ac.pusan.pnuips.model.account.Account" %>
 <%@ page import="kr.ac.pusan.pnuips.model.cart.Cart" %>
 <%@ page import="kr.ac.pusan.pnuips.model.coupon.CouponType" %>
 <%@ page import="kr.ac.pusan.pnuips.model.item.Item" %>
 <%@ page import="kr.ac.pusan.pnuips.model.order.Order" %>
 <%@ page import="kr.ac.pusan.pnuips.model.sell.Seller" %>
+<%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    if (session.getAttribute("signin") == null) {
-        response.sendRedirect("index.jsp");
-        return;
+    String email = StringUtils.EMPTY;
+    if (request.getParameter("email") != null) {
+        email = (String) request.getParameter("email");
     }
-    SigninBean signinBean = (SigninBean) session.getAttribute("signin");
 %>
 <jsp:useBean id="orderProcessor" class="kr.ac.pusan.pnuips.processor.OrderProcessor"/>
 <jsp:useBean id="itemProcessor" class="kr.ac.pusan.pnuips.processor.ItemProcessor"/>
@@ -26,7 +25,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>My Page</title>
+    <title>Manage Account</title>
 
     <jsp:include page="header.jsp"/>
 </head>
@@ -54,11 +53,11 @@
                         <li><a href="bestsellerTime.jsp">Between time</a></li>
                     </ul>
                 </li>
-                <li class="dropdown">
+                <li class="dropdown active">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="manageAccount.jsp">Account</a></li>
+                        <li class="active"><a href="#">Account</a></li>
                         <li><a href="manageSeller.jsp">Seller</a></li>
                         <li><a href="manageStock.jsp">Stock</a></li>
                     </ul>
@@ -75,17 +74,41 @@
                         </button>
                     </form>
                 </li>
-                <li class="active"><a href="#"><span class="glyphicon glyphicon-user"></span> My Page</a></li>
+                <%
+                    if (session.getAttribute("signin") == null) {
+                %>
+                <li><a href="signin.jsp"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
+                <li><a href="signup.jsp"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
+                <%
+                } else {
+                %>
+                <li><a href="mypage.jsp"><span class="glyphicon glyphicon-user"></span> My Page</a></li>
                 <li><a href="signout.jsp"><span class="glyphicon glyphicon-log-out"></span> Sign out</a></li>
+                <%
+                    }
+                %>
             </ul>
         </div>
     </div>
 </nav>
 <div class="container">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <form action="manageAccount.jsp" method="get">
+                <div class="form-group">
+                    <label for="email">email</label>
+                    <input id="email" class="form-control" type="email" name="email" value="<%=email%>">
+                </div>
+                <button class="btn btn-default btn-block" type="submit">search</button>
+            </form>
+        </div>
+    </div>
     <%
         try {
-            Account account = new Account(signinBean.getEmail());
-            account.load();
+            Account account = new Account(email);
+            if (StringUtils.isNotEmpty(email) && account.isExist()) {
+                try {
+                    account.load();
     %>
     <div class="row">
         <div class="col-md-6">
@@ -132,7 +155,7 @@
     %>
     <br>
     <%
-        List<Order> orderList = orderProcessor.searchOrderList(signinBean.getEmail());
+        List<Order> orderList = orderProcessor.searchOrderList(email);
 
         if (orderList.size() == 0) {
     %>
@@ -248,7 +271,7 @@
     %>
     <br>
     <%
-        List<Cart> cartList = cartProcessor.searchCartListByOwener(signinBean.getEmail());
+        List<Cart> cartList = cartProcessor.searchCartListByOwener(email);
 
         if (cartList.size() == 0) {
     %>
@@ -335,7 +358,7 @@
     %>
     <br>
     <%
-        List<CouponType> couponTypeList = couponProcessor.searchCouponList(signinBean.getEmail());
+        List<CouponType> couponTypeList = couponProcessor.searchCouponList(email);
 
         if (couponTypeList.size() == 0) {
     %>
@@ -382,6 +405,25 @@
             }
         %>
     </ul>
+    <%
+        }
+    } else {
+        if (StringUtils.isNotEmpty(email)) {
+    %>
+    <div class="alert alert-info">
+        <p>Account <strong><%=email%>
+        </strong> is not exist</p>
+    </div>
+    <%
+            }
+        }
+    } catch (SQLException e) {
+        LoggerFactory.getLogger(page.getClass()).error("Failed to load Account.", e);
+    %>
+    <div class="alert alert-error">
+        <strong>Error</strong>
+        <p>Failed to find account data</p>
+    </div>
     <%
         }
     %>

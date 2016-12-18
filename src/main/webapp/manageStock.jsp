@@ -1,21 +1,17 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
 <%@ page import="java.util.List" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
-<%
-    int start = 0;
-    if (request.getParameter("start") != null) {
-        start = Integer.parseInt(request.getParameter("start").toString());
-    }
-%>
+<jsp:useBean id="cartProcessor" class="kr.ac.pusan.pnuips.processor.CartProcessor"/>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>PNUIPS</title>
+    <title>Manage Stock</title>
 
     <jsp:include page="header.jsp"/>
 </head>
 <body>
-<nav class="navbar navbar-inverse" style="margin-bottom: 0">
+<nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
             <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar"
@@ -29,7 +25,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
+                <li><a href="index.jsp">Home</a></li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Best Seller<span class="caret"></span>
                     </a>
@@ -38,13 +34,13 @@
                         <li><a href="bestsellerTime.jsp">Between time</a></li>
                     </ul>
                 </li>
-                <li class="dropdown">
+                <li class="dropdown active">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="manageAccount.jsp">Account</a></li>
-                        <li><a href="manageSeller.jsp">Seller</a></li>
-                        <li><a href="manageStock.jsp">Stock</a></li>
+                        <li><a href="manageStock.jsp">Seller</a></li>
+                        <li class="active"><a href="#">Stock</a></li>
                     </ul>
                 </li>
             </ul>
@@ -76,24 +72,43 @@
         </div>
     </div>
 </nav>
-<div class="jumbotron text-center" style="margin-top: 0;">
-    <h1>PNUIPS</h1>
-    <p>PNU Item Purchase System</p>
-</div>
 <div class="container">
     <%
-        List<SellBean> sellBeanList = sellProcessor.searchSellBeanList(start);
+        List<SellBean> sellBeanList = sellProcessor.searchSellBeanWithSoldOutRisk();
 
         if (sellBeanList.size() == 0) {
     %>
     <div class="alert alert-info">
-        There is no item.
+        There is no sell with sold-out risk.
     </div>
     <%
     } else {
     %>
-    <h1 class="text-center">Item List</h1>
     <ul class="list-group">
+        <li class="list-group-item list-header">
+            <div class="row">
+                <div class="col-md-5">
+                    <h4 class="text-center">
+                        Item name
+                    </h4>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        Seller name
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        Number of Stock
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        Number of Cart
+                    </h4>
+                </div>
+            </div>
+        </li>
         <%
             for (SellBean sellBean : sellBeanList) {
         %>
@@ -113,30 +128,16 @@
                 </div>
                 <div class="col-md-2">
                     <h4 class="text-center">
-                        <%=sellBean.getItem().getBrand()%>
+                        <%=sellBean.getSell().getNumberOfStock()%>
                     </h4>
                 </div>
                 <div class="col-md-2">
                     <h4 class="text-center">
-                        <%=sellBean.getSell().getPrice()%>
+                        <%=cartProcessor.getTotalCartCount(sellBean.getItem().getItemcode(), sellBean.getSeller().getSellercode())%>
                     </h4>
                 </div>
             </div>
         </li>
-        <%
-            }
-        %>
-    </ul>
-    <ul class="pager">
-        <%
-            if (start > 0) {
-        %>
-        <li><a href="index.jsp?start=<%=Math.max(start - 20, 0)%>">Previous</a></li>
-        <%
-            }
-            if (sellBeanList.size() == 20) {
-        %>
-        <li><a href="index.jsp?start=<%=start + 20%>">Next</a></li>
         <%
             }
         %>

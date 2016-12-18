@@ -41,6 +41,40 @@ public class SellProcessor {
         return null;
     }
 
+    /**
+     * 주어진 판매자가 판매하지 않는 상품 중 BEST 10 을 검색한다.
+     *
+     * @param target 제외하고자 하는 판매자 sellercode
+     * @return BEST 10 리스트
+     */
+    public List<SellBean> searchSellBeanListWithoutSeller(int target) {
+        List<SellBean> sellBeanList = Lists.newArrayList();
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT itemcode, sellercode FROM pnuips.order NATURAL JOIN pnuips.sell WHERE sellercode<>? GROUP BY itemcode, sellercode ORDER BY SUM(price * count * (100-discount)/100) DESC LIMIT 10");
+            ps.setInt(1, target);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int itemcode = rs.getInt("itemcode");
+                int sellercode = rs.getInt("sellercode");
+
+                SellBean sellBean = searchSellBean(itemcode, sellercode);
+                sellBeanList.add(sellBean);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to search sell bean list without seller. sellercode=" + target, e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return sellBeanList;
+    }
+
     public List<SellBean> searchSellBeanListOfSeller(int sellercode) {
         List<SellBean> sellBeanList = Lists.newArrayList();
 
@@ -193,6 +227,35 @@ public class SellProcessor {
             }
         } catch (SQLException e) {
             logger.error("Failed to search best sell bean list between time. start=" + start + ", end=" + end, e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return sellBeanList;
+    }
+
+    /**
+     * 장바구니의 총 합보다 재고가 작은 상품의 목록을 찾는다.
+     *
+     * @return 상품 목록
+     */
+    public List<SellBean> searchSellBeanWithSoldOutRisk() {
+        List<SellBean> sellBeanList = Lists.newArrayList();
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT * FROM ((pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item) sellbean WHERE numberOfStock < (SELECT SUM(count) FROM pnuips.cart WHERE itemcode=sellbean.itemcode AND sellercode=sellbean.sellercode)");
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                SellBean sellBean = getSellBeanFromResultSet(rs);
+                sellBeanList.add(sellBean);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to search sold out risk sells.", e);
         } finally {
             DbUtils.closeQuietly(con, ps, rs);
         }
