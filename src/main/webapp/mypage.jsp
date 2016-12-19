@@ -114,6 +114,12 @@
                         <%=account.getGrade()%>
                     </h4>
                 </li>
+                <li class="list-group-item">
+                    <label for="totalPrice">total price</label>
+                    <h4 id="totalPrice" class="text-center">
+                        <%=account.getTotalPrice()%>
+                    </h4>
+                </li>
             </ul>
         </div>
     </div>
