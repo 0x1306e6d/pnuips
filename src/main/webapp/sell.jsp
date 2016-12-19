@@ -167,7 +167,7 @@
     <div id="add-cart-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="addCartProcess.jsp" method="post">
+                <form action="addCart.jsp" method="post">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">Add cart</h4>

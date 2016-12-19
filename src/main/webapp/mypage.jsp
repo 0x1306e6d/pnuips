@@ -262,7 +262,7 @@
     <ul class="list-group">
         <li class="list-group-item list-header">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <h4 class="text-center">
                         Item name
                     </h4>
@@ -285,11 +285,11 @@
                 Seller seller = sellerProcessor.searchSeller(cart.getSellercode());
 
         %>
-        <li class="list-group-item"
-            onclick="location.href='sell.jsp?itemcode=<%=cart.getItemcode()%>&sellercode=<%=cart.getSellercode()%>'"
-            style="cursor: hand;">
+        <li class="list-group-item">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4"
+                     onclick="location.href='sell.jsp?itemcode=<%=cart.getItemcode()%>&sellercode=<%=cart.getSellercode()%>'"
+                     style="cursor: hand;">
                     <h4 class="text-center">
                         <%
                             if (item == null) {
@@ -304,7 +304,9 @@
                         %>
                     </h4>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4"
+                     onclick="location.href='seller.jsp?sellercode=<%=cart.getSellercode()%>'"
+                     style="cursor: hand;">
                     <h4 class="text-center">
                         <%
                             if (seller == null) {
@@ -323,6 +325,12 @@
                     <h4 class="text-center">
                         <%=cart.getCount()%>
                     </h4>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-default" type="button"
+                            onclick="location.href='removeCart.jsp?itemcode=<%=cart.getItemcode()%>&sellercode=<%=cart.getSellercode()%>'">
+                        remove
+                    </button>
                 </div>
             </div>
         </li>
