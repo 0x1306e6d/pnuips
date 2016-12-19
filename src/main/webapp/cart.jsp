@@ -1,12 +1,23 @@
-<%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
+<%@ page import="kr.ac.pusan.pnuips.bean.SigninBean" %>
+<%@ page import="kr.ac.pusan.pnuips.model.cart.Cart" %>
+<%@ page import="kr.ac.pusan.pnuips.model.item.Item" %>
+<%@ page import="kr.ac.pusan.pnuips.model.sell.Seller" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
+<%
+    if (session.getAttribute("signin") == null) {
+        response.sendRedirect("signin.jsp");
+        return;
+    }
+    SigninBean signinBean = (SigninBean) session.getAttribute("signin");
+%>
 <jsp:useBean id="cartProcessor" class="kr.ac.pusan.pnuips.processor.CartProcessor"/>
+<jsp:useBean id="itemProcessor" class="kr.ac.pusan.pnuips.processor.ItemProcessor"/>
+<jsp:useBean id="sellerProcessor" class="kr.ac.pusan.pnuips.processor.SellerProcessor"/>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Manage Stock</title>
+    <title>Cart</title>
 
     <jsp:include page="header.jsp"/>
 </head>
@@ -34,13 +45,13 @@
                         <li><a href="bestsellerTime.jsp">Between time</a></li>
                     </ul>
                 </li>
-                <li class="dropdown active">
+                <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="manageAccount.jsp">Account</a></li>
                         <li><a href="manageSeller.jsp">Seller</a></li>
-                        <li class="active"><a href="#">Stock</a></li>
+                        <li><a href="manageStock.jsp">Stock</a></li>
                     </ul>
                 </li>
             </ul>
@@ -55,89 +66,70 @@
                         </button>
                     </form>
                 </li>
-                <%
-                    if (session.getAttribute("signin") == null) {
-                %>
-                <li><a href="signin.jsp"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
-                <li><a href="signup.jsp"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
-                <%
-                } else {
-                %>
                 <li><a href="mypage.jsp"><span class="glyphicon glyphicon-user"></span> My Page</a></li>
-                <li><a href="cart.jsp"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+                <li class="active"><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
                 <li><a href="signout.jsp"><span class="glyphicon glyphicon-log-out"></span> Sign out</a></li>
-                <%
-                    }
-                %>
             </ul>
         </div>
     </div>
 </nav>
 <div class="container">
     <%
-        List<SellBean> sellBeanList = sellProcessor.searchSellBeanWithSoldOutRisk();
+        List<Cart> cartList = cartProcessor.searchCartListByOwener(signinBean.getEmail());
 
-        if (sellBeanList.size() == 0) {
+        if (cartList.size() == 0) {
     %>
     <div class="alert alert-info">
-        There is no sell with sold-out risk.
+        There is no cart.
     </div>
     <%
     } else {
     %>
-    <h1 class="text-center">Item List</h1>
-    <h4 class="text-center">카트에 담긴 수가 재고보다 더 많은 상품 목록입니다.</h4>
     <ul class="list-group">
-        <li class="list-group-item list-header">
-            <div class="row">
-                <div class="col-md-5">
-                    <h4 class="text-center">
-                        Item name
-                    </h4>
-                </div>
-                <div class="col-md-3">
-                    <h4 class="text-center">
-                        Seller name
-                    </h4>
-                </div>
-                <div class="col-md-2">
-                    <h4 class="text-center">
-                        Number of Stock
-                    </h4>
-                </div>
-                <div class="col-md-2">
-                    <h4 class="text-center">
-                        Number of Cart
-                    </h4>
-                </div>
-            </div>
-        </li>
         <%
-            for (SellBean sellBean : sellBeanList) {
+            for (Cart cart : cartList) {
+                Item item = itemProcessor.searchItem(cart.getItemcode());
+                Seller seller = sellerProcessor.searchSeller(cart.getSellercode());
         %>
-        <li class="list-group-item"
-            onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'"
-            style="cursor: hand;">
+        <li class="list-group-item">
             <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <h4 class="text-center">
-                        <%=sellBean.getItem().getItemname()%>
+                        <%
+                            if (item == null) {
+                        %>
+                        Unknown
+                        <%
+                        } else {
+                        %>
+                        <%=item.getItemname()%>
+                        <%
+                            }
+                        %>
                     </h4>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <h4 class="text-center">
-                        <%=sellBean.getSeller().getSellername()%>
+                        <%
+                            if (seller == null) {
+                        %>
+                        Unknown
+                        <%
+                        } else {
+                        %>
+                        <%=seller.getSellername()%>
+                        <%
+                            }
+                        %>
                     </h4>
                 </div>
                 <div class="col-md-2">
                     <h4 class="text-center">
-                        <%=sellBean.getSell().getNumberOfStock()%>
+                        <%=cart.getCount()%>
                     </h4>
                 </div>
                 <div class="col-md-2">
-                    <h4 class="text-center">
-                        <%=cartProcessor.getTotalCartCount(sellBean.getItem().getItemcode(), sellBean.getSeller().getSellercode())%>
-                    </h4>
+                    <input class="form-control" type="checkbox">
                 </div>
             </div>
         </li>
