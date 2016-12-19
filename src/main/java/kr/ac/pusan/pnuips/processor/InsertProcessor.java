@@ -129,14 +129,29 @@ public class InsertProcessor {
         return InsertProcessorResult.SUCCESS;
     }
 
+    public void updateTotalPrice() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("UPDATE pnuips.account SET totalPrice=COALESCE((SELECT SUM(price * count * (100 - discount) / 100) FROM pnuips.order NATURAL JOIN pnuips.sell WHERE purchaser=pnuips.account.email), 0)");
+            ps.executeUpdate();
+            logger.info("Update total price.");
+        } finally {
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
+        }
+    }
+
     public void setVIPGrade() throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("UPDATE pnuips.account SET grade=1 WHERE 200000 < (SELECT SUM(price * count * (100 - discount) / 100) FROM pnuips.order NATURAL JOIN pnuips.sell WHERE purchaser=pnuips.account.email)");
-            ps.executeUpdate();
-            logger.info("Set VIP Grade.");
+            ps = con.prepareStatement("UPDATE pnuips.account SET grade=1 WHERE totalPrice > 200000");
+            int row = ps.executeUpdate();
+            logger.info("Set VIP grade {} accounts.", row);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -148,9 +163,9 @@ public class InsertProcessor {
         PreparedStatement ps = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("UPDATE pnuips.account SET grade=2 WHERE 500000 < (SELECT SUM(price * count * (100 - discount) / 100) FROM pnuips.order NATURAL JOIN pnuips.sell WHERE purchaser=pnuips.account.email)");
-            ps.executeUpdate();
-            logger.info("Set VVIP Grade.");
+            ps = con.prepareStatement("UPDATE pnuips.account SET grade=2 WHERE totalPrice > 500000");
+            int row = ps.executeUpdate();
+            logger.info("Set VVIP grade {} accounts.", row);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
