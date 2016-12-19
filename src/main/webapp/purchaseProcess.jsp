@@ -9,6 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:useBean id="purchaseProcess" class="kr.ac.pusan.pnuips.processor.PurchaseProcessor"/>
 <jsp:useBean id="couponProcessor" class="kr.ac.pusan.pnuips.processor.CouponProcessor"/>
+<jsp:useBean id="accountProcessor" class="kr.ac.pusan.pnuips.processor.AccountProcessor"/>
 <%
     if (session.getAttribute("signin") == null) {
         response.sendRedirect("signin.jsp");
