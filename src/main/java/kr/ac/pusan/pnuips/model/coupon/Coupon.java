@@ -3,6 +3,8 @@ package kr.ac.pusan.pnuips.model.coupon;
 import kr.ac.pusan.pnuips.DatabaseManager;
 import kr.ac.pusan.pnuips.model.Model;
 import org.apache.commons.dbutils.DbUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,8 +13,18 @@ import java.sql.SQLException;
 
 public class Coupon implements Model {
 
+    private static final Logger logger = LoggerFactory.getLogger(Coupon.class);
+
     private int type;
     private String owener;
+
+    public Coupon() {
+    }
+
+    public Coupon(int type, String owener) {
+        this.type = type;
+        this.owener = owener;
+    }
 
     public int getType() {
         return type;
@@ -40,6 +52,8 @@ public class Coupon implements Model {
             ps.setInt(1, type);
             ps.setString(2, owener);
             ps.executeUpdate();
+
+            logger.debug("Insert coupon. coupon={}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -66,6 +80,8 @@ public class Coupon implements Model {
             ps.setInt(1, type);
             ps.setString(2, owener);
             ps.executeUpdate();
+
+            logger.debug("Delete coupon. coupon={}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);

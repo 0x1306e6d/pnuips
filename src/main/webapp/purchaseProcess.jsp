@@ -52,6 +52,7 @@
 
         try {
             purchaseProcess.purchase(itemcode, sellercode, signinBean.getEmail(), count, discount);
+            couponProcessor.deleteCoupons(signinBean.getEmail(), coupons);
 
             response.sendRedirect("mypage.jsp");
         } catch (SQLException e) {

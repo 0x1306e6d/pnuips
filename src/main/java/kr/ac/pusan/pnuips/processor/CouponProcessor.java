@@ -2,6 +2,7 @@ package kr.ac.pusan.pnuips.processor;
 
 import com.google.common.collect.Lists;
 import kr.ac.pusan.pnuips.DatabaseManager;
+import kr.ac.pusan.pnuips.model.coupon.Coupon;
 import kr.ac.pusan.pnuips.model.coupon.CouponType;
 import org.apache.commons.dbutils.DbUtils;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 public class CouponProcessor {
 
@@ -43,6 +45,13 @@ public class CouponProcessor {
         }
 
         return couponList;
+    }
+
+    public void deleteCoupons(String owener, Set<Integer> coupons) throws SQLException {
+        for (Integer couponType : coupons) {
+            Coupon coupon = new Coupon(couponType, owener);
+            coupon.delete();
+        }
     }
 
     public int getDiscount(int couponType) {
