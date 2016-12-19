@@ -263,6 +263,15 @@ public class SellProcessor {
         return sellBeanList;
     }
 
+    public void increaseSalesCount(int itemcode, int sellercode, int count) throws SQLException {
+        Sell sell = new Sell(itemcode, sellercode);
+        sell.load();
+
+        sell.setNumberOfSales(sell.getNumberOfSales() + count);
+        sell.setNumberOfStock(sell.getNumberOfStock() - count);
+        sell.update();
+    }
+
     private SellBean getSellBeanFromResultSet(ResultSet rs) throws SQLException {
         SellBean sellBean = new SellBean();
 

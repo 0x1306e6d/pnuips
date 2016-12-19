@@ -2,6 +2,7 @@ ALTER TABLE pnuips.sell DROP CONSTRAINT sell_itemcode_fkey;
 ALTER TABLE pnuips.sell DROP CONSTRAINT sell_sellercode_fkey;
 ALTER TABLE pnuips.cart DROP CONSTRAINT cart_owener_fkey;
 ALTER TABLE pnuips.cart DROP CONSTRAINT cart_itemcode_fkey;
+ALTER TABLE pnuips.cart DROP CONSTRAINT cart_sellercode_fkey;
 ALTER TABLE pnuips.order DROP CONSTRAINT order_itemcode_fkey;
 ALTER TABLE pnuips.order DROP CONSTRAINT order_sellercode_fkey;
 ALTER TABLE pnuips.order DROP CONSTRAINT order_purchaser_fkey;
@@ -66,7 +67,7 @@ CREATE TABLE pnuips.order (
     count INTEGER NOT NULL DEFAULT 0,
     discount INTEGER NOT NULL DEFAULT 0,
     time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(itemcode, sellercode, purchaser),
+    PRIMARY KEY(itemcode, sellercode, purchaser, time),
     FOREIGN KEY(itemcode) REFERENCES pnuips.item(itemcode) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(sellercode) REFERENCES pnuips.seller(sellercode) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(purchaser) REFERENCES pnuips.account(email) ON DELETE CASCADE ON UPDATE CASCADE

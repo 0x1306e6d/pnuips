@@ -7,10 +7,7 @@ import org.apache.commons.dbutils.DbUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 public class OrderProcessor {
@@ -65,6 +62,21 @@ public class OrderProcessor {
         }
 
         return orderList;
+    }
+
+    public Order purchase(int itemcode, int sellercode, String purchaser, int count, int discount) {
+        try {
+            Order order = new Order(itemcode, sellercode, purchaser);
+            order.setCount(count);
+            order.setDiscount(discount);
+            order.setTime(new Timestamp(System.currentTimeMillis()));
+            order.insert();
+
+            return order;
+        } catch (SQLException e) {
+            logger.error("Failed to purchase. itemcode=" + itemcode + ", sellercode=" + sellercode + ", purchaser=" + purchaser + ", count=" + count + ", discount=" + discount, e);
+        }
+        return null;
     }
 
     private Order getOrderFromResultSet(ResultSet rs) throws SQLException {

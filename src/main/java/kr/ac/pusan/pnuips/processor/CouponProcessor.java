@@ -44,4 +44,28 @@ public class CouponProcessor {
 
         return couponList;
     }
+
+    public int getDiscount(int couponType) {
+        int discount = 0;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT discount FROM pnuips.couponType WHERE type=?");
+            ps.setInt(1, couponType);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                discount = rs.getInt("discount");
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to get discount. type=" + couponType, e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return discount;
+    }
 }

@@ -3,10 +3,14 @@ package kr.ac.pusan.pnuips.model.order;
 import kr.ac.pusan.pnuips.DatabaseManager;
 import kr.ac.pusan.pnuips.model.Model;
 import org.apache.commons.dbutils.DbUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class Order implements Model {
+
+    private static final Logger logger = LoggerFactory.getLogger(Order.class);
 
     private int itemcode;
     private int sellercode;
@@ -14,6 +18,15 @@ public class Order implements Model {
     private int count;
     private int discount;
     private Timestamp time;
+
+    public Order() {
+    }
+
+    public Order(int itemcode, int sellercode, String purchaser) {
+        this.itemcode = itemcode;
+        this.sellercode = sellercode;
+        this.purchaser = purchaser;
+    }
 
     public int getItemcode() {
         return itemcode;
@@ -77,6 +90,8 @@ public class Order implements Model {
             ps.setInt(5, discount);
             ps.setTimestamp(6, time);
             ps.executeUpdate();
+
+            logger.debug("Insert order. order={}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -100,6 +115,8 @@ public class Order implements Model {
                 count = rs.getInt("count");
                 discount = rs.getInt("discount");
                 time = rs.getTimestamp("time");
+
+                logger.debug("Load order. order={}", this);
             } else {
                 throw new NullPointerException("Order is not exist. itemcode=" + itemcode + ", sellercode=" + sellercode + ", purchaser=" + purchaser);
             }
@@ -122,6 +139,8 @@ public class Order implements Model {
             ps.setInt(5, sellercode);
             ps.setString(6, purchaser);
             ps.executeUpdate();
+
+            logger.debug("Update order. order={}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -139,6 +158,8 @@ public class Order implements Model {
             ps.setInt(2, sellercode);
             ps.setString(3, purchaser);
             ps.executeUpdate();
+
+            logger.debug("Delete order. order={}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
