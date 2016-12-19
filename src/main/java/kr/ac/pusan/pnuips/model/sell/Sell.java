@@ -3,6 +3,8 @@ package kr.ac.pusan.pnuips.model.sell;
 import kr.ac.pusan.pnuips.DatabaseManager;
 import kr.ac.pusan.pnuips.model.Model;
 import org.apache.commons.dbutils.DbUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Sell implements Model {
+
+    private static final Logger logger = LoggerFactory.getLogger(Sell.class);
 
     private int itemcode;
     private int sellercode;
@@ -79,6 +83,8 @@ public class Sell implements Model {
             ps.setInt(4, numberOfStock);
             ps.setInt(5, numberOfSales);
             ps.executeUpdate();
+
+            logger.debug("Insert sell. sell={}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -101,6 +107,8 @@ public class Sell implements Model {
                 price = rs.getInt("price");
                 numberOfStock = rs.getInt("numberOfStock");
                 numberOfSales = rs.getInt("numberOfSales");
+
+                logger.debug("Load sell. sell={}", this);
             } else {
                 throw new NullPointerException("Sell is not exist. itemcode=" + itemcode + ", sellercode=" + sellercode);
             }
@@ -122,6 +130,8 @@ public class Sell implements Model {
             ps.setInt(4, itemcode);
             ps.setInt(5, sellercode);
             ps.executeUpdate();
+
+            logger.debug("Update sell. sell={}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -138,6 +148,8 @@ public class Sell implements Model {
             ps.setInt(1, itemcode);
             ps.setInt(2, sellercode);
             ps.executeUpdate();
+
+            logger.debug("Delete sell. sell={}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);

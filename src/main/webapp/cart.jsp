@@ -9,9 +9,9 @@
         response.sendRedirect("signin.jsp");
         return;
     }
+    SigninBean signinBean = (SigninBean) session.getAttribute("signin");
     int cartSize = 0;
     int couponSize = 0;
-    SigninBean signinBean = (SigninBean) session.getAttribute("signin");
 %>
 <jsp:useBean id="cartProcessor" class="kr.ac.pusan.pnuips.processor.CartProcessor"/>
 <jsp:useBean id="itemProcessor" class="kr.ac.pusan.pnuips.processor.ItemProcessor"/>
@@ -101,7 +101,6 @@
     } else {
     %>
     <form action="purchaseProcess.jsp" method="post">
-
         <ul class="list-group">
             <%
                 cartSize = cartList.size();
@@ -128,12 +127,15 @@
                     </div>
                     <div class="col-md-2">
                         <input id="cart-count-<%=i%>"
-                               class="form-control" type="number" name="count" value="<%=cart.getCount()%>" min="1"
+                               class="form-control" type="number" value="<%=cart.getCount()%>"
+                               min="1"
                                max="<%=sell.getSell().getNumberOfStock()%>" onchange="change()">
                     </div>
                     <div class="col-md-1">
                         <input id="cart-checkbox-<%=i%>"
-                               class="form-control" type="checkbox" name="check" onchange="change()">
+                               class="form-control" type="checkbox"
+                               name="cart-<%=sell.getItem().getItemcode()%>-<%=sell.getSeller().getSellercode()%>"
+                               onchange="change()">
                     </div>
                 </div>
             </li>
@@ -173,7 +175,8 @@
                         </h4>
                     </div>
                     <div class="col-md-2">
-                        <input id="coupon-checkbox-<%=i%>" class="form-control" type="checkbox" name="coupon"
+                        <input id="coupon-checkbox-<%=i%>" class="form-control" type="checkbox"
+                               name="coupon-<%=couponType.getType()%>"
                                onchange="change()">
                     </div>
                 </div>
@@ -241,6 +244,8 @@
             if (checked == true) {
                 price += (itemPrice * count);
             }
+
+            $('#cart-checkbox-' + i).val(count);
         }
 
         for (var i = 0; i < <%=couponSize%>; i++) {

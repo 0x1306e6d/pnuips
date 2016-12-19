@@ -34,7 +34,7 @@
 </div>
 <%
     } else {
-        response.sendRedirect("mypage.jsp");
+        response.sendRedirect("cart.jsp");
         return;
     }
 %>

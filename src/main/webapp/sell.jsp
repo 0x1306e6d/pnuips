@@ -105,15 +105,10 @@
                 if (session.getAttribute("signin") != null) {
             %>
             <div class="text-center">
-                <div class="btn-group btn-group-lg">
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#add-cart-modal">
-                        Add cart
-                    </button>
-                    <button type="button" class="btn btn-default"
-                            onclick="location.href='purchase.jsp?itemcode=<%=itemcode%>&sellercode=<%=sellercode%>'">
-                        Purchase
-                    </button>
-                </div>
+                <button type="button" class="btn btn-default btn-block" data-toggle="modal"
+                        data-target="#add-cart-modal">
+                    Add cart
+                </button>
             </div>
             <%
             } else {

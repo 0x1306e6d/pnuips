@@ -2,6 +2,7 @@ package kr.ac.pusan.pnuips.processor;
 
 import com.google.common.collect.Lists;
 import kr.ac.pusan.pnuips.DatabaseManager;
+import kr.ac.pusan.pnuips.model.coupon.Coupon;
 import kr.ac.pusan.pnuips.model.coupon.CouponType;
 import org.apache.commons.dbutils.DbUtils;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 public class CouponProcessor {
 
@@ -43,5 +45,36 @@ public class CouponProcessor {
         }
 
         return couponList;
+    }
+
+    public void deleteCoupons(String owener, Set<Integer> coupons) throws SQLException {
+        for (Integer couponType : coupons) {
+            Coupon coupon = new Coupon(couponType, owener);
+            coupon.delete();
+        }
+    }
+
+    public int getDiscount(int couponType) {
+        int discount = 0;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("SELECT discount FROM pnuips.couponType WHERE type=?");
+            ps.setInt(1, couponType);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                discount = rs.getInt("discount");
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to get discount. type=" + couponType, e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+
+        return discount;
     }
 }
