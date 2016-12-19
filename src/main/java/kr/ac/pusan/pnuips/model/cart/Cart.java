@@ -3,6 +3,8 @@ package kr.ac.pusan.pnuips.model.cart;
 import kr.ac.pusan.pnuips.DatabaseManager;
 import kr.ac.pusan.pnuips.model.Model;
 import org.apache.commons.dbutils.DbUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Cart implements Model {
+
+    private static final Logger logger = LoggerFactory.getLogger(Cart.class);
 
     private int itemcode;
     private int sellercode;
@@ -70,6 +74,8 @@ public class Cart implements Model {
             ps.setString(3, owener);
             ps.setInt(4, count);
             ps.executeUpdate();
+
+            logger.debug("Insert cart. cart={}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -91,6 +97,8 @@ public class Cart implements Model {
 
             if (rs.next()) {
                 count = rs.getInt("count");
+
+                logger.debug("Load cart. cart={}", this);
             } else {
                 throw new NullPointerException("Cart is not exist. owener=" + owener + ", itemcode=" + itemcode);
             }
@@ -111,6 +119,8 @@ public class Cart implements Model {
             ps.setInt(3, sellercode);
             ps.setString(4, owener);
             ps.executeUpdate();
+
+            logger.debug("Update cart. cart={}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -128,6 +138,8 @@ public class Cart implements Model {
             ps.setInt(2, sellercode);
             ps.setString(3, owener);
             ps.executeUpdate();
+
+            logger.debug("Delete cart. cart={}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);

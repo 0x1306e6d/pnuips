@@ -1,11 +1,8 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
 <%@ page import="kr.ac.pusan.pnuips.bean.SigninBean" %>
 <%@ page import="kr.ac.pusan.pnuips.model.account.Account" %>
-<%@ page import="kr.ac.pusan.pnuips.model.cart.Cart" %>
 <%@ page import="kr.ac.pusan.pnuips.model.coupon.CouponType" %>
-<%@ page import="kr.ac.pusan.pnuips.model.item.Item" %>
 <%@ page import="kr.ac.pusan.pnuips.model.order.Order" %>
-<%@ page import="kr.ac.pusan.pnuips.model.sell.Seller" %>
 <%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="java.util.List" %>
@@ -76,6 +73,7 @@
                     </form>
                 </li>
                 <li class="active"><a href="#"><span class="glyphicon glyphicon-user"></span> My Page</a></li>
+                <li><a href="cart.jsp"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
                 <li><a href="signout.jsp"><span class="glyphicon glyphicon-log-out"></span> Sign out</a></li>
             </ul>
         </div>
@@ -235,93 +233,6 @@
                 <div class="col-md-3">
                     <h4 class="text-center">
                         <%=order.getTime()%>
-                    </h4>
-                </div>
-            </div>
-        </li>
-        <%
-            }
-        %>
-    </ul>
-    <%
-        }
-    %>
-    <br>
-    <%
-        List<Cart> cartList = cartProcessor.searchCartListByOwener(signinBean.getEmail());
-
-        if (cartList.size() == 0) {
-    %>
-    <div class="alert alert-info">
-        There is no cart.
-    </div>
-    <%
-    } else {
-    %>
-    <h1 class="text-center">Cart List</h1>
-    <ul class="list-group">
-        <li class="list-group-item list-header">
-            <div class="row">
-                <div class="col-md-6">
-                    <h4 class="text-center">
-                        Item name
-                    </h4>
-                </div>
-                <div class="col-md-4">
-                    <h4 class="text-center">
-                        Seller name
-                    </h4>
-                </div>
-                <div class="col-md-2">
-                    <h4 class="text-center">
-                        Count
-                    </h4>
-                </div>
-            </div>
-        </li>
-        <%
-            for (Cart cart : cartList) {
-                Item item = itemProcessor.searchItem(cart.getItemcode());
-                Seller seller = sellerProcessor.searchSeller(cart.getSellercode());
-
-        %>
-        <li class="list-group-item"
-            onclick="location.href='sell.jsp?itemcode=<%=cart.getItemcode()%>&sellercode=<%=cart.getSellercode()%>'"
-            style="cursor: hand;">
-            <div class="row">
-                <div class="col-md-6">
-                    <h4 class="text-center">
-                        <%
-                            if (item == null) {
-                        %>
-                        Unknown
-                        <%
-                        } else {
-                        %>
-                        <%=item.getItemname()%>
-                        <%
-                            }
-                        %>
-                    </h4>
-                </div>
-                <div class="col-md-4">
-                    <h4 class="text-center">
-                        <%
-                            if (seller == null) {
-                        %>
-                        Unknown
-                        <%
-                        } else {
-                        %>
-                        <%=seller.getSellername()%>
-                        <%
-                            }
-                        %>
-                    </h4>
-                </div>
-                <div class="col-md-2">
-                    <h4 class="text-center">
-                        <%=cart.getCount()%>
                     </h4>
                 </div>
             </div>

@@ -104,4 +104,23 @@ public class CartProcessor {
         }
         return null;
     }
+
+
+    public Cart removeCart(int itemcode, int sellercode, String owener) {
+        logger.debug("Remove cart request : itemcode={}, sellercode={}, owener={}", itemcode, sellercode, owener);
+        try {
+            Cart cart = new Cart(itemcode, sellercode, owener);
+
+            if (cart.isExist()) {
+                cart.delete();
+                return cart;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to remove cart. itemcode=" + itemcode + ", sellercode=" + sellercode + ", owener=" + owener, e);
+        }
+        return null;
+    }
+
 }

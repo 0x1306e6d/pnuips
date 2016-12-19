@@ -71,6 +71,7 @@
                 } else {
                 %>
                 <li><a href="mypage.jsp"><span class="glyphicon glyphicon-user"></span> My Page</a></li>
+                <li><a href="cart.jsp"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
                 <li><a href="signout.jsp"><span class="glyphicon glyphicon-log-out"></span> Sign out</a></li>
                 <%
                     }
@@ -167,7 +168,7 @@
     <div id="add-cart-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="addCartProcess.jsp" method="post">
+                <form action="addCart.jsp" method="post">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">Add cart</h4>

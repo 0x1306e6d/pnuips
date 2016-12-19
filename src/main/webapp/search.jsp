@@ -75,6 +75,7 @@
                 } else {
                 %>
                 <li><a href="mypage.jsp"><span class="glyphicon glyphicon-user"></span> My Page</a></li>
+                <li><a href="cart.jsp"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
                 <li><a href="signout.jsp"><span class="glyphicon glyphicon-log-out"></span> Sign out</a></li>
                 <%
                     }
