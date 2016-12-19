@@ -24,6 +24,7 @@ public class CartProcessor {
      * @return 장바구니 목록
      */
     public List<Cart> searchCartListByOwener(String owener) {
+        logger.debug("Search cart list by owener request. owener={}", owener);
         List<Cart> cartList = Lists.newArrayList();
 
         Connection con = null;
@@ -31,18 +32,12 @@ public class CartProcessor {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT itemcode, sellercode, owener, count FROM pnuips.cart WHERE owener=?");
+            ps = con.prepareStatement("SELECT * FROM pnuips.cart WHERE owener=?");
             ps.setString(1, owener);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                Cart cart = new Cart();
-                cart.setItemcode(rs.getInt("itemcode"));
-                cart.setSellercode(rs.getInt("sellercode"));
-                cart.setOwener(rs.getString("owener"));
-                cart.setCount(rs.getInt("count"));
-
-                cartList.add(cart);
+                cartList.add(Cart.fromResultSet(rs));
             }
         } catch (SQLException e) {
             logger.error("Failed to search cart list. owener=" + owener, e);
@@ -54,13 +49,14 @@ public class CartProcessor {
     }
 
     /**
-     * 사용자가 장바구니에 담은 상품의 총 개수를 구한다.
+     * 해당 상품을 장바구니에 담은 사용자의 총 수를 구한다.
      *
      * @param itemcode   상품의 itemcode
      * @param sellercode 상품 판매자의 sellercode
      * @return 총 개수
      */
     public int getTotalCartCount(int itemcode, int sellercode) {
+        logger.debug("Get total cart count request. itemcode={}, sellercode={}", itemcode, sellercode);
         int count = 0;
 
         Connection con = null;
@@ -85,7 +81,17 @@ public class CartProcessor {
         return count;
     }
 
+    /**
+     * 사용자의 장바구니에 상품을 추가한다.
+     *
+     * @param itemcode   상품의 itemcode
+     * @param sellercode 상품 판매자의 sellercode
+     * @param owener     사용자의 email
+     * @param count      상품 개수
+     * @return 상품 추가를 성공하면 장바구니 객체, 상품 추가를 실패하면 NULL
+     */
     public Cart addCart(int itemcode, int sellercode, String owener, int count) {
+        logger.debug("Add cart request. itemcode={}, sellercode={}, owener={}, count={}", itemcode, sellercode, owener, count);
         try {
             Cart cart = new Cart(itemcode, sellercode, owener);
 
@@ -100,14 +106,22 @@ public class CartProcessor {
 
             return cart;
         } catch (SQLException e) {
-            logger.error("Failed to insert cart. itemcode=" + itemcode + ", sellercode=" + sellercode + ", owener=" + owener + ", count=" + count, e);
+            logger.error("Failed to add cart. itemcode=" + itemcode + ", sellercode=" + sellercode + ", owener=" + owener + ", count=" + count, e);
         }
+
         return null;
     }
 
-
+    /**
+     * 사용자의 장바구니의 상품을 제거한다
+     *
+     * @param itemcode   상품의 itemcode
+     * @param sellercode 상품 판매자의 sellercode
+     * @param owener     사용자의 email
+     * @return 상품 제거를 성공하면 장바구니 객체, 상품 제거를 실패하거나 존재하지 않으면 NULL
+     */
     public Cart removeCart(int itemcode, int sellercode, String owener) {
-        logger.debug("Remove cart request : itemcode={}, sellercode={}, owener={}", itemcode, sellercode, owener);
+        logger.debug("Remove cart request. itemcode={}, sellercode={}, owener={}", itemcode, sellercode, owener);
         try {
             Cart cart = new Cart(itemcode, sellercode, owener);
 

@@ -12,6 +12,17 @@ public class Order implements Model {
 
     private static final Logger logger = LoggerFactory.getLogger(Order.class);
 
+    public static Order fromResultSet(ResultSet rs) throws SQLException {
+        Order order = new Order();
+        order.setItemcode(rs.getInt("itemcode"));
+        order.setSellercode(rs.getInt("sellercode"));
+        order.setPurchaser(rs.getString("purchaser"));
+        order.setCount(rs.getInt("count"));
+        order.setDiscount(rs.getInt("discount"));
+        order.setTime(rs.getTimestamp("time"));
+        return order;
+    }
+
     private int itemcode;
     private int sellercode;
     private String purchaser;

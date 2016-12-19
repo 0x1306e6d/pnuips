@@ -1,5 +1,6 @@
 <%@ page import="com.google.common.collect.Sets" %>
 <%@ page import="kr.ac.pusan.pnuips.bean.SigninBean" %>
+<%@ page import="kr.ac.pusan.pnuips.model.coupon.CouponType" %>
 <%@ page import="org.apache.commons.lang3.tuple.ImmutableTriple" %>
 <%@ page import="org.apache.commons.lang3.tuple.Triple" %>
 <%@ page import="org.slf4j.LoggerFactory" %>
@@ -16,7 +17,7 @@
     }
     SigninBean signinBean = (SigninBean) session.getAttribute("signin");
     Set<Triple<Integer, Integer, Integer>> items = Sets.newHashSet();
-    Set<Integer> coupons = Sets.newHashSet();
+    Set<CouponType> coupons = Sets.newHashSet();
 
     Enumeration names = request.getParameterNames();
     while (names.hasMoreElements()) {
@@ -26,17 +27,22 @@
             int itemcode = Integer.parseInt(codes[1]);
             int sellercode = Integer.parseInt(codes[2]);
             int count = Integer.parseInt(request.getParameter(name).toString());
+
             items.add(new ImmutableTriple<>(itemcode, sellercode, count));
         } else if (name.startsWith("coupon-")) {
             String[] codes = name.split("-");
             int type = Integer.parseInt(codes[1]);
-            coupons.add(type);
+
+            CouponType couponType = couponProcessor.searchCouponType(type);
+            if (couponType != null) {
+                coupons.add(couponType);
+            }
         }
     }
 
     int discount = 0;
-    for (Integer coupon : coupons) {
-        discount += couponProcessor.getDiscount(coupon);
+    for (CouponType couponType : coupons) {
+        discount += couponType.getDiscount();
     }
 %>
 <html>

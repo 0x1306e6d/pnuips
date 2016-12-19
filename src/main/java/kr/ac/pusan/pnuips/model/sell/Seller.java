@@ -15,6 +15,13 @@ public class Seller implements Model {
 
     private static final Logger logger = LoggerFactory.getLogger(Seller.class);
 
+    public static Seller fromResultSet(ResultSet rs) throws SQLException {
+        Seller seller = new Seller();
+        seller.setSellercode(rs.getInt("sellercode"));
+        seller.setSellername(rs.getString("sellername"));
+        return seller;
+    }
+
     private int sellercode;
     private String sellername;
 

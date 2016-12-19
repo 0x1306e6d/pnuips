@@ -19,7 +19,34 @@ public class CouponProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(CouponProcessor.class);
 
-    public List<CouponType> searchCouponList(String owener) {
+    /**
+     * 쿠폰을 검색한다
+     *
+     * @param type 쿠폰의 type
+     * @return 쿠폰 객체
+     */
+    public CouponType searchCouponType(int type) {
+        try {
+            CouponType couponType = new CouponType(type);
+            if (couponType.isExist()) {
+                couponType.load();
+
+                return couponType;
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to search coupon type. type=" + type, e);
+        }
+        return null;
+    }
+
+    /**
+     * 사용자가 보유중인 쿠폰의 목록을 검색한다
+     *
+     * @param owener 사용자 email
+     * @return 쿠폰 목록
+     */
+    public List<CouponType> searchCouponListByOwener(String owener) {
+        logger.debug("Search coupon list by owener request. owener={}", owener);
         List<CouponType> couponList = Lists.newArrayList();
 
         Connection con = null;
@@ -36,10 +63,9 @@ public class CouponProcessor {
                 couponType.load();
 
                 couponList.add(couponType);
-                logger.debug("Add coupon : {}", couponType);
             }
         } catch (SQLException e) {
-            logger.error("Failed to search coupon list. owener=" + owener, e);
+            logger.error("Failed to search coupon list by owener. owener=" + owener, e);
         } finally {
             DbUtils.closeQuietly(con, ps, rs);
         }
@@ -47,34 +73,17 @@ public class CouponProcessor {
         return couponList;
     }
 
-    public void deleteCoupons(String owener, Set<Integer> coupons) throws SQLException {
-        for (Integer couponType : coupons) {
-            Coupon coupon = new Coupon(couponType, owener);
+    /**
+     * 사용자의 쿠폰들을 제거한다
+     *
+     * @param owener  사용자 email
+     * @param coupons 제거하고자 하는 쿠폰 타입의 집합
+     * @throws SQLException 쿠폰 제거를 실패할 경우
+     */
+    public void deleteCoupons(String owener, Set<CouponType> coupons) throws SQLException {
+        for (CouponType couponType : coupons) {
+            Coupon coupon = new Coupon(couponType.getType(), owener);
             coupon.delete();
         }
-    }
-
-    public int getDiscount(int couponType) {
-        int discount = 0;
-
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT discount FROM pnuips.couponType WHERE type=?");
-            ps.setInt(1, couponType);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                discount = rs.getInt("discount");
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to get discount. type=" + couponType, e);
-        } finally {
-            DbUtils.closeQuietly(con, ps, rs);
-        }
-
-        return discount;
     }
 }

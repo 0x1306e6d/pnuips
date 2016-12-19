@@ -15,6 +15,15 @@ public class Cart implements Model {
 
     private static final Logger logger = LoggerFactory.getLogger(Cart.class);
 
+    public static Cart fromResultSet(ResultSet rs) throws SQLException {
+        Cart cart = new Cart();
+        cart.setItemcode(rs.getInt("itemcode"));
+        cart.setSellercode(rs.getInt("sellercode"));
+        cart.setOwener(rs.getString("owener"));
+        cart.setCount(rs.getInt("count"));
+        return cart;
+    }
+
     private int itemcode;
     private int sellercode;
     private String owener;

@@ -75,7 +75,7 @@
 </nav>
 <div class="container">
     <%
-        List<SellBean> sellBeanList = sellProcessor.searchSellBeanWithSoldOutRisk();
+        List<SellBean> sellBeanList = sellProcessor.searchSellBeanListWithSoldOutRisk();
 
         if (sellBeanList.size() == 0) {
     %>
