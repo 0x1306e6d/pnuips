@@ -86,8 +86,8 @@
 </nav>
 <div class="container">
     <%
-        List<SellBean> sellBeanList = sellProcessor.searchSellBeanListByName(itemname);
-        List<SellBean> similarSellBeanList = sellProcessor.searchSellBeanListBySimilarName(itemname);
+        List<SellBean> sellBeanList = sellProcessor.searchSellBeanListByItemName(itemname);
+        List<SellBean> similarSellBeanList = sellProcessor.searchSellBeanListBySimilarItemName(itemname);
 
         if (sellBeanList.size() == 0 && similarSellBeanList.size() == 0) {
     %>

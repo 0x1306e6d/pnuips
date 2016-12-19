@@ -162,7 +162,7 @@
     %>
     <br>
     <%
-        List<Order> orderList = orderProcessor.searchOrderList(email);
+        List<Order> orderList = orderProcessor.searchOrderListByPurchaser(email);
 
         if (orderList.size() == 0) {
     %>
@@ -314,7 +314,7 @@
         <%
             for (Cart cart : cartList) {
                 Item item = itemProcessor.searchItem(cart.getItemcode());
-                Seller seller = sellerProcessor.searchSeller(cart.getSellercode());
+                Seller seller = sellerProcessor.searchSellerBySellercode(cart.getSellercode());
 
         %>
         <li class="list-group-item"
@@ -367,7 +367,7 @@
     %>
     <br>
     <%
-        List<CouponType> couponTypeList = couponProcessor.searchCouponList(email);
+        List<CouponType> couponTypeList = couponProcessor.searchCouponListByOwener(email);
 
         if (couponTypeList.size() == 0) {
     %>

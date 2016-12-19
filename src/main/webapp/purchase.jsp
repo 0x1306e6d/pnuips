@@ -140,7 +140,7 @@
             <label for="purchase-coupon">coupon</label>
             <ul id="purchase-coupon" class="list-group">
                 <%
-                    List<CouponType> couponTypeList = couponProcessor.searchCouponList(signinBean.getEmail());
+                    List<CouponType> couponTypeList = couponProcessor.searchCouponListByOwener(signinBean.getEmail());
 
                     for (CouponType couponType : couponTypeList) {
                 %>

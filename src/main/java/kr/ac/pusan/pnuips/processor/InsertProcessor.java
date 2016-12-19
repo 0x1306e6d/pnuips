@@ -33,7 +33,7 @@ public class InsertProcessor {
         try {
             if (!account.isExist()) {
                 account.insert();
-                logger.debug("Insert account. account={}", account);
+                logger.debug("Insert account. {}", account);
             }
         } catch (SQLException e) {
             logger.error("Failed to insert Account. account=" + account, e);
@@ -44,7 +44,7 @@ public class InsertProcessor {
             try {
                 if (!couponType.isExist()) {
                     couponType.insert();
-                    logger.debug("Insert coupon type. couponType={}", couponType);
+                    logger.debug("Insert coupon type. {}", couponType);
                 }
             } catch (SQLException e) {
                 logger.error("Failed to insert CouponType. couponType=" + couponType, e);
@@ -56,13 +56,13 @@ public class InsertProcessor {
             try {
                 if (!coupon.isExist()) {
                     coupon.insert();
-                    logger.debug("Insert coupon. coupon={}", coupon);
+                    logger.debug("Insert coupon. {}", coupon);
                 }
             } catch (SQLException e) {
                 logger.error("Failed to insert Coupon. coupon=" + coupon, e);
             }
         }
-        logger.info("Insert user data. userData={}", userData);
+        logger.info("Insert user data. {}", userData);
 
         return InsertProcessorResult.SUCCESS;
     }
@@ -72,7 +72,7 @@ public class InsertProcessor {
         try {
             if (!item.isExist()) {
                 item.insert();
-                logger.debug("Insert item. item={}", item);
+                logger.debug("Insert item. {}", item);
             }
         } catch (SQLException e) {
             logger.error("Failed to insert Item. item=" + item, e);
@@ -83,7 +83,7 @@ public class InsertProcessor {
         try {
             if (!seller.isExist()) {
                 seller.insert();
-                logger.debug("Insert seller. seller={}", seller);
+                logger.debug("Insert seller. {}", seller);
             }
         } catch (SQLException e) {
             logger.error("Failed to insert Seller. seller=" + seller, e);
@@ -94,7 +94,7 @@ public class InsertProcessor {
         try {
             if (!sell.isExist()) {
                 sell.insert();
-                logger.debug("Insert sell. sell={}", sell);
+                logger.debug("Insert sell. {}", sell);
             }
         } catch (SQLException e) {
             logger.error("Failed to insert Sell. sell=" + sell, e);
@@ -105,7 +105,7 @@ public class InsertProcessor {
             try {
                 if (!cart.isExist()) {
                     cart.insert();
-                    logger.debug("Insert cart. cart={}", cart);
+                    logger.debug("Insert cart. {}", cart);
                 }
             } catch (SQLException e) {
                 logger.error("Failed to insert Cart. cart=" + cart, e);
@@ -117,18 +117,23 @@ public class InsertProcessor {
             try {
                 if (!order.isExist()) {
                     order.insert();
-                    logger.debug("Insert order. order={}", order);
+                    logger.debug("Insert order. {}", order);
                 }
             } catch (SQLException e) {
                 logger.error("Failed to insert Order. order=" + order, e);
                 return InsertProcessorResult.SYSTEM_ERROR;
             }
         }
-        logger.info("Insert item data. itemData={}", itemData);
+        logger.info("Insert item data. {}", itemData);
 
         return InsertProcessorResult.SUCCESS;
     }
 
+    /**
+     * 각 사용자 별 총 구매 금액을 업데이트한다
+     *
+     * @throws SQLException 업데이트를 실패할 경우
+     */
     public void updateTotalPrice() throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
@@ -144,6 +149,11 @@ public class InsertProcessor {
         }
     }
 
+    /**
+     * 총 구매 금액이 200,000을 넘어가는 경우 VIP 등급으로 업데이트한다
+     *
+     * @throws SQLException 업데이트를 실패할 경우
+     */
     public void setVIPGrade() throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
@@ -158,6 +168,11 @@ public class InsertProcessor {
         }
     }
 
+    /**
+     * 총 구매 금액이 500,000을 넘어가는 경우 VVIP 등급으로 업데이트한다
+     *
+     * @throws SQLException 업데이트를 실패할 경우
+     */
     public void setVVIPGrade() throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;

@@ -17,7 +17,14 @@ public class OrderProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderProcessor.class);
 
-    public List<Order> searchOrderList(String purchaser) {
+    /**
+     * 사용자의 구매 내역을 검색한다
+     *
+     * @param purchaser 사용자 email
+     * @return 구매 내역
+     */
+    public List<Order> searchOrderListByPurchaser(String purchaser) {
+        logger.debug("Search order list by purchaser request. purchaser={}", purchaser);
         List<Order> orderList = Lists.newArrayList();
 
         Connection con = null;
@@ -25,13 +32,12 @@ public class OrderProcessor {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT itemcode, sellercode, purchaser, count, discount, time FROM pnuips.order WHERE purchaser=?");
+            ps = con.prepareStatement("SELECT * FROM pnuips.order WHERE purchaser=?");
             ps.setString(1, purchaser);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                Order order = getOrderFromResultSet(rs);
-                orderList.add(order);
+                orderList.add(Order.fromResultSet(rs));
             }
         } catch (SQLException e) {
             logger.error("Failed to search order list by purchaser. purchaser=" + purchaser, e);
@@ -42,7 +48,14 @@ public class OrderProcessor {
         return orderList;
     }
 
+    /**
+     * 판매자의 판매 내역을 검색한다
+     *
+     * @param selloercode 판매자 sellercode
+     * @return 판매 내역
+     */
     public List<Order> searchOrderListBySellercode(int selloercode) {
+        logger.debug("Search order list by sellercode request. sellercode={}", selloercode);
         List<Order> orderList = Lists.newArrayList();
 
         Connection con = null;
@@ -50,13 +63,12 @@ public class OrderProcessor {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT itemcode, sellercode, purchaser, count, discount, time FROM pnuips.order WHERE sellercode=?");
+            ps = con.prepareStatement("SELECT * FROM pnuips.order WHERE sellercode=?");
             ps.setInt(1, selloercode);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                Order order = getOrderFromResultSet(rs);
-                orderList.add(order);
+                orderList.add(Order.fromResultSet(rs));
             }
         } catch (SQLException e) {
             logger.error("Failed to search order list by sellercode. sellercode=" + selloercode, e);
@@ -65,16 +77,5 @@ public class OrderProcessor {
         }
 
         return orderList;
-    }
-
-    private Order getOrderFromResultSet(ResultSet rs) throws SQLException {
-        Order order = new Order();
-        order.setItemcode(rs.getInt("itemcode"));
-        order.setSellercode(rs.getInt("sellercode"));
-        order.setPurchaser(rs.getString("purchaser"));
-        order.setCount(rs.getInt("count"));
-        order.setDiscount(rs.getInt("discount"));
-        order.setTime(rs.getTimestamp("time"));
-        return order;
     }
 }

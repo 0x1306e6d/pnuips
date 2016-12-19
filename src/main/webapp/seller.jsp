@@ -87,7 +87,7 @@
 </nav>
 <div class="container">
     <%
-        Seller seller = sellerProcessor.searchSeller(sellercode);
+        Seller seller = sellerProcessor.searchSellerBySellercode(sellercode);
 
         if (seller == null) {
     %>
@@ -118,7 +118,7 @@
                 <li class="list-group-item">
                     <label for="total-count">total count</label>
                     <h4 id="total-count" class="text-center">
-                        <%=sellerProcessor.searchSellCount(sellercode)%>
+                        <%=sellerProcessor.getSalesCount(sellercode)%>
                     </h4>
                 </li>
             </ul>
@@ -126,7 +126,7 @@
     </div>
     <br>
     <%
-        List<SellBean> sellBeanList = sellProcessor.searchSellBeanListOfSeller(sellercode);
+        List<SellBean> sellBeanList = sellProcessor.searchSellBeanListBySeller(sellercode);
 
         if (sellBeanList.size() == 0) {
     %>

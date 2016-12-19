@@ -84,7 +84,7 @@ public class Sell implements Model {
             ps.setInt(5, numberOfSales);
             ps.executeUpdate();
 
-            logger.debug("Insert sell. sell={}", this);
+            logger.trace("Insert sell. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -108,7 +108,7 @@ public class Sell implements Model {
                 numberOfStock = rs.getInt("numberOfStock");
                 numberOfSales = rs.getInt("numberOfSales");
 
-                logger.debug("Load sell. sell={}", this);
+                logger.trace("Load sell. {}", this);
             } else {
                 throw new NullPointerException("Sell is not exist. itemcode=" + itemcode + ", sellercode=" + sellercode);
             }
@@ -131,7 +131,7 @@ public class Sell implements Model {
             ps.setInt(5, sellercode);
             ps.executeUpdate();
 
-            logger.debug("Update sell. sell={}", this);
+            logger.trace("Update sell. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -149,7 +149,7 @@ public class Sell implements Model {
             ps.setInt(2, sellercode);
             ps.executeUpdate();
 
-            logger.debug("Delete sell. sell={}", this);
+            logger.trace("Delete sell. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);

@@ -136,7 +136,7 @@
     %>
     <br>
     <%
-        List<Order> orderList = orderProcessor.searchOrderList(signinBean.getEmail());
+        List<Order> orderList = orderProcessor.searchOrderListByPurchaser(signinBean.getEmail());
 
         if (orderList.size() == 0) {
     %>
@@ -252,7 +252,7 @@
     %>
     <br>
     <%
-        List<CouponType> couponTypeList = couponProcessor.searchCouponList(signinBean.getEmail());
+        List<CouponType> couponTypeList = couponProcessor.searchCouponListByOwener(signinBean.getEmail());
 
         if (couponTypeList.size() == 0) {
     %>

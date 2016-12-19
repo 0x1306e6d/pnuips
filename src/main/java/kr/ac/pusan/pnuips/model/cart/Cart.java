@@ -15,6 +15,15 @@ public class Cart implements Model {
 
     private static final Logger logger = LoggerFactory.getLogger(Cart.class);
 
+    public static Cart fromResultSet(ResultSet rs) throws SQLException {
+        Cart cart = new Cart();
+        cart.setItemcode(rs.getInt("itemcode"));
+        cart.setSellercode(rs.getInt("sellercode"));
+        cart.setOwener(rs.getString("owener"));
+        cart.setCount(rs.getInt("count"));
+        return cart;
+    }
+
     private int itemcode;
     private int sellercode;
     private String owener;
@@ -75,7 +84,7 @@ public class Cart implements Model {
             ps.setInt(4, count);
             ps.executeUpdate();
 
-            logger.debug("Insert cart. cart={}", this);
+            logger.trace("Insert cart. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -98,7 +107,7 @@ public class Cart implements Model {
             if (rs.next()) {
                 count = rs.getInt("count");
 
-                logger.debug("Load cart. cart={}", this);
+                logger.trace("Load cart. {}", this);
             } else {
                 throw new NullPointerException("Cart is not exist. owener=" + owener + ", itemcode=" + itemcode);
             }
@@ -120,7 +129,7 @@ public class Cart implements Model {
             ps.setString(4, owener);
             ps.executeUpdate();
 
-            logger.debug("Update cart. cart={}", this);
+            logger.trace("Update cart. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -139,7 +148,7 @@ public class Cart implements Model {
             ps.setString(3, owener);
             ps.executeUpdate();
 
-            logger.debug("Delete cart. cart={}", this);
+            logger.trace("Delete cart. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);

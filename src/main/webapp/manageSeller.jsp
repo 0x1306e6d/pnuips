@@ -130,13 +130,13 @@
                 <li class="list-group-item">
                     <label for="total-count">total count</label>
                     <h4 id="total-count" class="text-center">
-                        <%=sellerProcessor.searchSellCount(seller.getSellercode())%>
+                        <%=sellerProcessor.getSalesCount(seller.getSellercode())%>
                     </h4>
                 </li>
                 <li class="list-group-item">
                     <label for="total-price">total price</label>
                     <h4 id="total-price" class="text-center">
-                        <%=sellerProcessor.searchTotalPrice(seller.getSellercode())%>
+                        <%=sellerProcessor.getTotalSalesPrice(seller.getSellercode())%>
                     </h4>
                 </li>
             </ul>
@@ -144,7 +144,7 @@
     </div>
     <br>
     <%
-        List<SellBean> sellBeanList = sellProcessor.searchSellBeanListOfSeller(seller.getSellercode());
+        List<SellBean> sellBeanList = sellProcessor.searchSellBeanListBySeller(seller.getSellercode());
 
         if (sellBeanList.size() == 0) {
     %>
@@ -374,7 +374,7 @@
                 </div>
                 <div class="col-md-2">
                     <h4 class="text-center">
-                        <%=sellerProcessor.searchTotalPrice(sellBean.getItem().getItemcode(), sellBean.getSeller().getSellercode())%>
+                        <%=sellerProcessor.getTotalSalesPrice(sellBean.getItem().getItemcode(), sellBean.getSeller().getSellercode())%>
                     </h4>
                 </div>
             </div>

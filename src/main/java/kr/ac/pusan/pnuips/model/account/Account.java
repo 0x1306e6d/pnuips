@@ -3,10 +3,14 @@ package kr.ac.pusan.pnuips.model.account;
 import kr.ac.pusan.pnuips.DatabaseManager;
 import kr.ac.pusan.pnuips.model.Model;
 import org.apache.commons.dbutils.DbUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class Account implements Model {
+
+    private static final Logger logger = LoggerFactory.getLogger(Account.class);
 
     private String email;
     private String password;
@@ -95,6 +99,8 @@ public class Account implements Model {
             ps.setInt(6, grade.getValue());
             ps.setInt(7, totalPrice);
             ps.executeUpdate();
+
+            logger.trace("Insert account. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -119,6 +125,8 @@ public class Account implements Model {
                 birthday = rs.getDate("birthday");
                 grade = Grade.valueOf(rs.getInt("grade"));
                 totalPrice = rs.getInt("totalPrice");
+
+                logger.trace("Load account. {}", this);
             } else {
                 throw new NullPointerException("Account is not exist. email=" + email);
             }
@@ -141,6 +149,8 @@ public class Account implements Model {
             ps.setInt(5, grade.getValue());
             ps.setInt(6, totalPrice);
             ps.executeUpdate();
+
+            logger.trace("Update account. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -156,6 +166,8 @@ public class Account implements Model {
             ps = con.prepareStatement("DELETE FROM pnuips.account WHERE email=?");
             ps.setString(1, email);
             ps.executeUpdate();
+
+            logger.trace("Delete account. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
