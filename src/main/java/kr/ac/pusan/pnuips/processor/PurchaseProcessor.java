@@ -50,6 +50,20 @@ public class PurchaseProcessor {
             }
 
             try {
+                ps = con.prepareStatement("UPDATE pnuips.account SET totalPrice=(totalPrice + (SELECT (price * ? * (100 - ?) / 100) FROM pnuips.sell WHERE itemcode=? AND sellercode=?)) WHERE email=?");
+                ps.setInt(1, count);
+                ps.setInt(2, discount);
+                ps.setInt(3, itemcode);
+                ps.setInt(4, sellercode);
+                ps.setString(5, purchaser);
+                ps.executeUpdate();
+
+                logger.debug("Update total price.");
+            } finally {
+                DbUtils.closeQuietly(ps);
+            }
+
+            try {
                 ps = con.prepareStatement("DELETE FROM pnuips.cart WHERE itemcode=? AND sellercode=? AND owener=?");
                 ps.setInt(1, itemcode);
                 ps.setInt(2, sellercode);
@@ -62,9 +76,8 @@ public class PurchaseProcessor {
             }
 
             try {
-                ps = con.prepareStatement("UPDATE pnuips.account SET grade=1 WHERE email=? AND grade=0 AND 200000 < (SELECT SUM(price * count * (100 - discount) / 100) FROM pnuips.order NATURAL JOIN pnuips.sell WHERE purchaser=?)");
+                ps = con.prepareStatement("UPDATE pnuips.account SET grade=1 WHERE email=? AND grade=0 AND totalPrice > 200000");
                 ps.setString(1, purchaser);
-                ps.setString(2, purchaser);
                 if (ps.executeUpdate() > 0) {
                     Coupon coupon = new Coupon(5, purchaser);
                     coupon.insert();
@@ -74,9 +87,8 @@ public class PurchaseProcessor {
             }
 
             try {
-                ps = con.prepareStatement("UPDATE pnuips.account SET grade=2 WHERE email=? AND grade=1 AND 500000 < (SELECT SUM(price * count * (100 - discount) / 100) FROM pnuips.order NATURAL JOIN pnuips.sell WHERE purchaser=?)");
+                ps = con.prepareStatement("UPDATE pnuips.account SET grade=2 WHERE email=? AND grade=1 AND totalPrice > 500000");
                 ps.setString(1, purchaser);
-                ps.setString(2, purchaser);
                 if (ps.executeUpdate() > 0) {
                     Coupon coupon = new Coupon(0, purchaser);
                     coupon.insert();
