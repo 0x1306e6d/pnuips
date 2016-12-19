@@ -147,4 +147,32 @@ public class InsertProcessor {
 
         return InsertProcessorResult.SUCCESS;
     }
+
+    public void setVIPGrade() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("UPDATE pnuips.account SET grade=1 WHERE 200000 < (SELECT SUM(price * count * (100 - discount) / 100) FROM pnuips.order NATURAL JOIN pnuips.sell WHERE purchaser=pnuips.account.email)");
+            ps.executeUpdate();
+            logger.info("Set VIP Grade.");
+        } finally {
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
+        }
+    }
+
+    public void setVVIPGrade() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("UPDATE pnuips.account SET grade=2 WHERE 500000 < (SELECT SUM(price * count * (100 - discount) / 100) FROM pnuips.order NATURAL JOIN pnuips.sell WHERE purchaser=pnuips.account.email)");
+            ps.executeUpdate();
+            logger.info("Set VVIP Grade.");
+        } finally {
+            DbUtils.closeQuietly(ps);
+            DbUtils.closeQuietly(con);
+        }
+    }
 }

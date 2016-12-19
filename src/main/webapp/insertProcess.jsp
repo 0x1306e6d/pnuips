@@ -1,6 +1,8 @@
 <%@ page import="kr.ac.pusan.pnuips.csv.ItemData" %>
 <%@ page import="kr.ac.pusan.pnuips.csv.UserData" %>
 <%@ page import="kr.ac.pusan.pnuips.processor.InsertProcessor" %>
+<%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="java.sql.SQLException" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:useBean id="insertDataBean" class="kr.ac.pusan.pnuips.bean.InsertBean"/>
@@ -124,6 +126,26 @@
     <%
                     break;
             }
+        }
+    %>
+
+    <%
+        try {
+            insertDataProcessor.setVIPGrade();
+            insertDataProcessor.setVVIPGrade();
+    %>
+    <div class="alert alert-success">
+        Set VIP, VVIP Grade to proper account.
+    </div>
+    <%
+    } catch (SQLException e) {
+        LoggerFactory.getLogger(page.getClass()).error("Failed to set grade.", e);
+    %>
+    <div class="alert alert-error">
+        <strong>Fail</strong>
+        Failed to set grade.
+    </div>
+    <%
         }
     %>
 </div>
