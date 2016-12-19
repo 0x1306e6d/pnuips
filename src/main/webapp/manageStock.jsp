@@ -39,7 +39,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="manageAccount.jsp">Account</a></li>
-                        <li><a href="manageStock.jsp">Seller</a></li>
+                        <li><a href="manageSeller.jsp">Seller</a></li>
                         <li class="active"><a href="#">Stock</a></li>
                     </ul>
                 </li>
@@ -84,6 +84,8 @@
     <%
     } else {
     %>
+    <h1 class="text-center">Item List</h1>
+    <h4 class="text-center">카트에 담긴 수가 재고보다 더 많은 상품 목록입니다.</h4>
     <ul class="list-group">
         <li class="list-group-item list-header">
             <div class="row">

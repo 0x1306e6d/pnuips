@@ -137,6 +137,25 @@
     %>
     <h1 class="text-center">Item List</h1>
     <ul class="list-group">
+        <li class="list-group-item list-header">
+            <div class="row">
+                <div class="col-md-7">
+                    <h4 class="text-center">
+                        Item name
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        Brand
+                    </h4>
+                </div>
+                <div class="col-md-2">
+                    <h4 class="text-center">
+                        Price
+                    </h4>
+                </div>
+            </div>
+        </li>
         <%
             for (SellBean sellBean : sellBeanList) {
         %>

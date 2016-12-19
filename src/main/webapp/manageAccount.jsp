@@ -166,17 +166,18 @@
     } else {
     %>
     <h1 class="text-center">Purchase List</h1>
+    <h4 class="text-center">고객 <%=email%>의 구매 내역 목록입니다.</h4>
     <ul class="list-group">
-        <li class="list-group-item">
+        <li class="list-group-item list-header">
             <div class="row">
                 <div class="col-md-3">
                     <h4 class="text-center">
-                        Itemname
+                        Item name
                     </h4>
                 </div>
                 <div class="col-md-3">
                     <h4 class="text-center">
-                        Sellername
+                        Seller name
                     </h4>
                 </div>
                 <div class="col-md-1">
@@ -282,17 +283,18 @@
     } else {
     %>
     <h1 class="text-center">Cart List</h1>
+    <h4 class="text-center">고객 <%=email%>의 장바구니 목록입니다.</h4>
     <ul class="list-group">
-        <li class="list-group-item">
+        <li class="list-group-item list-header">
             <div class="row">
                 <div class="col-md-6">
                     <h4 class="text-center">
-                        Itemname
+                        Item name
                     </h4>
                 </div>
                 <div class="col-md-4">
                     <h4 class="text-center">
-                        Sellername
+                        Seller name
                     </h4>
                 </div>
                 <div class="col-md-2">
@@ -369,8 +371,9 @@
     } else {
     %>
     <h1 class="text-center">Coupon List</h1>
+    <h4 class="text-center">고객 <%=email%>의 소유 쿠폰 목록입니다.</h4>
     <ul class="list-group">
-        <li class="list-group-item">
+        <li class="list-group-item list-header">
             <div class="row">
                 <div class="col-md-8">
                     <h4 class="text-center">
