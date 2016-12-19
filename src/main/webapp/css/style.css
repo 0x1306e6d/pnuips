@@ -1,0 +1,12 @@
+body {
+    padding-bottom: 15px;
+}
+
+nav {
+    margin-bottom: 25px;
+    border-radius: 0;
+}
+
+.list-header {
+    background-color: #eeeeee;
+}
