@@ -16,6 +16,16 @@ public class Cart implements Model {
     private String owener;
     private int count;
 
+    public Cart() {
+
+    }
+
+    public Cart(int itemcode, int sellercode, String owener) {
+        this.itemcode = itemcode;
+        this.sellercode = sellercode;
+        this.owener = owener;
+    }
+
     public int getItemcode() {
         return itemcode;
     }

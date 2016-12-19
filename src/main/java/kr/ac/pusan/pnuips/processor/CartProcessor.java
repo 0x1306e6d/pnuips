@@ -84,4 +84,24 @@ public class CartProcessor {
 
         return count;
     }
+
+    public Cart addCart(int itemcode, int sellercode, String owener, int count) {
+        try {
+            Cart cart = new Cart(itemcode, sellercode, owener);
+
+            if (cart.isExist()) {
+                cart.load();
+                cart.setCount(cart.getCount() + count);
+                cart.update();
+            } else {
+                cart.setCount(count);
+                cart.insert();
+            }
+
+            return cart;
+        } catch (SQLException e) {
+            logger.error("Failed to insert cart. itemcode=" + itemcode + ", sellercode=" + sellercode + ", owener=" + owener + ", count=" + count, e);
+        }
+        return null;
+    }
 }

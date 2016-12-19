@@ -1,5 +1,4 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
-<%@ page import="kr.ac.pusan.pnuips.bean.SigninBean" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     if (request.getParameter("itemcode") == null || request.getParameter("sellercode") == null) {
@@ -106,7 +105,9 @@
             %>
             <div class="text-center">
                 <div class="btn-group btn-group-lg">
-                    <button type="button" class="btn btn-default">Add cart</button>
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#add-cart-modal">
+                        Add cart
+                    </button>
                     <button type="button" class="btn btn-default"
                             onclick="location.href='purchase.jsp?itemcode=<%=itemcode%>&sellercode=<%=sellercode%>'">
                         Purchase
@@ -162,22 +163,32 @@
     </div>
     <%
         if (session.getAttribute("signin") != null) {
-            SigninBean signinBean = (SigninBean) session.getAttribute("signin");
     %>
     <div id="add-cart-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Add cart</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Do you really want to add cart?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">add</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
-                </div>
+                <form action="addCartProcess.jsp" method="post">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add cart</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" name="itemcode" value="<%=sellBean.getItem().getItemcode()%>"
+                               placeholder="hidden" hidden>
+                        <input type="text" name="sellercode" value="<%=sellBean.getSeller().getSellercode()%>"
+                               placeholder="hidden" hidden>
+                        <div class="form-group">
+                            <label for="count">count</label>
+                            <input id="count" class="form-control" type="number" name="count" value="1" min="1"
+                                   max="<%=sellBean.getSell().getNumberOfStock()%>">
+                        </div>
+                        <p>Do you really want to add cart?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-default">add</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
