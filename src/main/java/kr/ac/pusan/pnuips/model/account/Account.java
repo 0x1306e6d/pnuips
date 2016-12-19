@@ -14,6 +14,7 @@ public class Account implements Model {
     private String lastname;
     private Date birthday;
     private Grade grade;
+    private int totalPrice;
 
     public Account() {
 
@@ -71,19 +72,28 @@ public class Account implements Model {
         this.grade = grade;
     }
 
+    public int getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
     @Override
     public void insert() throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("INSERT INTO pnuips.account (email, password, firstname, lastname, birthday, grade) VALUES (?, ?, ?, ?, ?, ?)");
+            ps = con.prepareStatement("INSERT INTO pnuips.account (email, password, firstname, lastname, birthday, grade, totalPrice) VALUES (?, ?, ?, ?, ?, ?, ?)");
             ps.setString(1, email);
             ps.setString(2, password);
             ps.setString(3, firstname);
             ps.setString(4, lastname);
             ps.setDate(5, birthday);
             ps.setInt(6, grade.getValue());
+            ps.setInt(7, totalPrice);
             ps.executeUpdate();
         } finally {
             DbUtils.closeQuietly(ps);
@@ -98,7 +108,7 @@ public class Account implements Model {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT password, firstname, lastname, birthday, grade FROM pnuips.account WHERE email=?");
+            ps = con.prepareStatement("SELECT password, firstname, lastname, birthday, grade, totalPrice FROM pnuips.account WHERE email=?");
             ps.setString(1, email);
             rs = ps.executeQuery();
 
@@ -108,6 +118,7 @@ public class Account implements Model {
                 lastname = rs.getString("lastname");
                 birthday = rs.getDate("birthday");
                 grade = Grade.valueOf(rs.getInt("grade"));
+                totalPrice = rs.getInt("totalPrice");
             } else {
                 throw new NullPointerException("Account is not exist. email=" + email);
             }
@@ -122,12 +133,13 @@ public class Account implements Model {
         PreparedStatement ps = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("UPDATE pnuips.account SET password=?, firstname=?, lastname=?, birthday=?, grade=? WHERE email=?");
+            ps = con.prepareStatement("UPDATE pnuips.account SET password=?, firstname=?, lastname=?, birthday=?, grade=?, totalPrice=? WHERE email=?");
             ps.setString(1, password);
             ps.setString(2, firstname);
             ps.setString(3, lastname);
             ps.setDate(4, birthday);
             ps.setInt(5, grade.getValue());
+            ps.setInt(6, totalPrice);
             ps.executeUpdate();
         } finally {
             DbUtils.closeQuietly(ps);
@@ -176,6 +188,7 @@ public class Account implements Model {
         sb.append(", lastname='").append(lastname).append('\'');
         sb.append(", birthday=").append(birthday);
         sb.append(", grade=").append(grade);
+        sb.append(", totalPrice=").append(totalPrice);
         sb.append('}');
         return sb.toString();
     }

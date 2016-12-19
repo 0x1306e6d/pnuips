@@ -28,25 +28,6 @@ public class InsertProcessor {
         SYSTEM_ERROR
     }
 
-    public InsertProcessorResult clearDatabase() {
-        Connection con = null;
-        PreparedStatement ps = null;
-        try {
-            con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("DELETE FROM pnuips.account, pnuips.item, pnuips.seller, pnuips.sell, pnuips.cart, pnuips.order, pnuips.couponType, pnuips.coupon");
-            ps.executeUpdate();
-
-            return InsertProcessorResult.SUCCESS;
-        } catch (SQLException e) {
-            logger.error("Failed to clear database.", e);
-        } finally {
-            DbUtils.closeQuietly(ps);
-            DbUtils.closeQuietly(con);
-        }
-
-        return InsertProcessorResult.SYSTEM_ERROR;
-    }
-
     public InsertProcessorResult insertAccountData(UserData userData) {
         Account account = userData.getAccount();
         try {
