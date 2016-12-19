@@ -91,7 +91,7 @@ public class Order implements Model {
             ps.setTimestamp(6, time);
             ps.executeUpdate();
 
-            logger.debug("Insert order. order={}", this);
+            logger.trace("Insert order. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -116,7 +116,7 @@ public class Order implements Model {
                 discount = rs.getInt("discount");
                 time = rs.getTimestamp("time");
 
-                logger.debug("Load order. order={}", this);
+                logger.trace("Load order. {}", this);
             } else {
                 throw new NullPointerException("Order is not exist. itemcode=" + itemcode + ", sellercode=" + sellercode + ", purchaser=" + purchaser);
             }
@@ -140,7 +140,7 @@ public class Order implements Model {
             ps.setString(6, purchaser);
             ps.executeUpdate();
 
-            logger.debug("Update order. order={}", this);
+            logger.trace("Update order. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -159,7 +159,7 @@ public class Order implements Model {
             ps.setString(3, purchaser);
             ps.executeUpdate();
 
-            logger.debug("Delete order. order={}", this);
+            logger.trace("Delete order. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);

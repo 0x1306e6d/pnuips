@@ -53,7 +53,7 @@ public class Coupon implements Model {
             ps.setString(2, owener);
             ps.executeUpdate();
 
-            logger.debug("Insert coupon. coupon={}", this);
+            logger.trace("Insert coupon. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -81,7 +81,7 @@ public class Coupon implements Model {
             ps.setString(2, owener);
             ps.executeUpdate();
 
-            logger.debug("Delete coupon. coupon={}", this);
+            logger.debug("Delete coupon. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);

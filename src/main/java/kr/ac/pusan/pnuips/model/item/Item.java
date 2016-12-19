@@ -3,6 +3,8 @@ package kr.ac.pusan.pnuips.model.item;
 import kr.ac.pusan.pnuips.DatabaseManager;
 import kr.ac.pusan.pnuips.model.Model;
 import org.apache.commons.dbutils.DbUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Item implements Model {
+
+    private static final Logger logger = LoggerFactory.getLogger(Item.class);
 
     private int itemcode;
     private String itemname;
@@ -58,6 +62,8 @@ public class Item implements Model {
             ps.setString(2, itemname);
             ps.setString(3, brand);
             ps.executeUpdate();
+
+            logger.trace("Insert item. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -78,6 +84,8 @@ public class Item implements Model {
             if (rs.next()) {
                 itemname = rs.getString("itemname");
                 brand = rs.getString("brand");
+
+                logger.trace("Load item. {}", this);
             } else {
                 throw new NullPointerException("Item is not exist. itemcode=" + itemcode);
             }
@@ -97,6 +105,8 @@ public class Item implements Model {
             ps.setString(2, brand);
             ps.setInt(3, itemcode);
             ps.executeUpdate();
+
+            logger.trace("Update item. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -112,6 +122,8 @@ public class Item implements Model {
             ps = con.prepareStatement("DELETE FROM pnuips.item WHERE itemcode=?");
             ps.setInt(1, itemcode);
             ps.executeUpdate();
+
+            logger.trace("Delete item. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
