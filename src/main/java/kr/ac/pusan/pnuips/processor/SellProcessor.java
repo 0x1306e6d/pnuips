@@ -190,6 +190,35 @@ public class SellProcessor {
         return sellBeanList;
     }
 
+    public List<SellBean> searchBestSellerByAge() {
+        logger.debug("Search best seller by age request.");
+        List<SellBean> sellBeanList = Lists.newArrayList();
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseManager.getConnection();
+            ps = con.prepareStatement("(SELECT itemcode, sellercode FROM (pnuips.order NATURAL JOIN pnuips.sell) NATURAL JOIN pnuips.account WHERE date_part('years', AGE(birthday)) BETWEEN 20 AND 29 GROUP BY itemcode, sellercode ORDER BY SUM(count) DESC LIMIT 10)" +
+                    "INTERSECT " +
+                    "(SELECT itemcode, sellercode FROM (pnuips.order NATURAL JOIN pnuips.sell) NATURAL JOIN pnuips.account WHERE date_part('years', AGE(birthday)) BETWEEN 30 AND 39 GROUP BY itemcode, sellercode ORDER BY SUM(count) DESC LIMIT 10)");
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int itemcode = rs.getInt("itemcode");
+                int sellercode = rs.getInt("sellercode");
+
+                SellBean sellBean = searchSellBean(itemcode, sellercode);
+                sellBeanList.add(sellBean);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to search best seller by age.", e);
+        } finally {
+            DbUtils.closeQuietly(con, ps, rs);
+        }
+        return sellBeanList;
+    }
+
     public List<SellBean> searchBestSellBeanList(int limit) {
         logger.debug("Search best sell bean list request. limit={}", limit);
         List<SellBean> sellBeanList = Lists.newArrayList();

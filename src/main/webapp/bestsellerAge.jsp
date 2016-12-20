@@ -1,17 +1,11 @@
 <%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-    int limit = 10;
-    if (request.getParameter("limit") != null) {
-        limit = Integer.parseInt(request.getParameter("limit").toString());
-    }
-%>
 <jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Bestseller</title>
+    <title>Bestseller By Age</title>
 
     <jsp:include page="header.jsp"/>
 </head>
@@ -35,7 +29,7 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Best Seller<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="active"><a href="bestsellerSales.jsp">By numbef of sales</a></li>
+                        <li class="active"><a href="bestsellerAge.jsp">By Age</a></li>
                         <li><a href="bestsellerTime.jsp">Between time</a></li>
                     </ul>
                 </li>
@@ -79,23 +73,8 @@
     </div>
 </nav>
 <div class="container">
-    <div class="row">
-        <div class="col-md-offset-3 col-md-6">
-            <form action="bestsellerSales.jsp" method="get">
-                <div class="form-group">
-                    <label for="limit">limit</label>
-                    <select id="limit" class="form-control" name="limit">
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="30">30</option>
-                    </select>
-                </div>
-                <button class="btn btn-default btn-block" type="submit">search</button>
-            </form>
-        </div>
-    </div>
     <%
-        List<SellBean> sellBeanList = sellProcessor.searchBestSellBeanList(limit);
+        List<SellBean> sellBeanList = sellProcessor.searchBestSellerByAge();
 
         if (sellBeanList.size() == 0) {
     %>
@@ -109,7 +88,12 @@
     <ul class="list-group">
         <li class="list-group-item list-header">
             <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        Item code
+                    </h4>
+                </div>
+                <div class="col-md-3">
                     <h4 class="text-center">
                         Item name
                     </h4>
@@ -119,7 +103,7 @@
                         Seller name
                     </h4>
                 </div>
-                <div class="col-md-4 row">
+                <div class="col-md-3 row">
                     <div class="col-md-5">
                         <h4 class="text-center">
                             Brand
@@ -130,12 +114,8 @@
                             Price
                         </h4>
                     </div>
-                    <div class="col-md-1">
-                        <h4 class="text-center">
-                            Sales
-                        </h4>
-                    </div>
                 </div>
+            </div>
         </li>
         <%
             for (SellBean sellBean : sellBeanList) {
@@ -144,7 +124,12 @@
             onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'"
             style="cursor: hand;">
             <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-3">
+                    <h4 class="text-center">
+                        <%=sellBean.getItem().getItemcode()%>
+                    </h4>
+                </div>
+                <div class="col-md-3">
                     <h4 class="text-center">
                         <%=sellBean.getItem().getItemname()%>
                     </h4>
@@ -154,7 +139,7 @@
                         <%=sellBean.getSeller().getSellername()%>
                     </h4>
                 </div>
-                <div class="col-md-4 row">
+                <div class="col-md-3 row">
                     <div class="col-md-5">
                         <h4 class="text-center">
                             <%=sellBean.getItem().getBrand()%>
@@ -163,11 +148,6 @@
                     <div class="col-md-5">
                         <h4 class="text-center">
                             <%=sellBean.getSell().getPrice()%>
-                        </h4>
-                    </div>
-                    <div class="col-md-1">
-                        <h4 class="text-center">
-                            <span class="badge"><%=sellBean.getSell().getNumberOfSales()%></span>
                         </h4>
                     </div>
                 </div>
