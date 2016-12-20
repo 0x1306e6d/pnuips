@@ -2,6 +2,7 @@ package kr.ac.pusan.pnuips.processor;
 
 import com.google.common.collect.Lists;
 import kr.ac.pusan.pnuips.DatabaseManager;
+import kr.ac.pusan.pnuips.bean.BestSellerBean;
 import kr.ac.pusan.pnuips.bean.SellBean;
 import kr.ac.pusan.pnuips.model.item.Item;
 import kr.ac.pusan.pnuips.model.sell.Sell;
@@ -219,21 +220,39 @@ public class SellProcessor {
         return sellBeanList;
     }
 
-    public List<SellBean> searchBestSellBeanList(int limit) {
-        logger.debug("Search best sell bean list request. limit={}", limit);
-        List<SellBean> sellBeanList = Lists.newArrayList();
+    public List<BestSellerBean> searchBestSellBeanList() {
+        logger.debug("Search best sell bean list request.");
+        List<BestSellerBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item ORDER BY numberOfSales DESC LIMIT " + limit);
+            ps = con.prepareStatement("SELECT * FROM (pnuips.sell NATURAL JOIN pnuips.seller) NATURAL JOIN pnuips.item ORDER BY numberOfSales DESC");
             rs = ps.executeQuery();
 
+            int rank = 0;
+            int lastSales = Integer.MAX_VALUE;
             while (rs.next()) {
+                int sales = rs.getInt("numberOfSales");
+                if (sales < lastSales) {
+                    rank = rank + 1;
+                    lastSales = sales;
+                }
+
                 SellBean sellBean = getSellBeanFromResultSet(rs);
-                sellBeanList.add(sellBean);
+
+                BestSellerBean bestSellerBean = new BestSellerBean();
+                bestSellerBean.setRank(rank);
+                bestSellerBean.setSellBean(sellBean);
+                logger.debug("bestSellerBean : {}", bestSellerBean);
+
+                sellBeanList.add(bestSellerBean);
+
+                if (rank == 3) {
+                    break;
+                }
             }
         } catch (SQLException e) {
             logger.error("Failed to search best sell bean list.", e);
@@ -244,31 +263,48 @@ public class SellProcessor {
         return sellBeanList;
     }
 
-    public List<SellBean> searchBestSellBeanListBetweenTime(String start, String end) {
+    public List<BestSellerBean> searchBestSellBeanListBetweenTime(String start, String end) {
         if (StringUtils.isEmpty(start) || StringUtils.isEmpty(end)) {
-            return searchBestSellBeanList(3);
+            return searchBestSellBeanList();
         }
         start = start.replace('T', ' ');
         end = end.replace('T', ' ');
         logger.debug("Search best sell bean list between time request. start={}, end={}", start, end);
-        List<SellBean> sellBeanList = Lists.newArrayList();
+        List<BestSellerBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT itemcode, sellercode, SUM(count) FROM pnuips.order NATURAL JOIN pnuips.item WHERE time > ? AND time < ? GROUP BY itemcode, sellercode ORDER BY sum DESC LIMIT 3");
+            ps = con.prepareStatement("SELECT itemcode, sellercode, SUM(count) FROM pnuips.order NATURAL JOIN pnuips.item WHERE time > ? AND time < ? GROUP BY itemcode, sellercode ORDER BY SUM(count) DESC");
             ps.setTimestamp(1, Timestamp.valueOf(start));
             ps.setTimestamp(2, Timestamp.valueOf(end));
             rs = ps.executeQuery();
 
+            int lastSum = Integer.MAX_VALUE;
+            int rank = 0;
             while (rs.next()) {
                 int itemcode = rs.getInt("itemcode");
                 int sellercode = rs.getInt("sellercode");
+                int sum = rs.getInt(3);
+                if (sum < lastSum) {
+                    rank = rank + 1;
+                    lastSum = sum;
+                }
 
                 SellBean sellBean = searchSellBean(itemcode, sellercode);
-                sellBeanList.add(sellBean);
+
+                BestSellerBean bestSellerBean = new BestSellerBean();
+                bestSellerBean.setRank(rank);
+                bestSellerBean.setSellBean(sellBean);
+                logger.debug("bestSellerBean : {}", bestSellerBean);
+
+                sellBeanList.add(bestSellerBean);
+
+                if (rank == 3) {
+                    break;
+                }
             }
         } catch (SQLException e) {
             logger.error("Failed to search best sell bean list between time. start=" + start + ", end=" + end, e);
