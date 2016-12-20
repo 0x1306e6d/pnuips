@@ -64,13 +64,15 @@ public class SellProcessor {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT itemcode, sellercode FROM pnuips.order NATURAL JOIN pnuips.sell WHERE sellercode<>? GROUP BY itemcode, sellercode ORDER BY SUM(price * count * (100-discount)/100) DESC LIMIT 10");
-            ps.setInt(1, target);
+            ps = con.prepareStatement("SELECT itemcode, sellercode FROM (pnuips.order NATURAL JOIN pnuips.sell) GROUP BY itemcode, sellercode ORDER BY SUM(price * count * (100-discount)/100) DESC LIMIT 10;");
             rs = ps.executeQuery();
 
             while (rs.next()) {
                 int itemcode = rs.getInt("itemcode");
                 int sellercode = rs.getInt("sellercode");
+                if (sellercode == target) {
+                    continue;
+                }
 
                 SellBean sellBean = searchSellBean(itemcode, sellercode);
                 sellBeanList.add(sellBean);

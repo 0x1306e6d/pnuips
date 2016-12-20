@@ -314,7 +314,7 @@
     } else {
     %>
     <h1 class="text-center">Other Item List</h1>
-    <h4 class="text-center">판매자 <%=sellername%>이 판매하지 않은 상품 중 소득기준 베스트셀러 10 목록입니다.</h4>
+    <h4 class="text-center">소득기준 베스트셀러 10 중에 판매자 <%=sellername%>이 판매하지 않은 상품 목록입니다.</h4>
     <ul class="list-group">
         <li class="list-group-item list-header">
             <div class="row">
