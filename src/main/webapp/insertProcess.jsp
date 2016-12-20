@@ -36,7 +36,7 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Best Seller<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="bestsellerSales.jsp">By numbef of sales</a></li>
+                        <li><a href="bestsellerAge.jsp">By numbef of sales</a></li>
                         <li><a href="bestsellerTime.jsp">Between time</a></li>
                     </ul>
                 </li>
