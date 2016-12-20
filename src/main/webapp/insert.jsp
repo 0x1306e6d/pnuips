@@ -70,7 +70,7 @@
     </div>
 </nav>
 <div class="container">
-    <form action="insertProcess.jsp">
+    <form action="insertProcess.jsp" method="post">
         <div class="form-group">
             <label for="user-csv">User.csv</label>
             <textarea id="user-csv" class="form-control" name="userData" rows="10"></textarea>

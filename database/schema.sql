@@ -17,6 +17,7 @@ CREATE TABLE pnuips.account (
     lastname VARCHAR(16) NOT NULL,
     birthday DATE NOT NULL,
     grade INTEGER NOT NULL DEFAULT 0,
+    totalPrice BIGINT NOT NULL DEFAULT 0,
     PRIMARY KEY(email)
 );
 

@@ -12,6 +12,17 @@ public class Order implements Model {
 
     private static final Logger logger = LoggerFactory.getLogger(Order.class);
 
+    public static Order fromResultSet(ResultSet rs) throws SQLException {
+        Order order = new Order();
+        order.setItemcode(rs.getInt("itemcode"));
+        order.setSellercode(rs.getInt("sellercode"));
+        order.setPurchaser(rs.getString("purchaser"));
+        order.setCount(rs.getInt("count"));
+        order.setDiscount(rs.getInt("discount"));
+        order.setTime(rs.getTimestamp("time"));
+        return order;
+    }
+
     private int itemcode;
     private int sellercode;
     private String purchaser;
@@ -91,7 +102,7 @@ public class Order implements Model {
             ps.setTimestamp(6, time);
             ps.executeUpdate();
 
-            logger.debug("Insert order. order={}", this);
+            logger.trace("Insert order. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -116,7 +127,7 @@ public class Order implements Model {
                 discount = rs.getInt("discount");
                 time = rs.getTimestamp("time");
 
-                logger.debug("Load order. order={}", this);
+                logger.trace("Load order. {}", this);
             } else {
                 throw new NullPointerException("Order is not exist. itemcode=" + itemcode + ", sellercode=" + sellercode + ", purchaser=" + purchaser);
             }
@@ -140,7 +151,7 @@ public class Order implements Model {
             ps.setString(6, purchaser);
             ps.executeUpdate();
 
-            logger.debug("Update order. order={}", this);
+            logger.trace("Update order. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -159,7 +170,7 @@ public class Order implements Model {
             ps.setString(3, purchaser);
             ps.executeUpdate();
 
-            logger.debug("Delete order. order={}", this);
+            logger.trace("Delete order. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);

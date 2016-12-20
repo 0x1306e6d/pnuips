@@ -20,12 +20,12 @@ user.csv에 포함되어있는 정보는 아래와 같습니다.
 쿠폰 필드는 비어있을 수 있습니다.
 
 ### item.csv
-item.csv는 품목, 판매자, 구매 및 장바구니 정보를 가지고 있습니다.
+item.csv는 상품, 판매자, 구매 및 장바구니 정보를 가지고 있습니다.
 모든 열은 중복 된 데이터를 가질 수 있습니다.
 
 item.csv에 포함되어있는 정보는 아래와 같습니다.
-- 품목의 코드 (itemcode)
-- 품목의 이름 (itemname)
+- 상품의 코드 (itemcode)
+- 상품의 이름 (itemname)
 - 브랜드 (brand)
 - 판매자 코드 (sellercode)
 - 판매자 이름 (sellername)

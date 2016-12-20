@@ -3,7 +3,7 @@ itemcode,itemname,brand,sellercode,sellername,price,numberOfstock,numberOfsales,
 160001,ultrabook,samsung,161103,bomb,240000,2,1,f@naver.com 1,f@naver.com 1 0 2016-12-11 14:00:00
 160002,macbook,apple,161102,james,1200000,10,1,,b@naver.com 1 30 2016-12-11 12:01:00
 160003,gram,LG,161101,donald duck,615000,5,1,,c@daum.net 1 10 2016-12-10 15:30:05
-160003,gram,LG,161102,james,220000,3,1,,e@pnu.edu 1 10 2016-12-11 17:15:50
+160003,gram,LG,161102,james,220000,3,1,,e@pnu.edu 1 0 2016-12-11 17:15:50
 160004,ipad,apple,161104,jobs,150000,5,1,,g@pnu.edu 1 0 2016-12-09 08:00:00
 160005,galaxy s7,samsung,161105,danawa,900000,5,0,,
 160006,galaxy s7 s pen,samsung,161105,danawa,30000,5,1,,h@gmail.com 1 0 2016-12-09 10:51:30

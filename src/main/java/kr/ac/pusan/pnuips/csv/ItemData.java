@@ -114,8 +114,8 @@ public class ItemData {
     private Item item;
     private Seller seller;
     private Sell sell;
-    private final Set<Cart> cartSet;
-    private final Set<Order> orderSet;
+    private Set<Cart> cartSet;
+    private Set<Order> orderSet;
 
     public ItemData() {
         this.cartSet = Sets.newHashSet();
@@ -154,12 +154,20 @@ public class ItemData {
         return cartSet;
     }
 
+    public void setCartSet(Set<Cart> cartSet) {
+        this.cartSet = cartSet;
+    }
+
     public void addOrder(Order order) {
         orderSet.add(order);
     }
 
     public Set<Order> getOrderSet() {
         return orderSet;
+    }
+
+    public void setOrderSet(Set<Order> orderSet) {
+        this.orderSet = orderSet;
     }
 
     @Override

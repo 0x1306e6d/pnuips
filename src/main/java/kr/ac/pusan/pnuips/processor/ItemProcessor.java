@@ -10,12 +10,21 @@ public class ItemProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(ItemProcessor.class);
 
+    /**
+     * 상품을 검색한다
+     *
+     * @param itemcode 상품의 itemcode
+     * @return 상품 객체
+     */
     public Item searchItem(int itemcode) {
+        logger.debug("Search item request. itemcode={}", itemcode);
         try {
             Item item = new Item(itemcode);
-            item.load();
+            if (item.isExist()) {
+                item.load();
 
-            return item;
+                return item;
+            }
         } catch (SQLException e) {
             logger.error("Failed to search Item. itemcode=" + itemcode, e);
         }

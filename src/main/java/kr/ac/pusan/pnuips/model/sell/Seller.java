@@ -3,6 +3,8 @@ package kr.ac.pusan.pnuips.model.sell;
 import kr.ac.pusan.pnuips.DatabaseManager;
 import kr.ac.pusan.pnuips.model.Model;
 import org.apache.commons.dbutils.DbUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +12,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Seller implements Model {
+
+    private static final Logger logger = LoggerFactory.getLogger(Seller.class);
+
+    public static Seller fromResultSet(ResultSet rs) throws SQLException {
+        Seller seller = new Seller();
+        seller.setSellercode(rs.getInt("sellercode"));
+        seller.setSellername(rs.getString("sellername"));
+        return seller;
+    }
 
     private int sellercode;
     private String sellername;
@@ -48,6 +59,8 @@ public class Seller implements Model {
             ps.setInt(1, sellercode);
             ps.setString(2, sellername);
             ps.executeUpdate();
+
+            logger.trace("Insert seller. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -67,6 +80,8 @@ public class Seller implements Model {
 
             if (rs.next()) {
                 sellername = rs.getString("sellername");
+
+                logger.trace("Load seller. {}", this);
             } else {
                 throw new NullPointerException("Seller is not exist. sellercode=" + sellercode);
             }
@@ -85,6 +100,8 @@ public class Seller implements Model {
             ps.setString(1, sellername);
             ps.setInt(2, sellercode);
             ps.executeUpdate();
+
+            logger.trace("Update seller. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -100,6 +117,8 @@ public class Seller implements Model {
             ps = con.prepareStatement("DELETE FROM pnuips.seller WHERE sellercode=?");
             ps.setInt(1, sellercode);
             ps.executeUpdate();
+
+            logger.trace("Delete seller. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);

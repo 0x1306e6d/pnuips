@@ -114,6 +114,12 @@
                         <%=account.getGrade()%>
                     </h4>
                 </li>
+                <li class="list-group-item">
+                    <label for="totalPrice">total price</label>
+                    <h4 id="totalPrice" class="text-center">
+                        <%=account.getTotalPrice()%>
+                    </h4>
+                </li>
             </ul>
         </div>
     </div>
@@ -130,7 +136,7 @@
     %>
     <br>
     <%
-        List<Order> orderList = orderProcessor.searchOrderList(signinBean.getEmail());
+        List<Order> orderList = orderProcessor.searchOrderListByPurchaser(signinBean.getEmail());
 
         if (orderList.size() == 0) {
     %>
@@ -246,7 +252,7 @@
     %>
     <br>
     <%
-        List<CouponType> couponTypeList = couponProcessor.searchCouponList(signinBean.getEmail());
+        List<CouponType> couponTypeList = couponProcessor.searchCouponListByOwener(signinBean.getEmail());
 
         if (couponTypeList.size() == 0) {
     %>

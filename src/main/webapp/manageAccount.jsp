@@ -140,6 +140,12 @@
                         <%=account.getGrade()%>
                     </h4>
                 </li>
+                <li class="list-group-item">
+                    <label for="totalPrice">total price</label>
+                    <h4 id="totalPrice" class="text-center">
+                        <%=account.getTotalPrice()%>
+                    </h4>
+                </li>
             </ul>
         </div>
     </div>
@@ -156,7 +162,7 @@
     %>
     <br>
     <%
-        List<Order> orderList = orderProcessor.searchOrderList(email);
+        List<Order> orderList = orderProcessor.searchOrderListByPurchaser(email);
 
         if (orderList.size() == 0) {
     %>
@@ -308,7 +314,7 @@
         <%
             for (Cart cart : cartList) {
                 Item item = itemProcessor.searchItem(cart.getItemcode());
-                Seller seller = sellerProcessor.searchSeller(cart.getSellercode());
+                Seller seller = sellerProcessor.searchSellerBySellercode(cart.getSellercode());
 
         %>
         <li class="list-group-item"
@@ -361,7 +367,7 @@
     %>
     <br>
     <%
-        List<CouponType> couponTypeList = couponProcessor.searchCouponList(email);
+        List<CouponType> couponTypeList = couponProcessor.searchCouponListByOwener(email);
 
         if (couponTypeList.size() == 0) {
     %>

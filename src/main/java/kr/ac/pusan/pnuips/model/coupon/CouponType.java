@@ -3,6 +3,8 @@ package kr.ac.pusan.pnuips.model.coupon;
 import kr.ac.pusan.pnuips.DatabaseManager;
 import kr.ac.pusan.pnuips.model.Model;
 import org.apache.commons.dbutils.DbUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CouponType implements Model {
+
+    private static final Logger logger = LoggerFactory.getLogger(CouponType.class);
 
     private int type;
     private String name;
@@ -58,6 +62,8 @@ public class CouponType implements Model {
             ps.setString(2, name);
             ps.setInt(3, discount);
             ps.executeUpdate();
+
+            logger.trace("Insert coupon type. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -78,6 +84,8 @@ public class CouponType implements Model {
             if (rs.next()) {
                 name = rs.getString("name");
                 discount = rs.getInt("discount");
+
+                logger.trace("Load coupon type. {}", this);
             } else {
                 throw new NullPointerException("CouponType is not exist. type=" + type);
             }
@@ -97,6 +105,8 @@ public class CouponType implements Model {
             ps.setInt(2, discount);
             ps.setInt(3, type);
             ps.executeUpdate();
+
+            logger.trace("Update coupon type. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);
@@ -112,6 +122,8 @@ public class CouponType implements Model {
             ps = con.prepareStatement("DELETE FROM pnuips.couponType WHERE type=?");
             ps.setInt(1, type);
             ps.executeUpdate();
+
+            logger.trace("Delete coupon type. {}", this);
         } finally {
             DbUtils.closeQuietly(ps);
             DbUtils.closeQuietly(con);

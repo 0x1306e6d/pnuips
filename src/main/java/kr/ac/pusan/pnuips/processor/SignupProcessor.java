@@ -1,11 +1,17 @@
 package kr.ac.pusan.pnuips.processor;
 
-import kr.ac.pusan.pnuips.DatabaseConstants;
 import kr.ac.pusan.pnuips.bean.SignupBean;
+import kr.ac.pusan.pnuips.model.account.Account;
+import kr.ac.pusan.pnuips.model.account.Grade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.SQLException;
 
 public class SignupProcessor {
+
+    private static final Logger logger = LoggerFactory.getLogger(SignupProcessor.class);
 
     public enum SignupResult {
         SUCCESS,
@@ -13,68 +19,35 @@ public class SignupProcessor {
         SYSTEM_ERROR
     }
 
-    public SignupResult signup(SignupBean bean) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+    /**
+     * 회원가입
+     *
+     * @param signupBean 회원가입 BEAN
+     * @return 회원가입 결과
+     */
+    public SignupResult signup(SignupBean signupBean) {
+        logger.debug("Signup request. signupBean={}", signupBean);
+
         try {
-            Class.forName(DatabaseConstants.DRIVER);
-            con = DriverManager.getConnection(
-                    DatabaseConstants.URL,
-                    DatabaseConstants.USER,
-                    DatabaseConstants.PASSWORD
-            );
-            // 이미 존재하는 이메일 주소 체크
-            try {
-                ps = con.prepareStatement("SELECT email FROM pnuips.account WHERE email=?");
-                ps.setString(1, bean.getEmail());
-                rs = ps.executeQuery();
-                if (rs.next()) {
-                    return SignupResult.ALREADY_EXISTS_ACCOUNT;
-                }
-            } finally {
-                if (ps != null) {
-                    try {
-                        ps.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
+            Account account = new Account(signupBean.getEmail());
+
+            if (account.isExist()) {
+                return SignupResult.ALREADY_EXISTS_ACCOUNT;
             }
 
-            ps = con.prepareStatement("INSERT INTO pnuips.account (email, password, firstname, lastname, birthday) VALUES (?, ?, ?, ?, ?)");
-            ps.setString(1, bean.getEmail());
-            ps.setString(2, bean.getPassword());
-            ps.setString(3, bean.getFirstname());
-            ps.setString(4, bean.getLastname());
-            ps.setDate(5, Date.valueOf(bean.getBirthday()));
-            ps.execute();
+            account.setPassword(signupBean.getPassword());
+            account.setFirstname(signupBean.getFirstname());
+            account.setLastname(signupBean.getLastname());
+            account.setBirthday(Date.valueOf(signupBean.getBirthday()));
+            account.setGrade(Grade.NORMAL);
+            account.setTotalPrice(0);
+            account.insert();
+
             return SignupResult.SUCCESS;
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+        } catch (SQLException e) {
+            logger.error("Failed to signup. signupBean=" + signupBean, e);
         }
+
         return SignupResult.SYSTEM_ERROR;
     }
 }

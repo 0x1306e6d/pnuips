@@ -18,7 +18,15 @@ public class SellProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(SellProcessor.class);
 
+    /**
+     * 상품 BEAN을 검색한다
+     *
+     * @param itemcode   상품 itemcode
+     * @param sellercode 판매자 sellercode
+     * @return 상품 BEAN 객체
+     */
     public SellBean searchSellBean(int itemcode, int sellercode) {
+        logger.debug("Search sell bean request. itemcode={}, sellercode={}", itemcode, sellercode);
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -48,6 +56,7 @@ public class SellProcessor {
      * @return BEST 10 리스트
      */
     public List<SellBean> searchSellBeanListWithoutSeller(int target) {
+        logger.debug("Search sell bean list without seller request. target={}", target);
         List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
@@ -75,7 +84,8 @@ public class SellProcessor {
         return sellBeanList;
     }
 
-    public List<SellBean> searchSellBeanListOfSeller(int sellercode) {
+    public List<SellBean> searchSellBeanListBySeller(int sellercode) {
+        logger.debug("Search sell bean list by seller request. sellercode={}", sellercode);
         List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
@@ -92,7 +102,7 @@ public class SellProcessor {
                 sellBeanList.add(sellBean);
             }
         } catch (SQLException e) {
-            logger.error("Failed to search sell bean list of seller. sellercode=" + sellercode, e);
+            logger.error("Failed to search sell bean list by seller. sellercode=" + sellercode, e);
         } finally {
             DbUtils.closeQuietly(con, ps, rs);
         }
@@ -100,7 +110,8 @@ public class SellProcessor {
         return sellBeanList;
     }
 
-    public List<SellBean> searchSellBeanListByName(String itemname) {
+    public List<SellBean> searchSellBeanListByItemName(String itemname) {
+        logger.debug("Search sell bean list by item name request. itemname={}", itemname);
         List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
@@ -125,7 +136,8 @@ public class SellProcessor {
         return sellBeanList;
     }
 
-    public List<SellBean> searchSellBeanListBySimilarName(String itemname) {
+    public List<SellBean> searchSellBeanListBySimilarItemName(String itemname) {
+        logger.debug("Search sell bean list by similar item name request. itemname={}", itemname);
         List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
@@ -152,6 +164,7 @@ public class SellProcessor {
     }
 
     public List<SellBean> searchSellBeanList(int start) {
+        logger.debug("Search sell bean list request. start={}", start);
         List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
@@ -176,6 +189,7 @@ public class SellProcessor {
     }
 
     public List<SellBean> searchBestSellBeanList(int limit) {
+        logger.debug("Search best sell bean list request. limit={}", limit);
         List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
@@ -203,10 +217,10 @@ public class SellProcessor {
         if (StringUtils.isEmpty(start) || StringUtils.isEmpty(end)) {
             return searchBestSellBeanList(3);
         }
-        List<SellBean> sellBeanList = Lists.newArrayList();
         start = start.replace('T', ' ');
         end = end.replace('T', ' ');
-        logger.debug("Search bestseller between time. start={}, end={}", start, end);
+        logger.debug("Search best sell bean list between time request. start={}, end={}", start, end);
+        List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -239,7 +253,8 @@ public class SellProcessor {
      *
      * @return 상품 목록
      */
-    public List<SellBean> searchSellBeanWithSoldOutRisk() {
+    public List<SellBean> searchSellBeanListWithSoldOutRisk() {
+        logger.debug("Search sell bean list with sold out risk request.");
         List<SellBean> sellBeanList = Lists.newArrayList();
 
         Connection con = null;
@@ -261,15 +276,6 @@ public class SellProcessor {
         }
 
         return sellBeanList;
-    }
-
-    public void increaseSalesCount(int itemcode, int sellercode, int count) throws SQLException {
-        Sell sell = new Sell(itemcode, sellercode);
-        sell.load();
-
-        sell.setNumberOfSales(sell.getNumberOfSales() + count);
-        sell.setNumberOfStock(sell.getNumberOfStock() - count);
-        sell.update();
     }
 
     private SellBean getSellBeanFromResultSet(ResultSet rs) throws SQLException {

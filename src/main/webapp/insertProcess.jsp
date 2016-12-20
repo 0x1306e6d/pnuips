@@ -131,6 +131,24 @@
 
     <%
         try {
+            insertDataProcessor.updateTotalPrice();
+    %>
+    <div class="alert alert-info">
+        Update total price.
+    </div>
+    <%
+    } catch (SQLException e) {
+        LoggerFactory.getLogger(page.getClass()).error("Failed to update total price.", e);
+    %>
+    <div class="alert alert-error">
+        <strong>Error!</strong>
+        <p>Failed to update total price.</p>
+    </div>
+    <%
+        }
+    %>
+    <%
+        try {
             insertDataProcessor.setVIPGrade();
             insertDataProcessor.setVVIPGrade();
     %>
