@@ -1,4 +1,4 @@
-<%@ page import="kr.ac.pusan.pnuips.bean.SellBean" %>
+<%@ page import="kr.ac.pusan.pnuips.model.item.Item" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:useBean id="sellProcessor" class="kr.ac.pusan.pnuips.processor.SellProcessor"/>
@@ -74,7 +74,7 @@
 </nav>
 <div class="container">
     <%
-        List<SellBean> sellBeanList = sellProcessor.searchBestSellerByAge();
+        List<Item> sellBeanList = sellProcessor.searchBestSellerByAge();
 
         if (sellBeanList.size() == 0) {
     %>
@@ -118,38 +118,25 @@
             </div>
         </li>
         <%
-            for (SellBean sellBean : sellBeanList) {
+            for (Item sellBean : sellBeanList) {
         %>
         <li class="list-group-item"
-            onclick="location.href='sell.jsp?itemcode=<%=sellBean.getItem().getItemcode()%>&sellercode=<%=sellBean.getSeller().getSellercode()%>'"
             style="cursor: hand;">
             <div class="row">
                 <div class="col-md-3">
                     <h4 class="text-center">
-                        <%=sellBean.getItem().getItemcode()%>
+                        <%=sellBean.getItemcode()%>
                     </h4>
                 </div>
                 <div class="col-md-3">
                     <h4 class="text-center">
-                        <%=sellBean.getItem().getItemname()%>
+                        <%=sellBean.getItemname()%>
                     </h4>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-5">
                     <h4 class="text-center">
-                        <%=sellBean.getSeller().getSellername()%>
+                        <%=sellBean.getBrand()%>
                     </h4>
-                </div>
-                <div class="col-md-3 row">
-                    <div class="col-md-5">
-                        <h4 class="text-center">
-                            <%=sellBean.getItem().getBrand()%>
-                        </h4>
-                    </div>
-                    <div class="col-md-5">
-                        <h4 class="text-center">
-                            <%=sellBean.getSell().getPrice()%>
-                        </h4>
-                    </div>
                 </div>
             </div>
         </li>
