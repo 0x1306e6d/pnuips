@@ -65,7 +65,8 @@ public class SellProcessor {
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("SELECT itemcode, sellercode FROM (pnuips.order NATURAL JOIN pnuips.sell) GROUP BY itemcode, sellercode ORDER BY SUM(price * count * (100-discount)/100) DESC LIMIT 10;");
+            ps = con.prepareStatement("SELECT itemcode, sellercode FROM (pnuips.order NATURAL JOIN pnuips.sell) WHERE itemcode NOT IN (SELECT itemcode FROM pnuips.sell WHERE sellercode=?)GROUP BY itemcode, sellercode ORDER BY SUM(price * count * (100-discount)/100) DESC LIMIT 10;");
+            ps.setInt(1, target);
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -191,33 +192,33 @@ public class SellProcessor {
         return sellBeanList;
     }
 
-    public List<SellBean> searchBestSellerByAge() {
+    public List<Item> searchBestSellerByAge() {
         logger.debug("Search best seller by age request.");
-        List<SellBean> sellBeanList = Lists.newArrayList();
+        List<Item> itemList = Lists.newArrayList();
 
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             con = DatabaseManager.getConnection();
-            ps = con.prepareStatement("(SELECT itemcode, sellercode FROM (pnuips.order NATURAL JOIN pnuips.sell) NATURAL JOIN pnuips.account WHERE date_part('years', AGE(birthday)) BETWEEN 20 AND 29 GROUP BY itemcode, sellercode ORDER BY SUM(count) DESC LIMIT 10)" +
+            ps = con.prepareStatement("(SELECT itemcode FROM pnuips.order WHERE purchaser IN (SELECT email FROM pnuips.account WHERE date_part('years', AGE(birthday)) BETWEEN 20 AND 29) GROUP BY itemcode ORDER BY SUM(count) DESC LIMIT 10)" +
                     "INTERSECT " +
-                    "(SELECT itemcode, sellercode FROM (pnuips.order NATURAL JOIN pnuips.sell) NATURAL JOIN pnuips.account WHERE date_part('years', AGE(birthday)) BETWEEN 30 AND 39 GROUP BY itemcode, sellercode ORDER BY SUM(count) DESC LIMIT 10)");
+                    "(SELECT itemcode FROM pnuips.order WHERE purchaser IN (SELECT email FROM pnuips.account WHERE date_part('years', AGE(birthday)) BETWEEN 30 AND 39) GROUP BY itemcode ORDER BY SUM(count) DESC LIMIT 10)");
             rs = ps.executeQuery();
 
             while (rs.next()) {
                 int itemcode = rs.getInt("itemcode");
-                int sellercode = rs.getInt("sellercode");
+                Item item = new Item(itemcode);
+                item.load();
 
-                SellBean sellBean = searchSellBean(itemcode, sellercode);
-                sellBeanList.add(sellBean);
+                itemList.add(item);
             }
         } catch (SQLException e) {
             logger.error("Failed to search best seller by age.", e);
         } finally {
             DbUtils.closeQuietly(con, ps, rs);
         }
-        return sellBeanList;
+        return itemList;
     }
 
     public List<BestSellerBean> searchBestSellBeanList() {
